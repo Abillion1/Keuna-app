@@ -623,28 +623,26 @@
             const catVal = categoryFilter.value || "ALL";
             const srcVal = sourceFilter.value || "ALL";
 
+            // Filter transaksi khusus untuk bulan dan tahun aktif
             const monthlyData = transactions.filter(t => isSameMonthYear(t.tanggal, currentMonth, currentYear));
 
             let incTotal = 0, expTotal = 0, bankBal = 0, cashBal = 0;
 
-            transactions.forEach(t => {
+            // Hitung ringkasan total dan saldo HANYA dari transaksi bulan aktif (monthlyData)
+            monthlyData.forEach(t => {
                 const amt = Number(t.jumlah) || 0;
                 if (t.tipe === 'INCOME') {
+                    incTotal += amt;
                     if (t.metode === 'BANK') bankBal += amt;
                     else cashBal += amt;
                 } else if (t.tipe === 'EXPENSE') {
+                    expTotal += amt;
                     if (t.metode === 'BANK') bankBal -= amt;
                     else cashBal -= amt;
                 } else if (t.tipe === 'WITHDRAW') {
                     bankBal -= amt;
                     cashBal += amt;
                 }
-            });
-
-            monthlyData.forEach(t => {
-                const amt = Number(t.jumlah) || 0;
-                if (t.tipe === 'INCOME') incTotal += amt;
-                else if (t.tipe === 'EXPENSE') expTotal += amt;
             });
 
             document.getElementById('totalIncome').textContent = formatIDR(incTotal);
@@ -947,7 +945,6 @@
             modal.classList.add('hidden');
         }
 
-        // PERBAIKAN: handleTypeChange menerima parameter singleRow
         function handleTypeChange(type, defaultKategori = '', defaultKeterangan = '', singleRow = null) {
             const rowElements = singleRow ? [singleRow] : itemRows.querySelectorAll('.grid');
             const sourceSelect = document.getElementById('formSource');
@@ -963,7 +960,6 @@
                 const catSelect = r.querySelector('.cat-input');
                 const descInput = r.querySelector('.desc-input');
                 
-                // Simpan nilai kategori yang sedang dipilih saat ini jika tidak ada defaultKategori
                 const currentSelectedValue = catSelect.value;
                 
                 catSelect.innerHTML = '';
@@ -995,7 +991,6 @@
                         catSelect.appendChild(opt);
                     });
 
-                    // Tentukan kategori mana yang akan diset
                     const targetVal = defaultKategori || currentSelectedValue;
                     if (targetVal && EXPENSE_CATEGORIES.includes(targetVal)) {
                         catSelect.value = targetVal;
@@ -1004,7 +999,6 @@
             });
         }
 
-        // PERBAIKAN: addRow hanya mengeksekusi handleTypeChange pada baris baru (div)
         function addRow(kategoriVal = '', keteranganVal = '', jumlahVal = '') {
             const div = document.createElement('div');
             div.className = 'grid grid-cols-1 sm:grid-cols-3 gap-2 bg-slate-50 dark:bg-slate-800/40 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700/50 relative group';
