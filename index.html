@@ -212,10 +212,6 @@
                     </div>
                     
                     <div class="flex items-center gap-2">
-                        <button id="btnPdf" class="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-xs font-semibold text-rose-600 dark:text-rose-400 flex items-center gap-1.5 transition">
-                            <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
-                            <span>Ekspor PDF</span>
-                        </button>
                         <button id="btnOpenModal" class="px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold flex items-center gap-1.5 transition shadow-sm">
                             <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
                             <span>Tambah Transaksi</span>
@@ -276,7 +272,7 @@
                                         <th class="pb-2.5">Keterangan</th>
                                         <th class="pb-2.5 text-right">Jumlah</th>
                                         <th class="pb-2.5 pr-2 text-center">Aksi</th>
-                                    </tr>
+                                </tr>
                                 </thead>
                                 <tbody id="transactionTable" class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs"></tbody>
                             </table>
@@ -440,16 +436,15 @@
             where 
         } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // ==========================================
-        // PASTE FIREBASE CONFIG ANDA DI SINI
-        // ==========================================
+        // FIREBASE CONFIG MILIK ANDA
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
+            apiKey: "AIzaSyCw03833WSjiI-lyH5dw6XQ_HCmqd4PH5E",
+            authDomain: "laporan-keuangan-e2a6a.firebaseapp.com",
+            projectId: "laporan-keuangan-e2a6a",
+            storageBucket: "laporan-keuangan-e2a6a.firebasestorage.app",
+            messagingSenderId: "1075044450129",
+            appId: "1:1075044450129:web:e64213d4fe7eaa83a69d70",
+            measurementId: "G-TKJS4E51H8"
         };
 
         // Inisialisasi Firebase
