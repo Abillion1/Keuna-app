@@ -245,6 +245,14 @@
                             <i data-lucide="filter" class="w-3.5 h-3.5 text-slate-400"></i>
                             <select id="categoryFilter" class="clean-select font-medium text-slate-700 dark:text-slate-200 bg-transparent focus:outline-none">
                                 <option value="ALL">Semua Kategori</option>
+                                <option value="Pendapatan">Pendapatan</option>
+                                <option value="Keluarga">Keluarga</option>
+                                <option value="Jajanan">Jajanan</option>
+                                <option value="Bahan Bakar">Bahan Bakar</option>
+                                <option value="Tagihan / E wallet">Tagihan / E wallet</option>
+                                <option value="Kebutuhan">Kebutuhan</option>
+                                <option value="Investasi">Investasi</option>
+                                <option value="Perkopian Duniawi">Perkopian Duniawi</option>
                             </select>
                         </div>
 
@@ -591,7 +599,7 @@
             const netSavings = incTotal - expTotal;
             document.getElementById('netSavingsText').textContent = formatIDR(netSavings);
 
-            // 3. Filter Detail Tabel (Aman Mismatch & Filter Kategori/Sumber)
+            // 3. Filter Detail Tabel
             const filteredMonthly = monthlyData.filter(t => {
                 const matchCat = catVal === 'ALL' || t.kategori === catVal;
                 const matchSrc = srcVal === 'ALL' || t.metode === srcVal;
@@ -652,7 +660,16 @@
             const div = document.createElement('div');
             div.className = 'grid grid-cols-1 sm:grid-cols-3 gap-2 bg-slate-50 dark:bg-slate-800/40 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700/50 relative group';
             div.innerHTML = `
-                <input type="text" placeholder="Kategori (misal: Makanan)" class="cat-input w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md p-1.5 text-xs focus:outline-none focus:border-brand-500">
+                <select class="cat-input clean-select w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md p-1.5 text-xs font-medium focus:outline-none focus:border-brand-500">
+                    <option value="Pendapatan">Pendapatan</option>
+                    <option value="Keluarga">Keluarga</option>
+                    <option value="Jajanan">Jajanan</option>
+                    <option value="Bahan Bakar">Bahan Bakar</option>
+                    <option value="Tagihan / E wallet">Tagihan / E wallet</option>
+                    <option value="Kebutuhan" selected>Kebutuhan</option>
+                    <option value="Investasi">Investasi</option>
+                    <option value="Perkopian Duniawi">Perkopian Duniawi</option>
+                </select>
                 <input type="text" placeholder="Keterangan" class="desc-input w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md p-1.5 text-xs focus:outline-none focus:border-brand-500">
                 <div class="flex gap-1">
                     <input type="number" placeholder="Jumlah (Rp)" class="amt-input w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md p-1.5 text-xs font-semibold focus:outline-none focus:border-brand-500">
@@ -678,7 +695,7 @@
 
             const rows = itemRows.querySelectorAll('.grid');
             rows.forEach(r => {
-                const kategori = r.querySelector('.cat-input').value.trim();
+                const kategori = r.querySelector('.cat-input').value;
                 const keterangan = r.querySelector('.desc-input').value.trim();
                 const jumlah = Number(r.querySelector('.amt-input').value) || 0;
 
@@ -688,7 +705,7 @@
                         tipe,
                         metode,
                         tanggal,
-                        kategori: kategori || 'Umum',
+                        kategori,
                         keterangan,
                         jumlah
                     });
