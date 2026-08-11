@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KeuanganBulanan - Minimalist Edition</title>
+    <title>KeuanganBulanan - Firebase Edition</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -28,37 +28,13 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- jsPDF & autoTable -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     <!-- Font Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        body { 
-            font-family: 'Inter', sans-serif; 
-            transition: background-color 0.2s ease, color 0.2s ease;
-        }
-
-        /* Clean Minimalist Custom Scrollbar & Utility Classes */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 9999px;
-        }
-        .dark ::-webkit-scrollbar-thumb {
-            background: #334155;
-        }
-
+        body { font-family: 'Inter', sans-serif; }
         .clean-select {
             -webkit-appearance: none;
-            -moz-appearance: none;
             appearance: none;
             background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
             background-repeat: no-repeat;
@@ -68,32 +44,36 @@
         }
     </style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen pb-24 antialiased selection:bg-brand-500 selection:text-white">
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen pb-24 antialiased">
 
-    <!-- Screen Login / Auth Overlay -->
-    <div id="loginScreen" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 max-w-md w-full text-center shadow-xl">
-            <div class="w-12 h-12 bg-brand-50 dark:bg-slate-800 text-brand-600 dark:text-brand-500 rounded-xl flex items-center justify-center mx-auto mb-4 border border-brand-100 dark:border-slate-700">
-                <i data-lucide="wallet" class="w-6 h-6"></i>
+    <!-- Screen 1: Login Gate (Tampil jika belum login di Firebase) -->
+    <div id="loginScreen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-50 dark:bg-slate-950 p-4">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-md w-full p-8 shadow-xl text-center space-y-6">
+            <div class="inline-flex p-3 bg-brand-50 dark:bg-slate-800 text-brand-600 dark:text-brand-400 rounded-2xl border border-brand-100 dark:border-slate-700 mb-2">
+                <i data-lucide="wallet" class="w-8 h-8"></i>
             </div>
-            <h2 class="text-xl font-bold mb-1 text-slate-900 dark:text-white tracking-tight">KeuanganBulanan</h2>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mb-6 leading-relaxed">Kelola pencatatan keuangan pribadi Anda secara eksklusif dan rapi.</p>
-            
-            <button id="btnLogin" class="w-full flex items-center justify-center gap-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/50 border border-slate-200 dark:border-slate-700 py-2.5 px-4 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-200 transition shadow-sm">
+            <div>
+                <h2 class="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">KeuanganBulanan</h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Masuk dengan akun Google via Firebase Auth untuk menyinkronkan data Anda.</p>
+            </div>
+
+            <!-- Custom Google Sign-In Button untuk Firebase -->
+            <button id="btnGoogleLogin" class="w-full py-2.5 px-4 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-sm border border-slate-300 dark:border-slate-700 rounded-xl shadow-sm flex items-center justify-center gap-3 transition">
                 <svg class="w-5 h-5" viewBox="0 0 24 24">
                     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                     <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
                     <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
                     <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
                 </svg>
-                Masuk dengan Google[cite: 6]
+                <span>Lanjutkan dengan Google</span>
             </button>
+            
+            <p class="text-[10px] text-slate-400">Tersinkronisasi otomatis menggunakan Cloud Firestore.</p>
         </div>
     </div>
 
-    <!-- Main Content -->
+    <!-- Screen 2: Main Application Content -->
     <div id="appContent" class="hidden">
-        <!-- Header -->
         <header class="sticky top-0 z-30 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md py-3 px-4 border-b border-slate-200 dark:border-slate-800">
             <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
                 <div class="flex items-center space-x-3">
@@ -102,1150 +82,133 @@
                     </div>
                     <div>
                         <h1 class="text-base font-bold leading-tight text-slate-900 dark:text-white tracking-tight">KeuanganBulanan</h1>
-                        <p class="text-[11px] text-slate-500 dark:text-slate-400">Laporan Keuangan Personal</p>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400">Firebase Synchronized</p>
                     </div>
                 </div>
 
-                <!-- Controls & User -->
                 <div class="flex items-center gap-2.5">
-                    <button id="btnDarkMode" class="p-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-lg border border-slate-200 dark:border-slate-700 transition">
-                        <i data-lucide="moon" class="w-4 h-4 dark:hidden"></i>
-                        <i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i>
-                    </button>
-
-                    <div class="bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1 flex items-center">
-                        <span class="text-xs font-medium mr-1.5 text-slate-500">Valuta:</span>
-                        <select id="currencySelect" class="clean-select text-xs font-semibold text-brand-600 dark:text-brand-400 bg-transparent focus:outline-none cursor-pointer">
-                            <option value="IDR">IDR (Rp)</option>
-                            <option value="USD">USD ($)</option>
-                            <option value="EUR">EUR (€)</option>
-                        </select>
-                    </div>
-
-                    <div class="bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-0.5 flex gap-1">
-                        <button id="tabMonthlyBtn" class="px-3 py-1 rounded-md text-xs font-medium bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm border border-slate-200 dark:border-slate-600">Bulanan</button>
-                        <button id="tabYearlyBtn" class="px-3 py-1 rounded-md text-xs font-medium text-slate-500 hover:text-slate-900 dark:hover:text-white transition">Rekap Tahunan</button>
-                    </div>
-
-                    <div class="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1">
-                        <img id="userPhoto" src="" class="w-6 h-6 rounded-full border border-slate-300 dark:border-slate-600" alt="Profile">
-                        <button id="btnLogout" title="Keluar" class="p-0.5 text-slate-400 hover:text-rose-500 transition">
+                    <div id="userProfile" class="flex items-center gap-2 pr-2 border-r border-slate-200 dark:border-slate-700">
+                        <img id="userAvatar" src="" class="w-7 h-7 rounded-full border border-slate-200 dark:border-slate-700" alt="Avatar">
+                        <span id="userName" class="text-xs font-semibold hidden md:inline text-slate-700 dark:text-slate-200"></span>
+                        <button id="btnLogout" class="p-1.5 text-slate-400 hover:text-rose-500 rounded-lg transition" title="Keluar">
                             <i data-lucide="log-out" class="w-4 h-4"></i>
                         </button>
                     </div>
+
+                    <button id="btnDarkMode" class="p-2 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-lg border border-slate-200 dark:border-slate-700">
+                        <i data-lucide="moon" class="w-4 h-4 dark:hidden"></i>
+                        <i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i>
+                    </button>
                 </div>
             </div>
         </header>
 
-        <!-- Main Container -->
         <main class="max-w-6xl mx-auto px-4 mt-6">
-            
-            <!-- TAB 1: BULANAN -->
-            <div id="tabMonthlyView" class="space-y-6">
-                
-                <!-- Month & Year Selector Bar -->
-                <div class="flex flex-col sm:flex-row justify-between items-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3.5 shadow-sm gap-4">
-                    <div class="flex items-center space-x-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1">
-                        <button id="prevMonth" class="p-1 hover:text-brand-600 text-slate-500 transition">
-                            <i data-lucide="chevron-left" class="w-4 h-4"></i>
-                        </button>
-                        
-                        <div class="flex items-center space-x-1 px-1">
-                            <select id="monthSelect" class="clean-select font-semibold text-xs text-slate-800 dark:text-slate-100 bg-transparent focus:outline-none cursor-pointer">
-                                <option value="0">Januari</option>
-                                <option value="1">Februari</option>
-                                <option value="2">Maret</option>
-                                <option value="3">April</option>
-                                <option value="4">Mei</option>
-                                <option value="5">Juni</option>
-                                <option value="6">Juli</option>
-                                <option value="7">Agustus</option>
-                                <option value="8">September</option>
-                                <option value="9">Oktober</option>
-                                <option value="10">November</option>
-                                <option value="11">Desember</option>
-                            </select>
-                            <span class="text-slate-300 dark:text-slate-600">/</span>
-                            <select id="yearSelect" class="clean-select font-semibold text-xs text-slate-800 dark:text-slate-100 bg-transparent focus:outline-none cursor-pointer"></select>
-                        </div>
-
-                        <button id="nextMonth" class="p-1 hover:text-brand-600 text-slate-500 transition">
-                            <i data-lucide="chevron-right" class="w-4 h-4"></i>
-                        </button>
-                    </div>
-                    
-                    <!-- Indikator Net Savings -->
-                    <div id="netSavingsCard" class="flex items-center gap-2.5">
-                        <div class="p-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400">
-                            <i id="savingsIcon" data-lucide="piggy-bank" class="w-4 h-4"></i>
-                        </div>
-                        <div>
-                            <p class="text-[10px] uppercase tracking-wider font-semibold text-slate-400">Net Savings (Selisih Bersih)</p>
-                            <h4 id="netSavingsText" class="text-xs font-bold text-emerald-600 dark:text-emerald-400">Rp 0</h4>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Budget Target & Progress Bar -->
-                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
-                        <div class="flex items-center gap-2">
-                            <i data-lucide="target" class="w-4 h-4 text-brand-500"></i>
-                            <h3 class="font-semibold text-xs text-slate-800 dark:text-slate-200">Target Anggaran Bulanan</h3>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-[11px] text-slate-400">Batas Budget:</span>
-                            <input type="number" id="budgetInput" class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1 text-xs w-28 font-semibold text-brand-600 dark:text-brand-400 focus:outline-none focus:border-brand-500" placeholder="3000000">
-                            <button id="btnSaveBudget" class="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 px-2.5 py-1 text-xs font-medium text-slate-700 dark:text-slate-300 rounded-lg transition">Set</button>
-                        </div>
-                    </div>
-                    <div class="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
-                        <div id="budgetProgressBar" class="bg-emerald-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
-                    </div>
-                    <p id="budgetStatusText" class="text-[11px] text-slate-400 mt-2 text-right">Terpakai 0% dari batas budget</p>
-                </div>
-
-                <!-- Summary Cards Bulanan -->
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm flex items-center justify-between">
-                        <div>
-                            <p class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-0.5">Total Pemasukan</p>
-                            <h3 id="totalIncome" class="text-base font-bold text-emerald-600 dark:text-emerald-400">Rp 0</h3>
-                        </div>
-                        <div class="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400">
-                            <i data-lucide="trending-up" class="w-5 h-5"></i>
-                        </div>
-                    </div>
-
-                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm flex items-center justify-between">
-                        <div>
-                            <p class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-0.5">Total Pengeluaran</p>
-                            <h3 id="totalExpense" class="text-base font-bold text-rose-600 dark:text-rose-400">Rp 0</h3>
-                        </div>
-                        <div class="p-2 rounded-lg bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400">
-                            <i data-lucide="trending-down" class="w-5 h-5"></i>
-                        </div>
-                    </div>
-
-                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm flex items-center justify-between">
-                        <div>
-                            <p class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-0.5">Saldo Bank / Digital</p>
-                            <h3 id="bankBalance" class="text-base font-bold text-blue-600 dark:text-blue-400">Rp 0</h3>
-                        </div>
-                        <div class="p-2 rounded-lg bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400">
-                            <i data-lucide="building-2" class="w-5 h-5"></i>
-                        </div>
-                    </div>
-
-                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm flex items-center justify-between">
-                        <div>
-                            <p class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-0.5">Saldo Cash / Tunai</p>
-                            <h3 id="cashBalance" class="text-base font-bold text-amber-600 dark:text-amber-400">Rp 0</h3>
-                        </div>
-                        <div class="p-2 rounded-lg bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400">
-                            <i data-lucide="banknote" class="w-5 h-5"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Action Bar Bulanan -->
-                <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 shadow-sm">
-                    <div class="flex flex-wrap items-center gap-2">
-                        <div class="flex items-center space-x-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1 text-xs">
-                            <i data-lucide="filter" class="w-3.5 h-3.5 text-slate-400"></i>
-                            <select id="categoryFilter" class="clean-select font-medium text-slate-700 dark:text-slate-200 bg-transparent focus:outline-none">
-                            </select>
-                        </div>
-
-                        <div class="flex items-center space-x-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1 text-xs">
-                            <select id="sourceFilter" class="clean-select font-medium text-slate-700 dark:text-slate-200 bg-transparent focus:outline-none">
-                                <option value="ALL">Semua Sumber</option>
-                                <option value="BANK">Bank / Digital</option>
-                                <option value="CASH">Cash / Tunai</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="flex items-center gap-2">
-                        <button id="btnPdf" class="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-xs font-semibold text-rose-600 dark:text-rose-400 flex items-center gap-1.5 transition">
-                            <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
-                            <span>Ekspor PDF</span>
-                        </button>
-
-                        <button id="btnOpenModal" class="px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold flex items-center gap-1.5 transition shadow-sm">
-                            <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
-                            <span>Tambah Transaksi</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Tabel Pemasukan Khusus -->
-                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm">
-                    <h3 class="text-sm font-bold flex items-center gap-2 mb-3 text-emerald-600 dark:text-emerald-400">
-                        <i data-lucide="arrow-down-left" class="w-4 h-4"></i>
-                        Rincian Pemasukan
-                    </h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-semibold text-slate-400 uppercase">
-                                    <th class="pb-2.5 pl-2">Tanggal</th>
-                                    <th class="pb-2.5">Metode</th>
-                                    <th class="pb-2.5">Kategori</th>
-                                    <th class="pb-2.5">Keterangan</th>
-                                    <th class="pb-2.5 text-right">Jumlah</th>
-                                    <th class="pb-2.5 pr-2 text-center">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="incomeTable" class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs"></tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Charts & Tabel Pengeluaran / Transaksi -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm lg:col-span-1 flex flex-col justify-between">
-                        <div>
-                            <h3 class="text-sm font-bold flex items-center gap-2 mb-4 text-slate-800 dark:text-slate-200">
-                                <i data-lucide="pie-chart" class="w-4 h-4 text-brand-500"></i>
-                                Proporsi Pengeluaran
-                            </h3>
-                            <div class="relative w-full flex justify-center items-center h-56">
-                                <canvas id="expenseChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm lg:col-span-2">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-sm font-bold flex items-center gap-2 text-slate-800 dark:text-slate-200">
-                                <i data-lucide="list-ordered" class="w-4 h-4 text-brand-500"></i>
-                                Rincian Pengeluaran & Transfer
-                            </h3>
-                            <span id="txCount" class="text-xs font-medium px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-md">0 Transaksi</span>
-                        </div>
-
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left border-collapse">
-                                <thead>
-                                    <tr class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-semibold text-slate-400 uppercase">
-                                        <th class="pb-2.5 pl-2">Tanggal</th>
-                                        <th class="pb-2.5">Metode</th>
-                                        <th class="pb-2.5">Kategori</th>
-                                        <th class="pb-2.5">Keterangan</th>
-                                        <th class="pb-2.5 text-right">Jumlah</th>
-                                        <th class="pb-2.5 pr-2 text-center">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="transactionTable" class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs"></tbody>
-                            </table>
-                        </div>
-
-                        <!-- Pagination Controls -->
-                        <div class="flex justify-between items-center mt-4 pt-3 border-t border-slate-100 dark:border-slate-800">
-                            <span id="pageInfo" class="text-[11px] text-slate-400">Halaman 1 dari 1</span>
-                            <div class="flex gap-1.5">
-                                <button id="btnPrevPage" class="px-2.5 py-1 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-medium rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-50 transition">Sebelumnya</button>
-                                <button id="btnNextPage" class="px-2.5 py-1 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-medium rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-50 transition">Berikutnya</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800">
+                <h3 class="font-bold text-lg mb-2">Selamat Datang di Dashboard Firebase!</h3>
+                <p class="text-xs text-slate-500">Akun Anda berhasil terautentikasi melalui Firebase Auth.</p>
             </div>
-
-            <!-- TAB 2: REKAP TAHUNAN -->
-            <div id="tabYearlyView" class="space-y-6 hidden">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm flex items-center justify-between">
-                        <div>
-                            <p class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-0.5">Pengeluaran Setahun (<span class="yearlyTitleYear">2026</span>)</p>
-                            <h3 id="yearlyTotalExpense" class="text-base font-bold text-slate-800 dark:text-slate-100">Rp 0</h3>
-                        </div>
-                        <div class="p-2 rounded-lg bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400">
-                            <i data-lucide="calendar" class="w-5 h-5"></i>
-                        </div>
-                    </div>
-
-                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm flex items-center justify-between">
-                        <div>
-                            <p class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-0.5">Rata-Rata Riil / Bulan</p>
-                            <h3 id="yearlyAvgExpense" class="text-base font-bold text-brand-600 dark:text-brand-400">Rp 0</h3>
-                        </div>
-                        <div class="p-2 rounded-lg bg-brand-50 dark:bg-slate-800 text-brand-600 dark:text-brand-400">
-                            <i data-lucide="calculator" class="w-5 h-5"></i>
-                        </div>
-                    </div>
-
-                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm flex items-center justify-between">
-                        <div>
-                            <p class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-0.5">Acuan Budgeting</p>
-                            <h3 id="yearlyBudgetRecommendation" class="text-base font-bold text-emerald-600 dark:text-emerald-400">Rp 0</h3>
-                        </div>
-                        <div class="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400">
-                            <i data-lucide="target" class="w-5 h-5"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Line Chart Tren Bulanan -->
-                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm">
-                    <h3 class="text-sm font-bold flex items-center gap-2 mb-4 text-slate-800 dark:text-slate-200">
-                        <i data-lucide="line-chart" class="w-4 h-4 text-brand-500"></i>
-                        Grafik Tren Pengeluaran Bulanan (Januari - Desember)
-                    </h3>
-                    <div class="relative w-full h-64">
-                        <canvas id="monthlyTrendChart"></canvas>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm lg:col-span-1 flex flex-col justify-between">
-                        <div>
-                            <h3 class="text-sm font-bold flex items-center gap-2 mb-2 text-slate-800 dark:text-slate-200">
-                                <i data-lucide="pie-chart" class="w-4 h-4 text-brand-500"></i>
-                                Proporsi Pengeluaran Tahunan
-                            </h3>
-                            <div class="relative w-full flex justify-center items-center h-56">
-                                <canvas id="yearlyChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm lg:col-span-2">
-                        <h3 class="text-sm font-bold flex items-center gap-2 mb-4 text-slate-800 dark:text-slate-200">
-                            <i data-lucide="layers" class="w-4 h-4 text-brand-500"></i>
-                            Total Uang Dihabiskan Per Kategori
-                        </h3>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left border-collapse">
-                                <thead>
-                                    <tr class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-semibold text-slate-400 uppercase">
-                                        <th class="pb-2.5 pl-2">Kategori Pengeluaran</th>
-                                        <th class="pb-2.5 text-right">Total</th>
-                                        <th class="pb-2.5 text-right pr-2">Persentase</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="yearlyCategoryTable" class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </main>
     </div>
 
-    <!-- Quick-Add FAB Mobile -->
-    <button id="btnFab" class="fixed bottom-6 right-6 w-12 h-12 bg-brand-600 hover:bg-brand-700 text-white rounded-full flex items-center justify-center z-40 shadow-lg transition active:scale-95">
-        <i data-lucide="plus" class="w-6 h-6"></i>
-    </button>
-
-    <!-- Modal Form Transaksi Massal -->
-    <div id="modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
-        <div id="modalBox" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-2xl w-full p-6 shadow-2xl flex flex-col max-h-[90vh]">
-            
-            <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
-                <h3 id="modalTitle" class="font-bold text-base flex items-center gap-2 text-slate-900 dark:text-white">
-                    <i data-lucide="layers" class="w-5 h-5 text-brand-500"></i>
-                    Input Transaksi Massal
-                </h3>
-                <button id="btnCloseModalHeader" class="text-slate-400 hover:text-rose-500 transition">
-                    <i data-lucide="x" class="w-5 h-5"></i>
-                </button>
-            </div>
-
-            <form id="txForm" class="flex flex-col flex-1 overflow-hidden space-y-4">
-                <input type="hidden" id="editDocId" value="">
-                
-                <!-- Pengaturan Global (1x Input untuk Semua Transaksi) -->
-                <div class="bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 rounded-xl p-3.5 space-y-3">
-                    <p class="text-[11px] font-semibold uppercase text-brand-600 dark:text-brand-400 tracking-wider">Pengaturan Utama Massal</p>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <div>
-                            <label class="block text-[11px] font-medium text-slate-500 dark:text-slate-400 mb-1">Jenis Transaksi</label>
-                            <div class="grid grid-cols-3 gap-1 bg-white dark:bg-slate-900 p-1 border border-slate-200 dark:border-slate-700 rounded-lg">
-                                <label class="flex items-center justify-center py-1 text-[11px] font-semibold rounded cursor-pointer text-slate-600 dark:text-slate-300 has-[:checked]:bg-emerald-500 has-[:checked]:text-white transition">
-                                    <input type="radio" name="type" value="INCOME" class="hidden"> Masuk
-                                </label>
-                                <label class="flex items-center justify-center py-1 text-[11px] font-semibold rounded cursor-pointer text-slate-600 dark:text-slate-300 has-[:checked]:bg-rose-500 has-[:checked]:text-white transition">
-                                    <input type="radio" name="type" value="EXPENSE" class="hidden" checked> Keluar
-                                </label>
-                                <label class="flex items-center justify-center py-1 text-[11px] font-semibold rounded cursor-pointer text-slate-600 dark:text-slate-300 has-[:checked]:bg-amber-500 has-[:checked]:text-white transition">
-                                    <input type="radio" name="type" value="TRANSFER" class="hidden"> Tarik
-                                </label>
-                            </div>
-                        </div>
-
-                        <div id="sourceContainer">
-                            <label class="block text-[11px] font-medium text-slate-500 dark:text-slate-400 mb-1">Metode Pembayaran</label>
-                            <select id="globalSource" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-brand-500">
-                                <option value="BANK">Bank / Digital</option>
-                                <option value="CASH">Cash / Tunai</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-[11px] font-medium text-slate-500 dark:text-slate-400 mb-1">Tanggal Transaksi</label>
-                            <input type="date" id="formDate" required class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-brand-500">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Container Baris Pengeluaran / Item Banyak -->
-                <div class="flex-1 overflow-y-auto pr-1 space-y-2" id="rowsScrollArea">
-                    <div class="flex justify-between items-center px-1">
-                        <label class="text-xs font-bold text-slate-700 dark:text-slate-300">Daftar Rincian Items</label>
-                        <span id="rowCountBadge" class="text-[10px] bg-brand-50 dark:bg-slate-800 text-brand-600 dark:text-brand-400 font-semibold px-2 py-0.5 rounded border border-brand-100 dark:border-slate-700">1 Item</span>
-                    </div>
-                    <div id="rowsContainer" class="space-y-2"></div>
-                </div>
-
-                <!-- Tombol Tambah Baris Baru & Action Submit -->
-                <div class="pt-2 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row justify-between items-center gap-3">
-                    <button type="button" id="btnAddRow" class="w-full sm:w-auto px-3 py-1.5 rounded-lg border border-dashed border-brand-300 dark:border-brand-800 bg-brand-50/50 dark:bg-brand-950/20 text-brand-600 dark:text-brand-400 text-xs font-semibold hover:bg-brand-50 flex items-center justify-center gap-1.5 transition">
-                        <i data-lucide="plus" class="w-4 h-4"></i>
-                        <span>+ Tambah Baris Pengeluaran Lagi</span>
-                    </button>
-
-                    <div class="flex items-center space-x-2 w-full sm:w-auto justify-end">
-                        <button type="button" id="btnCancelModal" class="px-4 py-2 text-xs font-medium text-slate-500 hover:text-slate-800 dark:hover:text-white transition">Batal</button>
-                        <button type="submit" id="btnSaveSubmit" class="px-5 py-2 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold shadow-sm transition flex items-center justify-center gap-2">
-                            <span id="btnSaveText">Simpan Semua Transaksi</span>
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Firebase SDK & Application Script -->
+    <!-- Firebase SDK (v10 Modular) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, where, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { 
+            getAuth, 
+            GoogleAuthProvider, 
+            signInWithPopup, 
+            signOut, 
+            onAuthStateChanged 
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { 
+            getFirestore, 
+            collection, 
+            addDoc, 
+            query, 
+            where, 
+            onSnapshot 
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+        // 1. Konfigurasi Firebase Proyek Anda
         const firebaseConfig = {
-            apiKey: "AIzaSyCw03833WSjiI-lyH5dw6XQ_HCmqd4PH5E",
-            authDomain: "laporan-keuangan-e2a6a.firebaseapp.com",
-            projectId: "laporan-keuangan-e2a6a",
-            storageBucket: "laporan-keuangan-e2a6a.firebasestorage.app",
-            messagingSenderId: "1075044450129",
-            appId: "1:1075044450129:web:e64213d4fe7eaa83a69d70"
+            apiKey: "YOUR_FIREBASE_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
         };
 
+        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
         const provider = new GoogleAuthProvider();
 
-        let currentUser = null;
-        let unsubscribe = null;
-        let currentMonth = new Date().getMonth();
-        let currentYear = new Date().getFullYear(); 
-        let allTransactions = [];
-        let chartInstance = null;
-        let yearlyChartInstance = null;
-        let monthlyTrendChartInstance = null;
+        // UI Element Selectors
+        const loginScreen = document.getElementById('loginScreen');
+        const appContent = document.getElementById('appContent');
+        const btnGoogleLogin = document.getElementById('btnGoogleLogin');
+        const btnLogout = document.getElementById('btnLogout');
+        const userName = document.getElementById('userName');
+        const userAvatar = document.getElementById('userAvatar');
 
-        let currentPage = 1;
-        const rowsPerPage = 10;
-
-        let selectedCurrency = 'IDR';
-        const currencySymbols = { IDR: 'Rp', USD: '$', EUR: '€' };
-        const currencyRates = { IDR: 1, USD: 0.000064, EUR: 0.000059 };
-
-        let monthlyBudget = localStorage.getItem('monthlyBudget') ? parseFloat(localStorage.getItem('monthlyBudget')) : 3000000;
-
-        const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-        const ALL_CATEGORIES = ['Pendapatan', 'Rumah dan keluarga', 'Jajanan', 'Bahan Bakar', 'Tagihan / Ewallet', 'Kebutuhan', 'Investasi', 'Perkopian Duniawi', 'Tarik Tunai', 'Lain-lain'];
-
-        const CATEGORY_COLORS = {
-            'Pendapatan': { hex: '#10b981' }, 'Rumah dan keluarga': { hex: '#f97316' }, 'Jajanan': { hex: '#ec4899' },
-            'Bahan Bakar': { hex: '#f59e0b' }, 'Tagihan / Ewallet': { hex: '#06b6d4' }, 'Kebutuhan': { hex: '#14b8a6' },
-            'Investasi': { hex: '#6366f1' }, 'Perkopian Duniawi': { hex: '#3b82f6' }, 'Tarik Tunai': { hex: '#a855f7' },
-            'Lain-lain': { hex: '#64748b' }
-        };
-
-        function cleanCategoryName(rawCat) {
-            if (!rawCat) return 'Lain-lain';
-            return rawCat.replace(/^\d+\.\s*/, '').trim();
-        }
-
-        function formatDateYYYYMMDD(dateStr) {
-            if (!dateStr) return '';
-            const parts = dateStr.split('-');
-            if (parts.length !== 3) return dateStr;
-            if (parts[0].length === 4) return dateStr;
-            return `${parts[2]}-${parts[1]}-${parts[0]}`;
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
-            populateYearOptions(2025, 2080);
-            initCategoryFilterDropdown();
-            initChart();
-            initYearlyChart();
-            initMonthlyTrendChart();
-            
-            document.getElementById('monthSelect').value = currentMonth;
-            document.getElementById('yearSelect').value = currentYear;
-            document.getElementById('formDate').value = new Date().toISOString().split('T')[0];
-            document.getElementById('budgetInput').value = monthlyBudget;
-
-            document.getElementById('btnDarkMode').addEventListener('click', () => {
-                document.documentElement.classList.toggle('dark');
-            });
-
-            document.getElementById('currencySelect').addEventListener('change', (e) => {
-                selectedCurrency = e.target.value;
-                renderApp();
-                renderYearlySummary();
-            });
-
-            document.getElementById('btnSaveBudget').addEventListener('click', () => {
-                const val = parseFloat(document.getElementById('budgetInput').value);
-                if (!isNaN(val) && val >= 0) {
-                    monthlyBudget = val;
-                    localStorage.setItem('monthlyBudget', val);
-                    renderApp();
-                }
-            });
-
-            document.getElementById('btnLogin').addEventListener('click', loginGoogle);
-            document.getElementById('btnLogout').addEventListener('click', logoutGoogle);
-            document.getElementById('btnOpenModal').addEventListener('click', () => openModal());
-            document.getElementById('btnFab').addEventListener('click', () => openModal());
-            document.getElementById('btnCloseModalHeader').addEventListener('click', closeModal);
-            document.getElementById('btnCancelModal').addEventListener('click', closeModal);
-            document.getElementById('btnPdf').addEventListener('click', downloadPDF);
-            document.getElementById('txForm').addEventListener('submit', saveBatchTransactions);
-            document.getElementById('btnAddRow').addEventListener('click', () => appendRowToModal());
-
-            document.getElementById('btnPrevPage').addEventListener('click', () => {
-                if (currentPage > 1) { currentPage--; renderApp(); }
-            });
-            document.getElementById('btnNextPage').addEventListener('click', () => {
-                currentPage++; renderApp();
-            });
-
-            document.getElementById('prevMonth').addEventListener('click', () => {
-                if (currentMonth === 0) { currentMonth = 11; currentYear--; } else { currentMonth--; }
-                updateDropdownValues(); renderApp();
-            });
-
-            document.getElementById('nextMonth').addEventListener('click', () => {
-                if (currentMonth === 11) { currentMonth = 0; currentYear++; } else { currentMonth++; }
-                updateDropdownValues(); renderApp();
-            });
-
-            document.getElementById('tabMonthlyBtn').addEventListener('click', () => switchTab('monthly'));
-            document.getElementById('tabYearlyBtn').addEventListener('click', () => switchTab('yearly'));
-
-            document.querySelectorAll('input[name="type"]').forEach(radio => {
-                radio.addEventListener('change', handleTypeChange);
-            });
-
-            onAuthStateChanged(auth, (user) => {
-                if (user) {
-                    currentUser = user;
-                    document.getElementById('loginScreen').classList.add('hidden');
-                    document.getElementById('appContent').classList.remove('hidden');
-                    document.getElementById('userPhoto').src = user.photoURL || 'https://via.placeholder.com/150';
-                    loadUserData();
-                } else {
-                    currentUser = null;
-                    document.getElementById('loginScreen').classList.remove('hidden');
-                    document.getElementById('appContent').classList.add('hidden');
-                    if (unsubscribe) unsubscribe();
-                }
-            });
+        // 2. Fungsi Login Google dengan Popup Firebase
+        btnGoogleLogin.addEventListener('click', async () => {
+            try {
+                await signInWithPopup(auth, provider);
+            } catch (error) {
+                console.error("Gagal Login Firebase:", error.message);
+                alert("Gagal melakukan login: " + error.message);
+            }
         });
 
-        function createRowHTML(category = '', title = '', amount = '') {
-            return `
-            <div class="tx-row flex flex-wrap sm:flex-nowrap items-center gap-2 bg-slate-50 dark:bg-slate-800/40 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700/80 transition">
-                <div class="w-full sm:w-1/3">
-                    <select class="row-category w-full clean-select bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-brand-500" required></select>
-                </div>
-                <div class="w-full sm:w-1/2">
-                    <input type="text" class="row-title w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:border-brand-500" placeholder="Keterangan pengeluaran" value="${title}" required>
-                </div>
-                <div class="w-full sm:w-1/3 flex items-center gap-1.5">
-                    <input type="number" class="row-amount w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-brand-500" placeholder="Jumlah (Rp)" min="1" value="${amount}" required>
-                    <button type="button" class="btn-remove-row text-slate-400 hover:text-rose-500 p-1.5 rounded-lg transition" title="Hapus Baris">
-                        <i data-lucide="trash-2" class="w-4 h-4"></i>
-                    </button>
-                </div>
-            </div>
-            `;
-        }
-
-        function populateRowCategories(rowElement) {
-            const type = document.querySelector('input[name="type"]:checked').value;
-            const select = rowElement.querySelector('.row-category');
-            select.innerHTML = '';
-
-            if (type === 'TRANSFER') {
-                select.innerHTML = `<option value="Tarik Tunai">Tarik Tunai</option>`;
-                rowElement.querySelector('.row-title').value = 'Tarik Tunai dari Bank ke Cash';
-            } else {
-                const categories = type === 'INCOME' ? ['Pendapatan'] : ['Kebutuhan', 'Jajanan', 'Rumah dan keluarga', 'Bahan Bakar', 'Tagihan / Ewallet', 'Investasi', 'Perkopian Duniawi', 'Lain-lain'];
-                categories.forEach(cat => {
-                    const opt = document.createElement('option');
-                    opt.value = cat;
-                    opt.innerText = cat;
-                    select.appendChild(opt);
-                });
-            }
-        }
-
-        function updateDropdownValues() {
-            document.getElementById('monthSelect').value = currentMonth;
-            document.getElementById('yearSelect').value = currentYear;
-        }
-
-        function populateYearOptions(startYear, endYear) {
-            const yearSelect = document.getElementById('yearSelect');
-            yearSelect.innerHTML = '';
-            for (let yr = startYear; yr <= endYear; yr++) {
-                const opt = document.createElement('option');
-                opt.value = yr; opt.innerText = yr;
-                yearSelect.appendChild(opt);
-            }
-        }
-
-        function initCategoryFilterDropdown() {
-            const filterCategory = document.getElementById('categoryFilter');
-            filterCategory.innerHTML = `<option value="ALL">Semua Kategori</option>`;
-            ALL_CATEGORIES.forEach(cat => {
-                if (cat !== 'Tarik Tunai') filterCategory.innerHTML += `<option value="${cat}">${cat}</option>`;
-            });
-        }
-
-        function switchTab(tab) {
-            const monthlyBtn = document.getElementById('tabMonthlyBtn');
-            const yearlyBtn = document.getElementById('tabYearlyBtn');
-            const monthlyView = document.getElementById('tabMonthlyView');
-            const yearlyView = document.getElementById('tabYearlyView');
-
-            if (tab === 'monthly') {
-                monthlyBtn.className = "px-3 py-1 rounded-md text-xs font-medium bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm border border-slate-200 dark:border-slate-600";
-                yearlyBtn.className = "px-3 py-1 rounded-md text-xs font-medium text-slate-500 hover:text-slate-900 dark:hover:text-white transition";
-                yearlyView.classList.add('hidden');
-                monthlyView.classList.remove('hidden');
-            } else {
-                yearlyBtn.className = "px-3 py-1 rounded-md text-xs font-medium bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm border border-slate-200 dark:border-slate-600";
-                monthlyBtn.className = "px-3 py-1 rounded-md text-xs font-medium text-slate-500 hover:text-slate-900 dark:hover:text-white transition";
-                monthlyView.classList.add('hidden');
-                yearlyView.classList.remove('hidden');
-                renderYearlySummary();
-            }
-        }
-
-        function loadUserData() {
-            if (!currentUser) return;
-            const txCollection = collection(db, "transactions");
-            const q = query(txCollection, where("uid", "==", currentUser.uid));
-            
-            unsubscribe = onSnapshot(q, (snapshot) => {
-                allTransactions = snapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                })).sort((a, b) => new Date(a.date) - new Date(b.date));
-                renderApp();
-                renderYearlySummary();
-            });
-        }
-
-        async function loginGoogle() {
-            try { 
-                await signInWithPopup(auth, provider); 
-            } catch (error) { 
-                alert("Gagal Login: " + error.message); 
-            }
-        }
-
-        async function logoutGoogle() {
-            if (confirm("Apakah Anda yakin ingin keluar?")) {
-                await signOut(auth);
-            }
-        }
-
-        document.getElementById('monthSelect').addEventListener('change', (e) => { currentMonth = parseInt(e.target.value); renderApp(); });
-        document.getElementById('yearSelect').addEventListener('change', (e) => { currentYear = parseInt(e.target.value); renderApp(); renderYearlySummary(); });
-        document.getElementById('categoryFilter').addEventListener('change', () => { currentPage = 1; renderApp(); });
-        document.getElementById('sourceFilter').addEventListener('change', () => { currentPage = 1; renderApp(); });
-
-        function formatCurrency(amount) {
-            const converted = amount * currencyRates[selectedCurrency];
-            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: selectedCurrency, maximumFractionDigits: 0 }).format(converted);
-        }
-
-        function renderApp() {
-            const catFilterElement = document.getElementById('categoryFilter');
-            const srcFilterElement = document.getElementById('sourceFilter');
-            
-            const catFilter = (catFilterElement && catFilterElement.value) ? catFilterElement.value : 'ALL';
-            const srcFilter = (srcFilterElement && srcFilterElement.value) ? srcFilterElement.value : 'ALL';
-
-            const monthTx = allTransactions.filter(t => {
-                if (!t.date) return false;
-                const txDate = new Date(t.date);
-                if (isNaN(txDate.getTime())) {
-                    const parts = t.date.split('-');
-                    if (parts.length < 3) return false;
-                    const year = parts[0].length === 4 ? parseInt(parts[0], 10) : parseInt(parts[2], 10);
-                    const month = parts[0].length === 4 ? parseInt(parts[1], 10) - 1 : parseInt(parts[1], 10) - 1;
-                    return month === currentMonth && year === currentYear;
-                }
-                return txDate.getMonth() === currentMonth && txDate.getFullYear() === currentYear;
-            });
-
-            const filteredTx = monthTx.filter(t => {
-                const cleanCat = cleanCategoryName(t.category);
-                const matchCategory = (catFilter === 'ALL' || catFilter === '') || (cleanCat === catFilter);
-                const matchSource = (srcFilter === 'ALL' || srcFilter === '') || (t.source === srcFilter) || (t.type === 'TRANSFER');
-                return matchCategory && matchSource;
-            });
-
-            let totalIncome = 0;
-            let totalExpense = 0;
-            let bankBal = 0;
-            let cashBal = 0;
-
-            monthTx.forEach(t => {
-                const amt = Number(t.amount) || 0; 
-                if (t.type === 'INCOME') {
-                    totalIncome += amt;
-                    if (t.source === 'BANK') bankBal += amt; else cashBal += amt;
-                } else if (t.type === 'EXPENSE') {
-                    totalExpense += amt;
-                    if (t.source === 'BANK') bankBal -= amt; else cashBal -= amt;
-                } else if (t.type === 'TRANSFER') {
-                    bankBal -= amt; cashBal += amt;
-                }
-            });
-
-            document.getElementById('totalIncome').innerText = formatCurrency(totalIncome);
-            document.getElementById('totalExpense').innerText = formatCurrency(totalExpense);
-            document.getElementById('bankBalance').innerText = formatCurrency(bankBal);
-            document.getElementById('cashBalance').innerText = formatCurrency(cashBal);
-
-            const netSavings = totalIncome - totalExpense;
-            const netSavingsText = document.getElementById('netSavingsText');
-            netSavingsText.innerText = formatCurrency(netSavings);
-            
-            if (netSavings >= 0) {
-                netSavingsText.className = "text-xs font-bold text-emerald-600 dark:text-emerald-400";
-                document.getElementById('savingsIcon').className = "w-4 h-4 text-emerald-600 dark:text-emerald-400";
-            } else {
-                netSavingsText.className = "text-xs font-bold text-rose-600 dark:text-rose-400";
-                document.getElementById('savingsIcon').className = "w-4 h-4 text-rose-600 dark:text-rose-400";
-            }
-
-            const budgetPercent = monthlyBudget > 0 ? Math.min(100, Math.round((totalExpense / monthlyBudget) * 100)) : 0;
-            const progressBar = document.getElementById('budgetProgressBar');
-            progressBar.style.width = `${budgetPercent}%`;
-            progressBar.className = budgetPercent > 90 ? "bg-rose-500 h-full rounded-full transition-all duration-500" : "bg-emerald-500 h-full rounded-full transition-all duration-500";
-            document.getElementById('budgetStatusText').innerText = `Terpakai ${budgetPercent}% dari batas ${formatCurrency(monthlyBudget)}`;
-
-            const incomeTx = monthTx.filter(t => t.type === 'INCOME');
-            const incomeTbody = document.getElementById('incomeTable');
-            if (incomeTbody) {
-                incomeTbody.innerHTML = '';
-                incomeTx.forEach(t => {
-                    try {
-                        const tr = document.createElement('tr');
-                        tr.className = 'hover:bg-slate-50 dark:hover:bg-slate-800/40 transition';
-                        tr.innerHTML = `
-                            <td class="py-2.5 pl-2 text-slate-400">${formatDateYYYYMMDD(t.date || '')}</td>
-                            <td class="py-2.5"><span class="text-[10px] font-semibold px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">${t.source || '-'}</span></td>
-                            <td class="py-2.5 font-semibold text-slate-700 dark:text-slate-300">${cleanCategoryName(t.category)}</td>
-                            <td class="py-2.5 font-medium text-slate-800 dark:text-slate-200">${t.title || '-'}</td>
-                            <td class="py-2.5 text-right text-emerald-600 dark:text-emerald-400 font-bold">+ ${formatCurrency(t.amount || 0)}</td>
-                            <td class="py-2.5 pr-2 text-center">
-                                <div class="flex items-center justify-center gap-1">
-                                    <button data-id="${t.id}" class="btn-edit text-slate-400 hover:text-brand-600 p-1 rounded transition"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button>
-                                    <button data-id="${t.id}" class="btn-delete text-slate-400 hover:text-rose-600 p-1 rounded transition"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
-                                </div>
-                            </td>
-                        `;
-                        incomeTbody.appendChild(tr);
-                    } catch (e) {
-                        console.error("Error Baris Pemasukan:", e);
-                    }
-                });
-            }
-
-            const expAndTransTx = monthTx.filter(t => t.type !== 'INCOME');
-            
-            const totalPages = Math.max(1, Math.ceil(expAndTransTx.length / rowsPerPage));
-            if (currentPage > totalPages) currentPage = totalPages;
-
-            const startIdx = (currentPage - 1) * rowsPerPage;
-            const paginatedTx = expAndTransTx.slice(startIdx, startIdx + rowsPerPage);
-
-            const tbody = document.getElementById('transactionTable');
-            if (tbody) {
-                document.getElementById('txCount').innerText = `${expAndTransTx.length} Transaksi`;
-                document.getElementById('pageInfo').innerText = `Halaman ${currentPage} dari ${totalPages}`;
-                tbody.innerHTML = '';
-                
-                paginatedTx.forEach(t => {
-                    try {
-                        const tr = document.createElement('tr');
-                        tr.className = 'hover:bg-slate-50 dark:hover:bg-slate-800/40 transition';
-
-                        let amountClass = 'text-rose-600 dark:text-rose-400 font-semibold';
-                        let sign = '-';
-                        let sourceBadge = t.source === 'BANK' ? 
-                            '<span class="text-[10px] font-semibold px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800">BANK</span>' : 
-                            '<span class="text-[10px] font-semibold px-2 py-0.5 rounded bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800">CASH</span>';
-
-                        if (t.type === 'TRANSFER') {
-                            amountClass = 'text-amber-600 dark:text-amber-400 font-semibold';
-                            sign = '⇄';
-                            sourceBadge = '<span class="text-[10px] font-semibold px-2 py-0.5 rounded bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 border border-purple-200 dark:border-purple-800">TARIK TUNAI</span>';
-                        }
-
-                        tr.innerHTML = `
-                            <td class="py-2.5 pl-2 text-slate-400">${formatDateYYYYMMDD(t.date || '')}</td>
-                            <td class="py-2.5">${sourceBadge}</td>
-                            <td class="py-2.5"><span class="font-medium text-slate-700 dark:text-slate-300">${cleanCategoryName(t.category)}</span></td>
-                            <td class="py-2.5 font-medium text-slate-800 dark:text-slate-200">${t.title || '-'}</td>
-                            <td class="py-2.5 text-right ${amountClass}">${sign} ${formatCurrency(t.amount || 0)}</td>
-                            <td class="py-2.5 pr-2 text-center">
-                                <div class="flex items-center justify-center gap-1">
-                                    <button data-id="${t.id}" class="btn-edit text-slate-400 hover:text-brand-600 p-1 rounded transition"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button>
-                                    <button data-id="${t.id}" class="btn-delete text-slate-400 hover:text-rose-600 p-1 rounded transition"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
-                                </div>
-                            </td>
-                        `;
-                        tbody.appendChild(tr);
-                    } catch (e) {
-                        console.error("Error Baris Pengeluaran:", e);
-                    }
-                });
-            }
-
-            document.querySelectorAll('.btn-edit').forEach(btn => {
-                btn.addEventListener('click', (e) => openModal(e.currentTarget.getAttribute('data-id')));
-            });
-
-            document.querySelectorAll('.btn-delete').forEach(btn => {
-                btn.addEventListener('click', (e) => deleteTransaction(e.currentTarget.getAttribute('data-id')));
-            });
-
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-            updateChart(monthTx);
-        }
-
-        function renderYearlySummary() {
-            document.querySelectorAll('.yearlyTitleYear').forEach(el => el.innerText = currentYear);
-
-            const yearExpenses = allTransactions.filter(t => {
-                if (t.type !== 'EXPENSE' || !t.date) return false;
-                return parseInt(t.date.split('-')[0], 10) === currentYear;
-            });
-            
-            let yearlyTotalExpense = 0;
-            const categoryTotals = {};
-            const activeMonthsSet = new Set();
-
-            yearExpenses.forEach(t => {
-                const amt = Number(t.amount);
-                const catClean = cleanCategoryName(t.category);
-                yearlyTotalExpense += amt;
-                categoryTotals[catClean] = (categoryTotals[catClean] || 0) + amt;
-                if (t.date) activeMonthsSet.add(t.date.substring(0, 7));
-            });
-
-            const activeMonthsCount = activeMonthsSet.size || 1;
-            const yearlyAvgExpense = yearlyTotalExpense / activeMonthsCount;
-
-            document.getElementById('yearlyTotalExpense').innerText = formatCurrency(yearlyTotalExpense);
-            document.getElementById('yearlyAvgExpense').innerText = formatCurrency(yearlyAvgExpense);
-            document.getElementById('yearlyBudgetRecommendation').innerText = formatCurrency(yearlyAvgExpense);
-
-            const yearlyTbody = document.getElementById('yearlyCategoryTable');
-            yearlyTbody.innerHTML = '';
-
-            const sortedCategories = Object.keys(categoryTotals).sort((a, b) => categoryTotals[b] - categoryTotals[a]);
-
-            sortedCategories.forEach(cat => {
-                const total = categoryTotals[cat];
-                const percentage = yearlyTotalExpense > 0 ? ((total / yearlyTotalExpense) * 100).toFixed(1) : 0;
-                const tr = document.createElement('tr');
-                tr.className = 'hover:bg-slate-50 dark:hover:bg-slate-800/40 transition';
-                tr.innerHTML = `
-                    <td class="py-2.5 pl-2"><span class="font-medium text-slate-700 dark:text-slate-300">${cat}</span></td>
-                    <td class="py-2.5 text-right font-semibold text-rose-600 dark:text-rose-400">${formatCurrency(total)}</td>
-                    <td class="py-2.5 text-right pr-2 text-slate-400 font-medium">${percentage}%</td>
-                `;
-                yearlyTbody.appendChild(tr);
-            });
-
-            updateYearlyChart(categoryTotals);
-            updateMonthlyTrendChart();
-        }
-
-        function initChart() {
-            const ctx = document.getElementById('expenseChart').getContext('2d');
-            chartInstance = new Chart(ctx, {
-                type: 'doughnut',
-                data: { labels: [], datasets: [{ data: [], backgroundColor: [] }] },
-                options: { responsive: true, maintainAspectRatio: false, cutout: '75%' }
-            });
-        }
-
-        function initYearlyChart() {
-            const ctx = document.getElementById('yearlyChart').getContext('2d');
-            yearlyChartInstance = new Chart(ctx, {
-                type: 'pie',
-                data: { labels: [], datasets: [{ data: [], backgroundColor: [] }] },
-                options: { responsive: true, maintainAspectRatio: false }
-            });
-        }
-
-        function initMonthlyTrendChart() {
-            const ctx = document.getElementById('monthlyTrendChart').getContext('2d');
-            monthlyTrendChartInstance = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: monthNames,
-                    datasets: [{
-                        label: 'Pengeluaran Bulanan',
-                        data: Array(12).fill(0),
-                        borderColor: '#6366f1',
-                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
-                        fill: true,
-                        tension: 0.3
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: false }
-            });
-        }
-
-        function updateChart(transactions) {
-            if (!chartInstance) return;
-            
-            const expenses = transactions.filter(t => t.type === 'EXPENSE');
-            const categorySums = {};
-            expenses.forEach(t => {
-                const catClean = cleanCategoryName(t.category);
-                categorySums[catClean] = (categorySums[catClean] || 0) + (Number(t.amount) || 0);
-            });
-
-            const labels = Object.keys(categorySums);
-            const data = Object.values(categorySums);
-            const bgColors = labels.map(label => CATEGORY_COLORS[label] ? CATEGORY_COLORS[label].hex : '#64748b');
-
-            chartInstance.data.labels = labels;
-            chartInstance.data.datasets[0].data = data;
-            chartInstance.data.datasets[0].backgroundColor = bgColors;
-            chartInstance.update();
-        }
-
-        function updateYearlyChart(categoryTotals) {
-            const labels = Object.keys(categoryTotals);
-            const data = Object.values(categoryTotals);
-            const bgColors = labels.map(label => CATEGORY_COLORS[label] ? CATEGORY_COLORS[label].hex : '#64748b');
-
-            yearlyChartInstance.data.labels = labels;
-            yearlyChartInstance.data.datasets[0].data = data;
-            yearlyChartInstance.data.datasets[0].backgroundColor = bgColors;
-            yearlyChartInstance.update();
-        }
-
-        function updateMonthlyTrendChart() {
-            const monthlySums = Array(12).fill(0);
-            allTransactions.forEach(t => {
-                if (t.type === 'EXPENSE' && t.date) {
-                    const parts = t.date.split('-');
-                    if (parseInt(parts[0], 10) === currentYear) {
-                        const m = parseInt(parts[1], 10) - 1;
-                        monthlySums[m] += Number(t.amount);
-                    }
-                }
-            });
-            monthlyTrendChartInstance.data.datasets[0].data = monthlySums;
-            monthlyTrendChartInstance.update();
-        }
-
-        function appendRowToModal(category = '', title = '', amount = '') {
-            const container = document.getElementById('rowsContainer');
-            const div = document.createElement('div');
-            div.innerHTML = createRowHTML(category, title, amount);
-            const row = div.firstElementChild;
-            container.appendChild(row);
-            
-            populateRowCategories(row);
-
-            row.querySelector('.btn-remove-row').addEventListener('click', () => {
-                if (container.querySelectorAll('.tx-row').length > 1) {
-                    row.remove();
-                    updateRowCountBadge();
-                } else {
-                    alert("Minimal harus ada 1 item transaksi.");
-                }
-            });
-
-            updateRowCountBadge();
-            lucide.createIcons();
-            return row;
-        }
-
-        function updateRowCountBadge() {
-            const count = document.querySelectorAll('.tx-row').length;
-            document.getElementById('rowCountBadge').innerText = `${count} Item`;
-        }
-
-        function openModal(editId = null) {
-            const modal = document.getElementById('modal');
-            const container = document.getElementById('rowsContainer');
-            const btnAddRow = document.getElementById('btnAddRow');
-            container.innerHTML = '';
-
-            if (editId) {
-                document.getElementById('modalTitle').innerText = "Edit Transaksi";
-                document.getElementById('editDocId').value = editId;
-                btnAddRow.classList.add('hidden');
-                
-                const tx = allTransactions.find(t => t.id === editId);
-                if (tx) {
-                    document.querySelector(`input[name="type"][value="${tx.type}"]`).checked = true;
-                    document.getElementById('globalSource').value = tx.source || 'BANK';
-                    document.getElementById('formDate').value = tx.date;
-                    
-                    const row = appendRowToModal(tx.category, tx.title, tx.amount);
-                    row.querySelector('.row-category').value = cleanCategoryName(tx.category);
-                }
-            } else {
-                document.getElementById('modalTitle').innerText = "Input Transaksi Massal";
-                document.getElementById('editDocId').value = "";
-                btnAddRow.classList.remove('hidden');
-                appendRowToModal();
-            }
-
-            modal.classList.remove('hidden');
-            handleTypeChange();
-        }
-
-        function closeModal() {
-            document.getElementById('modal').classList.add('hidden');
-            document.getElementById('txForm').reset();
-            document.getElementById('editDocId').value = "";
-            document.getElementById('formDate').value = new Date().toISOString().split('T')[0];
-        }
-
-        function handleTypeChange() {
-            const type = document.querySelector('input[name="type"]:checked').value;
-            const sourceContainer = document.getElementById('sourceContainer');
-            if (type === 'TRANSFER') sourceContainer.classList.add('hidden');
-            else sourceContainer.classList.remove('hidden');
-
-            document.querySelectorAll('.tx-row').forEach(row => populateRowCategories(row));
-        }
-
-        async function saveBatchTransactions(e) {
-            e.preventDefault();
-            if (!currentUser) return;
-
-            const editId = document.getElementById('editDocId').value;
-            const type = document.querySelector('input[name="type"]:checked').value;
-            const source = type === 'TRANSFER' ? 'BANK' : document.getElementById('globalSource').value;
-            const date = document.getElementById('formDate').value;
-            const rows = document.querySelectorAll('.tx-row');
-
-            const btnSave = document.getElementById('btnSaveSubmit');
-            const btnSaveText = document.getElementById('btnSaveText');
-            btnSave.disabled = true;
-            btnSaveText.innerText = "Menyimpan...";
-
+        // 3. Fungsi Logout Firebase
+        btnLogout.addEventListener('click', async () => {
             try {
-                if (editId) {
-                    const row = rows[0];
-                    const category = cleanCategoryName(row.querySelector('.row-category').value);
-                    const title = row.querySelector('.row-title').value;
-                    const amount = parseFloat(row.querySelector('.row-amount').value);
-
-                    await updateDoc(doc(db, "transactions", editId), {
-                        type, source, category, title, amount, date
-                    });
-                } else {
-                    const batch = writeBatch(db);
-                    const txCollection = collection(db, "transactions");
-
-                    rows.forEach(row => {
-                        const category = cleanCategoryName(row.querySelector('.row-category').value);
-                        const title = row.querySelector('.row-title').value;
-                        const amount = parseFloat(row.querySelector('.row-amount').value);
-
-                        if (title && !isNaN(amount) && amount > 0) {
-                            const newDocRef = doc(txCollection);
-                            batch.set(newDocRef, {
-                                uid: currentUser.uid,
-                                type, source, category, title, amount, date,
-                                createdAt: new Date()
-                            });
-                        }
-                    });
-
-                    await batch.commit();
-                }
-
-                closeModal();
-            } catch (err) {
-                alert("Gagal menyimpan transaksi: " + err.message);
-            } finally {
-                btnSave.disabled = false;
-                btnSaveText.innerText = "Simpan Semua Transaksi";
+                await signOut(auth);
+            } catch (error) {
+                console.error("Gagal Logout:", error);
             }
-        }
+        });
 
-        async function deleteTransaction(id) {
-            if (confirm('Apakah Anda yakin ingin menghapus transaksi ini?')) {
-                try { 
-                    await deleteDoc(doc(db, "transactions", id)); 
-                } catch (err) { 
-                    alert("Gagal menghapus: " + err.message); 
-                }
+        // 4. Observer Status Autentikasi (Realtime State)
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // User sudah login
+                loginScreen.classList.add('hidden');
+                appContent.classList.remove('hidden');
+                userName.innerText = user.displayName;
+                userAvatar.src = user.photoURL || 'https://via.placeholder.com/40';
+
+                // Contoh: Memuat data Firestore milik user yang login
+                loadUserData(user.uid);
+            } else {
+                // User belum login / logout
+                loginScreen.classList.remove('hidden');
+                appContent.classList.add('hidden');
             }
+        });
+
+        // Contoh membaca data khusus User dari Cloud Firestore
+        function loadUserData(userId) {
+            const q = query(collection(db, "transactions"), where("userId", "==", userId));
+            onSnapshot(q, (snapshot) => {
+                const userTransactions = [];
+                snapshot.forEach((doc) => {
+                    userTransactions.push({ id: doc.id, ...doc.data() });
+                });
+                console.log("Data transaksi Firestore user:", userTransactions);
+            });
         }
 
-        function downloadPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
+        // Toggle Dark Mode
+        document.getElementById('btnDarkMode').addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+        });
 
-            const monthTx = allTransactions.filter(t => {
-                if (!t.date) return false;
-                const parts = t.date.split('-');
-                return parseInt(parts[1], 10) - 1 === currentMonth && parseInt(parts[0], 10) === currentYear;
-            });
-
-            doc.setFontSize(16);
-            doc.text(`Laporan Keuangan - ${monthNames[currentMonth]} ${currentYear}`, 14, 15);
-            
-            const tableData = monthTx.map((t, index) => [
-                index + 1,
-                formatDateYYYYMMDD(t.date),
-                t.type === 'INCOME' ? 'Pemasukan' : (t.type === 'EXPENSE' ? 'Pengeluaran' : 'Tarik Tunai'),
-                t.source,
-                cleanCategoryName(t.category),
-                t.title,
-                formatCurrency(t.amount)
-            ]);
-
-            doc.autoTable({
-                head: [['No', 'Tanggal', 'Jenis', 'Sumber', 'Kategori', 'Keterangan', 'Jumlah']],
-                body: tableData,
-                startY: 25,
-                theme: 'striped',
-                headStyles: { fillColor: [99, 102, 241] }
-            });
-
-            doc.save(`Laporan_Keuangan_${monthNames[currentMonth]}_${currentYear}.pdf`);
-        }
+        lucide.createIcons();
     </script>
 </body>
 </html>
