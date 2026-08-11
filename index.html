@@ -136,7 +136,7 @@
                 <!-- Month & Year Selector Bar -->
                 <div class="flex flex-col sm:flex-row justify-between items-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3.5 shadow-sm gap-4">
                     <div class="flex items-center space-x-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1">
-                        <button id="prevMonth" class="p-1 hover:text-brand-600 text-slate-500 transition">
+                        <button id="prevMonth" class="p-1 hover:text-brand-600 text-slate-500 transition cursor-pointer">
                             <i data-lucide="chevron-left" class="w-4 h-4"></i>
                         </button>
                         
@@ -159,7 +159,7 @@
                             <select id="yearSelect" class="clean-select font-semibold text-xs text-slate-800 dark:text-slate-100 bg-transparent focus:outline-none cursor-pointer"></select>
                         </div>
 
-                        <button id="nextMonth" class="p-1 hover:text-brand-600 text-slate-500 transition">
+                        <button id="nextMonth" class="p-1 hover:text-brand-600 text-slate-500 transition cursor-pointer">
                             <i data-lucide="chevron-right" class="w-4 h-4"></i>
                         </button>
                     </div>
@@ -513,16 +513,27 @@
 
     <!-- Script Application Logic -->
     <script>
-        // Init Lucide Icons
         lucide.createIcons();
 
-        // State Dashboard
-        let transactions = [];
-        let currentYear = 2026;
-        let currentMonth = 7; // Agustus (0-indexed: 0 = Jan, 7 = Aug)
-        let currentPage = 1;
+        // Sample initial data (sesuai screenshot)
+        let transactions = [
+            { id: '1', tipe: 'INCOME', metode: 'BANK', tanggal: '2026-08-01', kategori: 'Pendapatan', keterangan: 'gaji', jumlah: 5000000 },
+            { id: '2', tipe: 'INCOME', metode: 'BANK', tanggal: '2026-08-11', kategori: 'Pendapatan', keterangan: 'Clipper', jumlah: 345000 },
+            { id: '3', tipe: 'WITHDRAW', metode: 'BANK', tanggal: '2026-08-11', kategori: 'Tarik Tunai', keterangan: 'Ambil ATM', jumlah: 500000 },
+            { id: '4', tipe: 'EXPENSE', metode: 'BANK', tanggal: '2026-08-11', kategori: 'Keluarga', keterangan: 'Obat', jumlah: 20000 },
+            { id: '5', tipe: 'EXPENSE', metode: 'CASH', tanggal: '2026-08-10', kategori: 'Jajanan', keterangan: 'Tomoto', jumlah: 29000 }
+        ];
 
-        // Element Referensi
+        let currentYear = 2026;
+        let currentMonth = 7; // Agustus (0-indexed)
+        let monthlyBudget = 3000000;
+
+        // Chart Instance References
+        let expenseChartInstance = null;
+        let yearlyChartInstance = null;
+        let monthlyTrendChartInstance = null;
+
+        // Element References
         const loginScreen = document.getElementById('loginScreen');
         const appContent = document.getElementById('appContent');
         const monthSelect = document.getElementById('monthSelect');
@@ -533,16 +544,14 @@
         const itemRows = document.getElementById('itemRows');
         const btnAddRow = document.getElementById('btnAddRow');
         const editDocIdInput = document.getElementById('editDocId');
+        const budgetInput = document.getElementById('budgetInput');
 
-        // Categories List
-        const EXPENSE_CATEGORIES = [
-            "Keluarga", "Jajanan", "Bahan Bakar", "Tagihan / E wallet", "Kebutuhan", "Investasi", "Perkopian Duniawi"
-        ];
+        const MONTH_NAMES = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+        const EXPENSE_CATEGORIES = ["Keluarga", "Jajanan", "Bahan Bakar", "Tagihan / E wallet", "Kebutuhan", "Investasi", "Perkopian Duniawi"];
+        const CHART_COLORS = ['#6366f1', '#ec4899', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#14b8a6', '#f43f5e'];
 
-        // 1. Poin 1: Opsi Tahun dari 2020 s/d 2080
-        const startYear = 2020;
-        const endYear = 2080;
-        for (let y = startYear; y <= endYear; y++) {
+        // Populate Years (2020-2080)
+        for (let y = 2020; y <= 2080; y++) {
             const opt = document.createElement('option');
             opt.value = y;
             opt.textContent = y;
@@ -550,8 +559,9 @@
             yearSelect.appendChild(opt);
         }
         monthSelect.value = currentMonth;
+        budgetInput.value = monthlyBudget;
 
-        // Dummy Login handler
+        // Auth handlers
         document.getElementById('btnLogin').addEventListener('click', () => {
             loginScreen.classList.add('hidden');
             appContent.classList.remove('hidden');
@@ -563,57 +573,78 @@
             loginScreen.classList.remove('hidden');
         });
 
-        // Dark Mode Toggle
+        // Dark Mode
         document.getElementById('btnDarkMode').addEventListener('click', () => {
             document.documentElement.classList.toggle('dark');
         });
 
-        // Format Currency IDR
+        // Formatting Helpers
         const formatIDR = (val) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val || 0);
 
-        // Helper Tanggal
         const isSameMonthYear = (dateStr, m, y) => {
             if (!dateStr) return false;
             const d = new Date(dateStr);
             return d.getMonth() === Number(m) && d.getFullYear() === Number(y);
         };
 
+        // 2. Fix: Navigasi Tombol Tanggal (Prev/Next Month)
+        document.getElementById('prevMonth').addEventListener('click', () => {
+            if (currentMonth === 0) {
+                currentMonth = 11;
+                currentYear--;
+                yearSelect.value = currentYear;
+            } else {
+                currentMonth--;
+            }
+            monthSelect.value = currentMonth;
+            renderDashboard();
+        });
+
+        document.getElementById('nextMonth').addEventListener('click', () => {
+            if (currentMonth === 11) {
+                currentMonth = 0;
+                currentYear++;
+                yearSelect.value = currentYear;
+            } else {
+                currentMonth++;
+            }
+            monthSelect.value = currentMonth;
+            renderDashboard();
+        });
+
+        // Set Target Budget
+        document.getElementById('btnSaveBudget').addEventListener('click', () => {
+            monthlyBudget = Number(budgetInput.value) || 0;
+            renderDashboard();
+        });
+
         // Render Dashboard & Re-Filter Data
         function renderDashboard() {
             const catVal = categoryFilter.value || "ALL";
             const srcVal = sourceFilter.value || "ALL";
 
-            // Filter Data Berdasarkan Bulan & Tahun Aktif
             const monthlyData = transactions.filter(t => isSameMonthYear(t.tanggal, currentMonth, currentYear));
 
-            // Hitung Ringkasan Total & Saldo
             let incTotal = 0, expTotal = 0, bankBal = 0, cashBal = 0;
-            
-            // Hitung total akumulasi seluruh transaksi (untuk akurasi saldo kas/bank berjalan)
+
             transactions.forEach(t => {
                 const amt = Number(t.jumlah) || 0;
                 if (t.tipe === 'INCOME') {
                     if (t.metode === 'BANK') bankBal += amt;
                     else cashBal += amt;
                 } else if (t.tipe === 'EXPENSE') {
-                    // Poin 3: Pengeluaran cash memotong saldo cash, bank memotong saldo bank
                     if (t.metode === 'BANK') bankBal -= amt;
                     else cashBal -= amt;
                 } else if (t.tipe === 'WITHDRAW') {
-                    // Poin 3: Tarik tunai memotong Bank dan menambah Cash
                     bankBal -= amt;
                     cashBal += amt;
                 }
             });
 
-            // Hitung total bulanan
             monthlyData.forEach(t => {
                 const amt = Number(t.jumlah) || 0;
-                if (t.tipe === 'INCOME') {
-                    incTotal += amt;
-                } else if (t.tipe === 'EXPENSE') {
-                    expTotal += amt;
-                }
+                if (t.tipe === 'INCOME') incTotal += amt;
+                else if (t.tipe === 'EXPENSE') expTotal += amt;
             });
 
             document.getElementById('totalIncome').textContent = formatIDR(incTotal);
@@ -624,14 +655,20 @@
             const netSavings = incTotal - expTotal;
             document.getElementById('netSavingsText').textContent = formatIDR(netSavings);
 
-            // Filter Detail Tabel
+            // Progress Bar Budget
+            const budgetPercent = monthlyBudget > 0 ? Math.min(Math.round((expTotal / monthlyBudget) * 100), 100) : 0;
+            const progressBar = document.getElementById('budgetProgressBar');
+            progressBar.style.width = `${budgetPercent}%`;
+            progressBar.className = `h-full rounded-full transition-all duration-500 ${budgetPercent > 90 ? 'bg-rose-500' : budgetPercent > 75 ? 'bg-amber-500' : 'bg-emerald-500'}`;
+            document.getElementById('budgetStatusText').textContent = `Terpakai ${budgetPercent}% dari batas budget (${formatIDR(monthlyBudget)})`;
+
+            // Filter Detail Tabel Bulanan
             const filteredMonthly = monthlyData.filter(t => {
                 const matchCat = catVal === 'ALL' || t.kategori === catVal;
                 const matchSrc = srcVal === 'ALL' || t.metode === srcVal;
                 return matchCat && matchSrc;
             });
 
-            // Split Pemasukan & Pengeluaran/Tarik Tunai
             const incomeList = filteredMonthly.filter(t => t.tipe === 'INCOME');
             const expenseList = filteredMonthly.filter(t => t.tipe === 'EXPENSE' || t.tipe === 'WITHDRAW');
 
@@ -647,7 +684,6 @@
                         <td class="py-2.5">${t.keterangan || '-'}</td>
                         <td class="py-2.5 text-right font-semibold text-emerald-600 dark:text-emerald-400">${formatIDR(t.jumlah)}</td>
                         <td class="py-2.5 text-center flex items-center justify-center gap-2">
-                            <!-- Poin 4: Tombol Edit -->
                             <button onclick="editTx('${t.id}')" class="text-slate-400 hover:text-brand-500 transition"><i data-lucide="pencil" class="w-4 h-4 inline"></i></button>
                             <button onclick="deleteTx('${t.id}')" class="text-slate-400 hover:text-rose-500 transition"><i data-lucide="trash-2" class="w-4 h-4 inline"></i></button>
                         </td>
@@ -670,17 +706,233 @@
                         <td class="py-2.5">${t.keterangan || '-'}</td>
                         <td class="py-2.5 text-right font-semibold ${t.tipe === 'WITHDRAW' ? 'text-indigo-600 dark:text-indigo-400' : 'text-rose-600 dark:text-rose-400'}">${formatIDR(t.jumlah)}</td>
                         <td class="py-2.5 text-center flex items-center justify-center gap-2">
-                            <!-- Poin 4: Tombol Edit -->
                             <button onclick="editTx('${t.id}')" class="text-slate-400 hover:text-brand-500 transition"><i data-lucide="pencil" class="w-4 h-4 inline"></i></button>
                             <button onclick="deleteTx('${t.id}')" class="text-slate-400 hover:text-rose-500 transition"><i data-lucide="trash-2" class="w-4 h-4 inline"></i></button>
                         </td>
                     </tr>
                 `).join('');
 
+            // 1. Fix: Render Diagram Proporsi Bulanan
+            renderMonthlyChart(monthlyData);
+
+            // 4. Fix: Render Rekap Tahunan
+            renderYearlySummary();
+
             lucide.createIcons();
         }
 
-        // Open Modal Transaksi
+        // 1. Render Diagram Doughnut Pengeluaran Bulanan
+        function renderMonthlyChart(monthlyData) {
+            const expenseMap = {};
+            monthlyData.filter(t => t.tipe === 'EXPENSE').forEach(t => {
+                expenseMap[t.kategori] = (expenseMap[t.kategori] || 0) + Number(t.jumlah);
+            });
+
+            const labels = Object.keys(expenseMap);
+            const data = Object.values(expenseMap);
+
+            if (expenseChartInstance) {
+                expenseChartInstance.destroy();
+            }
+
+            const ctx = document.getElementById('expenseChart').getContext('2d');
+            if (labels.length === 0) {
+                expenseChartInstance = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Belum ada pengeluaran'],
+                        datasets: [{ data: [1], backgroundColor: ['#e2e8f0'] }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+                });
+            } else {
+                expenseChartInstance = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: data,
+                            backgroundColor: CHART_COLORS.slice(0, labels.length)
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } }
+                    }
+                });
+            }
+        }
+
+        // 4. Render Rekap Tahunan Complete Data
+        function renderYearlySummary() {
+            document.querySelectorAll('.yearlyTitleYear').forEach(e => e.textContent = currentYear);
+
+            const yearlyData = transactions.filter(t => {
+                if (!t.tanggal) return false;
+                return new Date(t.tanggal).getFullYear() === Number(currentYear);
+            });
+
+            let yearlyExpTotal = 0;
+            const categorySums = {};
+            const monthlySums = Array(12).fill(0);
+
+            yearlyData.forEach(t => {
+                if (t.tipe === 'EXPENSE') {
+                    const amt = Number(t.jumlah) || 0;
+                    yearlyExpTotal += amt;
+                    categorySums[t.kategori] = (categorySums[t.kategori] || 0) + amt;
+
+                    const monthIdx = new Date(t.tanggal).getMonth();
+                    monthlySums[monthIdx] += amt;
+                }
+            });
+
+            const avgMonthly = yearlyExpTotal / 12;
+            const recBudget = avgMonthly * 1.1; // Rekomendasi budget +10% dari rata-rata
+
+            document.getElementById('yearlyTotalExpense').textContent = formatIDR(yearlyExpTotal);
+            document.getElementById('yearlyAvgExpense').textContent = formatIDR(avgMonthly);
+            document.getElementById('yearlyBudgetRecommendation').textContent = formatIDR(recBudget);
+
+            // Tabel Per Kategori Tahunan
+            const catTb = document.getElementById('yearlyCategoryTable');
+            const catEntries = Object.entries(categorySums).sort((a, b) => b[1] - a[1]);
+
+            catTb.innerHTML = catEntries.length === 0 
+                ? `<tr><td colspan="3" class="text-center py-4 text-slate-400">Belum ada data pengeluaran tahun ${currentYear}</td></tr>`
+                : catEntries.map(([cat, amt]) => {
+                    const pct = yearlyExpTotal > 0 ? ((amt / yearlyExpTotal) * 100).toFixed(1) : 0;
+                    return `
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                            <td class="py-2.5 pl-2 font-medium">${cat}</td>
+                            <td class="py-2.5 text-right font-semibold text-slate-700 dark:text-slate-200">${formatIDR(amt)}</td>
+                            <td class="py-2.5 text-right pr-2 text-slate-500">${pct}%</td>
+                        </tr>
+                    `;
+                }).join('');
+
+            // Chart Line Tren Bulanan
+            if (monthlyTrendChartInstance) monthlyTrendChartInstance.destroy();
+            const ctxLine = document.getElementById('monthlyTrendChart').getContext('2d');
+            monthlyTrendChartInstance = new Chart(ctxLine, {
+                type: 'line',
+                data: {
+                    labels: MONTH_NAMES.map(m => m.substring(0, 3)),
+                    datasets: [{
+                        label: `Pengeluaran ${currentYear}`,
+                        data: monthlySums,
+                        borderColor: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: {
+                            ticks: {
+                                callback: function(value) { return 'Rp ' + (value / 1000) + 'k'; }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Chart Pie Kategori Tahunan
+            if (yearlyChartInstance) yearlyChartInstance.destroy();
+            const ctxPie = document.getElementById('yearlyChart').getContext('2d');
+            const pieLabels = catEntries.map(e => e[0]);
+            const pieData = catEntries.map(e => e[1]);
+
+            if (pieLabels.length === 0) {
+                yearlyChartInstance = new Chart(ctxPie, {
+                    type: 'pie',
+                    data: { labels: ['Tidak Ada Data'], datasets: [{ data: [1], backgroundColor: ['#e2e8f0'] }] },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+                });
+            } else {
+                yearlyChartInstance = new Chart(ctxPie, {
+                    type: 'pie',
+                    data: {
+                        labels: pieLabels,
+                        datasets: [{ data: pieData, backgroundColor: CHART_COLORS.slice(0, pieLabels.length) }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 9 } } } }
+                    }
+                });
+            }
+        }
+
+        // 3. Fix: Ekspor PDF Laporan Rapi
+        document.getElementById('btnPdf').addEventListener('click', () => {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            const monthLabel = MONTH_NAMES[currentMonth];
+            const currentMonthlyData = transactions.filter(t => isSameMonthYear(t.tanggal, currentMonth, currentYear));
+
+            let totalInc = 0, totalExp = 0;
+            currentMonthlyData.forEach(t => {
+                if (t.tipe === 'INCOME') totalInc += Number(t.jumlah);
+                else if (t.tipe === 'EXPENSE') totalExp += Number(t.jumlah);
+            });
+
+            // Header Dokumen
+            doc.setFontSize(16);
+            doc.setTextColor(67, 56, 202);
+            doc.text(`LAPORAN KEUANGAN BULANAN`, 14, 20);
+
+            doc.setFontSize(10);
+            doc.setTextColor(100);
+            doc.text(`Periode: ${monthLabel} ${currentYear}`, 14, 26);
+            doc.text(`Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}`, 14, 31);
+
+            // Kotak Ringkasan Ringkas
+            doc.setDrawColor(226, 232, 240);
+            doc.setFillColor(248, 250, 252);
+            doc.roundedRect(14, 36, 182, 22, 3, 3, 'FD');
+
+            doc.setFontSize(9);
+            doc.setTextColor(15, 23, 42);
+            doc.text(`Total Pemasukan: ${formatIDR(totalInc)}`, 18, 44);
+            doc.text(`Total Pengeluaran: ${formatIDR(totalExp)}`, 18, 51);
+            doc.text(`Net Savings: ${formatIDR(totalInc - totalExp)}`, 110, 44);
+
+            // Format Data Transaksi untuk AutoTable
+            const tableRows = currentMonthlyData.map((t, idx) => [
+                idx + 1,
+                t.tanggal,
+                t.tipe === 'INCOME' ? 'Masuk' : (t.tipe === 'WITHDRAW' ? 'Tarik Tunai' : 'Keluar'),
+                t.metode,
+                t.kategori,
+                t.keterangan || '-',
+                formatIDR(t.jumlah)
+            ]);
+
+            doc.autoTable({
+                startY: 64,
+                head: [['No', 'Tanggal', 'Tipe', 'Metode', 'Kategori', 'Keterangan', 'Jumlah']],
+                body: tableRows,
+                theme: 'striped',
+                headStyles: { fillColor: [79, 70, 229], textColor: [255, 255, 255], fontStyle: 'bold' },
+                styles: { fontSize: 8, cellPadding: 3 },
+                columnStyles: {
+                    0: { cellWidth: 10 },
+                    6: { halign: 'right', fontStyle: 'bold' }
+                }
+            });
+
+            doc.save(`Laporan-Keuangan-${monthLabel}-${currentYear}.pdf`);
+        });
+
+        // Modal Form Actions
         function openModal() {
             editDocIdInput.value = '';
             document.getElementById('modalTitle').innerText = 'Input Transaksi Massal';
@@ -700,13 +952,11 @@
             modal.classList.add('hidden');
         }
 
-        // Poin 2 & Poin 3: Dynamic Options Kategori & Default Form Behavior
         function handleTypeChange(type, defaultKategori = '', defaultKeterangan = '') {
             const rowElements = itemRows.querySelectorAll('.grid');
             const sourceSelect = document.getElementById('formSource');
 
             if (type === 'WITHDRAW') {
-                // Tarik tunai wajib dari Bank
                 sourceSelect.value = 'BANK';
                 sourceSelect.disabled = true;
             } else {
@@ -720,7 +970,6 @@
                 catSelect.innerHTML = '';
 
                 if (type === 'INCOME') {
-                    // Poin 2: Jenis transaksi Masuk -> Kategori hanya: Pendapatan
                     const opt = document.createElement('option');
                     opt.value = 'Pendapatan';
                     opt.textContent = 'Pendapatan';
@@ -728,7 +977,6 @@
                     catSelect.value = 'Pendapatan';
                     catSelect.disabled = true;
                 } else if (type === 'WITHDRAW') {
-                    // Poin 3: Jenis transaksi Tariktunai -> Kategori: Tarik Tunai, Keterangan: Ambil ATM
                     const opt = document.createElement('option');
                     opt.value = 'Tarik Tunai';
                     opt.textContent = 'Tarik Tunai';
@@ -740,7 +988,6 @@
                         descInput.value = defaultKeterangan || 'Ambil ATM';
                     }
                 } else {
-                    // EXPENSE
                     catSelect.disabled = false;
                     EXPENSE_CATEGORIES.forEach(cat => {
                         const opt = document.createElement('option');
@@ -755,7 +1002,6 @@
             });
         }
 
-        // Menambah Baris Transaksi
         function addRow(kategoriVal = '', keteranganVal = '', jumlahVal = '') {
             const div = document.createElement('div');
             div.className = 'grid grid-cols-1 sm:grid-cols-3 gap-2 bg-slate-50 dark:bg-slate-800/40 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700/50 relative group';
@@ -776,7 +1022,6 @@
             lucide.createIcons();
         }
 
-        // Poin 4: Fungsi Edit Transaksi
         function editTx(id) {
             const tx = transactions.find(t => t.id === id);
             if (!tx) return;
@@ -784,14 +1029,12 @@
             editDocIdInput.value = tx.id;
             document.getElementById('modalTitle').innerText = 'Edit Transaksi';
             
-            // Radio button tipe
             const radio = document.querySelector(`input[name="type"][value="${tx.tipe}"]`);
             if (radio) radio.checked = true;
 
             document.getElementById('formSource').value = tx.metode;
             document.getElementById('formDate').value = tx.tanggal;
 
-            // Sembunyikan button tambah baris saat mode edit 1 item
             btnAddRow.classList.add('hidden');
 
             itemRows.innerHTML = '';
@@ -800,21 +1043,16 @@
             modal.classList.remove('hidden');
         }
 
-        // Event Listeners Radio Tipe Transaksi
         document.querySelectorAll('input[name="type"]').forEach(radio => {
-            radio.addEventListener('change', (e) => {
-                handleTypeChange(e.target.value);
-            });
+            radio.addEventListener('change', (e) => handleTypeChange(e.target.value));
         });
 
-        // Event Listeners Modal
         document.getElementById('btnOpenModal').addEventListener('click', openModal);
         document.getElementById('btnFab').addEventListener('click', openModal);
         document.getElementById('btnCloseModal').addEventListener('click', closeModal);
         document.getElementById('btnCloseModalHeader').addEventListener('click', closeModal);
         document.getElementById('btnAddRow').addEventListener('click', () => addRow());
 
-        // Submit Form (Simpan/Update)
         document.getElementById('txForm').addEventListener('submit', (e) => {
             e.preventDefault();
             const editId = editDocIdInput.value;
@@ -823,7 +1061,6 @@
             const tanggal = document.getElementById('formDate').value;
 
             if (editId) {
-                // Mode Update Single Transaksi
                 const row = itemRows.querySelector('.grid');
                 if (row) {
                     const kategori = row.querySelector('.cat-input').value;
@@ -844,7 +1081,6 @@
                     }
                 }
             } else {
-                // Mode Tambah Massal Transaksi Baru
                 const rows = itemRows.querySelectorAll('.grid');
                 rows.forEach(r => {
                     const kategori = r.querySelector('.cat-input').value;
@@ -874,7 +1110,6 @@
             renderDashboard();
         }
 
-        // Navigasi Filter & Bulan/Tahun
         monthSelect.addEventListener('change', (e) => { currentMonth = Number(e.target.value); renderDashboard(); });
         yearSelect.addEventListener('change', (e) => { currentYear = Number(e.target.value); renderDashboard(); });
         categoryFilter.addEventListener('change', renderDashboard);
@@ -898,6 +1133,7 @@
             tabMonthlyBtn.className = "px-3 py-1 rounded-md text-xs font-medium text-slate-500 hover:text-slate-900 dark:hover:text-white transition";
             tabYearlyView.classList.remove('hidden');
             tabMonthlyView.classList.add('hidden');
+            renderDashboard();
         });
     </script>
 </body>
