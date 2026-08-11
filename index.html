@@ -97,6 +97,11 @@
                     <div class="bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-0.5 flex gap-1">
                         <button id="tabMonthlyBtn" class="px-3 py-1 rounded-md text-xs font-medium bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm border border-slate-200 dark:border-slate-600">Bulanan</button>
                         <button id="tabYearlyBtn" class="px-3 py-1 rounded-md text-xs font-medium text-slate-500 hover:text-slate-900 dark:hover:text-white transition">Rekap Tahunan</button>
+                        <!-- TAB BARU: KOLABORASI PASANGAN -->
+                        <button id="tabCoupleBtn" class="px-3 py-1 rounded-md text-xs font-medium text-slate-500 hover:text-slate-900 dark:hover:text-white transition flex items-center gap-1">
+                            <i data-lucide="heart" class="w-3.5 h-3.5 text-rose-500"></i>
+                            <span>Kolaborasi Pasangan</span>
+                        </button>
                     </div>
 
                     <div class="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1">
@@ -386,6 +391,43 @@
                                 </thead>
                                 <tbody id="yearlyCategoryTable" class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs"></tbody>
                             </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: KOLABORASI PASANGAN -->
+            <div id="tabCoupleView" class="space-y-6 hidden">
+                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm max-w-xl mx-auto">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="p-2.5 rounded-lg bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400">
+                            <i data-lucide="heart" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-base font-bold text-slate-900 dark:text-white">Kolaborasi Keuangan Pasangan</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Hubungkan akun Anda dengan pasangan untuk mencatat dan mengelola anggaran bersama secara real-time.</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4 border-t border-slate-100 dark:border-slate-800 pt-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Email Pasangan</label>
+                            <div class="flex gap-2">
+                                <input type="email" id="partnerEmailInput" placeholder="pasangan@gmail.com" class="flex-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:border-brand-500">
+                                <button id="btnConnectPartner" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-semibold transition shadow-sm flex items-center gap-1.5">
+                                    <i data-lucide="user-plus" class="w-3.5 h-3.5"></i>
+                                    <span>Hubungkan</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Status Koneksi -->
+                        <div class="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                                <span class="text-xs text-slate-600 dark:text-slate-400">Status: <strong class="text-slate-800 dark:text-slate-200">Belum Terhubung</strong></span>
+                            </div>
+                            <span class="text-[11px] text-slate-400">Siap Ditautkan</span>
                         </div>
                     </div>
                 </div>
@@ -1155,22 +1197,48 @@
         // Tab Navigation
         const tabMonthlyBtn = document.getElementById('tabMonthlyBtn');
         const tabYearlyBtn = document.getElementById('tabYearlyBtn');
+        const tabCoupleBtn = document.getElementById('tabCoupleBtn');
         const tabMonthlyView = document.getElementById('tabMonthlyView');
         const tabYearlyView = document.getElementById('tabYearlyView');
+        const tabCoupleView = document.getElementById('tabCoupleView');
 
         tabMonthlyBtn.addEventListener('click', () => {
             tabMonthlyBtn.className = "px-3 py-1 rounded-md text-xs font-medium bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm border border-slate-200 dark:border-slate-600";
             tabYearlyBtn.className = "px-3 py-1 rounded-md text-xs font-medium text-slate-500 hover:text-slate-900 dark:hover:text-white transition";
+            tabCoupleBtn.className = "px-3 py-1 rounded-md text-xs font-medium text-slate-500 hover:text-slate-900 dark:hover:text-white transition flex items-center gap-1";
             tabMonthlyView.classList.remove('hidden');
             tabYearlyView.classList.add('hidden');
+            tabCoupleView.classList.add('hidden');
         });
 
         tabYearlyBtn.addEventListener('click', () => {
             tabYearlyBtn.className = "px-3 py-1 rounded-md text-xs font-medium bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm border border-slate-200 dark:border-slate-600";
             tabMonthlyBtn.className = "px-3 py-1 rounded-md text-xs font-medium text-slate-500 hover:text-slate-900 dark:hover:text-white transition";
+            tabCoupleBtn.className = "px-3 py-1 rounded-md text-xs font-medium text-slate-500 hover:text-slate-900 dark:hover:text-white transition flex items-center gap-1";
             tabYearlyView.classList.remove('hidden');
             tabMonthlyView.classList.add('hidden');
+            tabCoupleView.classList.add('hidden');
             renderDashboard();
+        });
+
+        tabCoupleBtn.addEventListener('click', () => {
+            tabCoupleBtn.className = "px-3 py-1 rounded-md text-xs font-medium bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm border border-slate-200 dark:border-slate-600 flex items-center gap-1";
+            tabMonthlyBtn.className = "px-3 py-1 rounded-md text-xs font-medium text-slate-500 hover:text-slate-900 dark:hover:text-white transition";
+            tabYearlyBtn.className = "px-3 py-1 rounded-md text-xs font-medium text-slate-500 hover:text-slate-900 dark:hover:text-white transition";
+            tabCoupleView.classList.remove('hidden');
+            tabMonthlyView.classList.add('hidden');
+            tabYearlyView.classList.add('hidden');
+        });
+
+        // Event Hubungkan Pasangan
+        document.getElementById('btnConnectPartner').addEventListener('click', () => {
+            const partnerEmail = document.getElementById('partnerEmailInput').value.trim();
+            if(!partnerEmail) {
+                alert("Harap masukkan email pasangan.");
+                return;
+            }
+            alert(`Undangan kolaborasi berhasil dikirimkan ke: ${partnerEmail}`);
+            document.getElementById('partnerEmailInput').value = '';
         });
     </script>
 </body>
