@@ -239,6 +239,26 @@
                             <tbody id="incomeTable" class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs"></tbody>
                         </table>
                     </div>
+                    <!-- Controls Paginasi Pemasukan -->
+                    <div class="flex flex-col sm:flex-row justify-between items-center gap-2 mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs">
+                        <div class="flex items-center gap-2 text-slate-500">
+                            <span>Tampilkan</span>
+                            <select id="incomePageSize" class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded px-1.5 py-0.5 text-xs focus:outline-none">
+                                <option value="5">5</option>
+                                <option value="10" selected>10</option>
+                                <option value="20">20</option>
+                                <option value="30">30</option>
+                            </select>
+                            <span>data per halaman</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span id="incomePageInfo" class="text-slate-500">Halaman 1 dari 1</span>
+                            <div class="flex gap-1">
+                                <button id="btnIncomePrev" class="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition font-semibold">Prev</button>
+                                <button id="btnIncomeNext" class="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition font-semibold">Next</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Charts & Tabel Pengeluaran -->
@@ -276,6 +296,26 @@
                                 </thead>
                                 <tbody id="transactionTable" class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs"></tbody>
                             </table>
+                        </div>
+                        <!-- Controls Paginasi Pengeluaran -->
+                        <div class="flex flex-col sm:flex-row justify-between items-center gap-2 mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs">
+                            <div class="flex items-center gap-2 text-slate-500">
+                                <span>Tampilkan</span>
+                                <select id="expensePageSize" class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded px-1.5 py-0.5 text-xs focus:outline-none">
+                                    <option value="5">5</option>
+                                    <option value="10" selected>10</option>
+                                    <option value="20">20</option>
+                                    <option value="30">30</option>
+                                </select>
+                                <span>data per halaman</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span id="expensePageInfo" class="text-slate-500">Halaman 1 dari 1</span>
+                                <div class="flex gap-1">
+                                    <button id="btnExpensePrev" class="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition font-semibold">Prev</button>
+                                    <button id="btnExpenseNext" class="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition font-semibold">Next</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -436,7 +476,7 @@
             where 
         } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // FIREBASE CONFIG MILIK ANDA
+        // FIREBASE CONFIG
         const firebaseConfig = {
             apiKey: "AIzaSyCw03833WSjiI-lyH5dw6XQ_HCmqd4PH5E",
             authDomain: "laporan-keuangan-e2a6a.firebaseapp.com",
@@ -461,6 +501,12 @@
         let currentYear = 2026;
         let currentMonth = 7; // Agustus (0-indexed)
         let monthlyBudget = 3000000;
+
+        // State Paginasi
+        let incomeCurrentPage = 1;
+        let incomePageSize = 10;
+        let expenseCurrentPage = 1;
+        let expensePageSize = 10;
 
         let expenseChartInstance = null;
         let yearlyChartInstance = null;
@@ -510,7 +556,7 @@
             }
         });
 
-        // LOGIN DENGAN PAKSA PILIH AKUN GOOGLE (select_account)
+        // LOGIN
         document.getElementById('btnLogin').addEventListener('click', async () => {
             try {
                 provider.setCustomParameters({ prompt: 'select_account' });
@@ -526,7 +572,7 @@
             signOut(auth);
         });
 
-        // FIRESTORE REALTIME SYNC (Data otomatis tersimpan & tersinkronisasi)
+        // FIRESTORE REALTIME SYNC
         function listenToFirestoreData() {
             if (!currentUser) return;
             const q = query(collection(db, "transactions"), where("userId", "==", currentUser.uid));
@@ -556,19 +602,28 @@
         document.getElementById('prevMonth').addEventListener('click', () => {
             if (currentMonth === 0) { currentMonth = 11; currentYear--; yearSelect.value = currentYear; }
             else { currentMonth--; }
-            monthSelect.value = currentMonth; renderDashboard();
+            monthSelect.value = currentMonth; 
+            resetPages();
+            renderDashboard();
         });
 
         document.getElementById('nextMonth').addEventListener('click', () => {
             if (currentMonth === 11) { currentMonth = 0; currentYear++; yearSelect.value = currentYear; }
             else { currentMonth++; }
-            monthSelect.value = currentMonth; renderDashboard();
+            monthSelect.value = currentMonth; 
+            resetPages();
+            renderDashboard();
         });
 
         document.getElementById('btnSaveBudget').addEventListener('click', () => {
             monthlyBudget = Number(budgetInput.value) || 0;
             renderDashboard();
         });
+
+        function resetPages() {
+            incomeCurrentPage = 1;
+            expenseCurrentPage = 1;
+        }
 
         // RENDER DASHBOARD
         function renderDashboard() {
@@ -613,12 +668,21 @@
                 return matchCat && matchSrc;
             });
 
+            // Urutkan transaksi terbaru di atas
+            filteredMonthly.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
+
             const incomeList = filteredMonthly.filter(t => t.tipe === 'INCOME');
             const expenseList = filteredMonthly.filter(t => t.tipe === 'EXPENSE' || t.tipe === 'WITHDRAW');
 
-            document.getElementById('incomeTable').innerHTML = incomeList.length === 0 
+            // --- PAGINASI PEMASUKAN ---
+            const totalIncomePages = Math.ceil(incomeList.length / incomePageSize) || 1;
+            if (incomeCurrentPage > totalIncomePages) incomeCurrentPage = totalIncomePages;
+            const startIncomeIdx = (incomeCurrentPage - 1) * incomePageSize;
+            const pagedIncomeList = incomeList.slice(startIncomeIdx, startIncomeIdx + incomePageSize);
+
+            document.getElementById('incomeTable').innerHTML = pagedIncomeList.length === 0 
                 ? `<tr><td colspan="6" class="text-center py-4 text-slate-400">Tidak ada transaksi pemasukan</td></tr>`
-                : incomeList.map(t => `
+                : pagedIncomeList.map(t => `
                     <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">
                         <td class="py-2.5 pl-2">${t.tanggal}</td>
                         <td class="py-2.5"><span class="px-2 py-0.5 rounded text-[10px] font-semibold ${t.metode === 'BANK' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300'}">${t.metode}</span></td>
@@ -632,10 +696,20 @@
                     </tr>
                 `).join('');
 
+            document.getElementById('incomePageInfo').textContent = `Halaman ${incomeCurrentPage} dari ${totalIncomePages}`;
+            document.getElementById('btnIncomePrev').disabled = incomeCurrentPage <= 1;
+            document.getElementById('btnIncomeNext').disabled = incomeCurrentPage >= totalIncomePages;
+
+            // --- PAGINASI PENGELUARAN ---
+            const totalExpensePages = Math.ceil(expenseList.length / expensePageSize) || 1;
+            if (expenseCurrentPage > totalExpensePages) expenseCurrentPage = totalExpensePages;
+            const startExpenseIdx = (expenseCurrentPage - 1) * expensePageSize;
+            const pagedExpenseList = expenseList.slice(startExpenseIdx, startExpenseIdx + expensePageSize);
+
             document.getElementById('txCount').textContent = `${expenseList.length} Transaksi`;
-            document.getElementById('transactionTable').innerHTML = expenseList.length === 0 
+            document.getElementById('transactionTable').innerHTML = pagedExpenseList.length === 0 
                 ? `<tr><td colspan="6" class="text-center py-4 text-slate-400">Tidak ada transaksi pengeluaran/tarik tunai</td></tr>`
-                : expenseList.map(t => `
+                : pagedExpenseList.map(t => `
                     <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">
                         <td class="py-2.5 pl-2">${t.tanggal}</td>
                         <td class="py-2.5">
@@ -652,7 +726,11 @@
                     </tr>
                 `).join('');
 
-            // Event Listener Dinamis untuk Edit dan Hapus
+            document.getElementById('expensePageInfo').textContent = `Halaman ${expenseCurrentPage} dari ${totalExpensePages}`;
+            document.getElementById('btnExpensePrev').disabled = expenseCurrentPage <= 1;
+            document.getElementById('btnExpenseNext').disabled = expenseCurrentPage >= totalExpensePages;
+
+            // Event Listener Edit & Delete
             document.querySelectorAll('.btn-edit').forEach(b => b.addEventListener('click', (e) => editTx(e.currentTarget.getAttribute('data-edit'))));
             document.querySelectorAll('.btn-del').forEach(b => b.addEventListener('click', (e) => deleteTx(e.currentTarget.getAttribute('data-del'))));
 
@@ -660,6 +738,32 @@
             renderYearlySummary();
             lucide.createIcons();
         }
+
+        // EVENT HANDLER PAGINASI PEMASUKAN
+        document.getElementById('btnIncomePrev').addEventListener('click', () => {
+            if (incomeCurrentPage > 1) { incomeCurrentPage--; renderDashboard(); }
+        });
+        document.getElementById('btnIncomeNext').addEventListener('click', () => {
+            incomeCurrentPage++; renderDashboard();
+        });
+        document.getElementById('incomePageSize').addEventListener('change', (e) => {
+            incomePageSize = Number(e.target.value);
+            incomeCurrentPage = 1;
+            renderDashboard();
+        });
+
+        // EVENT HANDLER PAGINASI PENGELUARAN
+        document.getElementById('btnExpensePrev').addEventListener('click', () => {
+            if (expenseCurrentPage > 1) { expenseCurrentPage--; renderDashboard(); }
+        });
+        document.getElementById('btnExpenseNext').addEventListener('click', () => {
+            expenseCurrentPage++; renderDashboard();
+        });
+        document.getElementById('expensePageSize').addEventListener('change', (e) => {
+            expensePageSize = Number(e.target.value);
+            expenseCurrentPage = 1;
+            renderDashboard();
+        });
 
         function renderMonthlyChart(monthlyData) {
             const expenseMap = {};
@@ -906,10 +1010,10 @@
         document.getElementById('btnCloseModalHeader').addEventListener('click', closeModal);
         document.getElementById('btnAddRow').addEventListener('click', () => addRow());
 
-        monthSelect.addEventListener('change', (e) => { currentMonth = Number(e.target.value); renderDashboard(); });
-        yearSelect.addEventListener('change', (e) => { currentYear = Number(e.target.value); renderDashboard(); });
-        categoryFilter.addEventListener('change', renderDashboard);
-        sourceFilter.addEventListener('change', renderDashboard);
+        monthSelect.addEventListener('change', (e) => { currentMonth = Number(e.target.value); resetPages(); renderDashboard(); });
+        yearSelect.addEventListener('change', (e) => { currentYear = Number(e.target.value); resetPages(); renderDashboard(); });
+        categoryFilter.addEventListener('change', () => { resetPages(); renderDashboard(); });
+        sourceFilter.addEventListener('change', () => { resetPages(); renderDashboard(); });
 
         // Tab Navigation
         const tabMonthlyBtn = document.getElementById('tabMonthlyBtn');
