@@ -515,7 +515,7 @@
     <script>
         lucide.createIcons();
 
-        // Sample initial data (sesuai screenshot)
+        // Sample initial data
         let transactions = [
             { id: '1', tipe: 'INCOME', metode: 'BANK', tanggal: '2026-08-01', kategori: 'Pendapatan', keterangan: 'gaji', jumlah: 5000000 },
             { id: '2', tipe: 'INCOME', metode: 'BANK', tanggal: '2026-08-11', kategori: 'Pendapatan', keterangan: 'Clipper', jumlah: 345000 },
@@ -587,7 +587,7 @@
             return d.getMonth() === Number(m) && d.getFullYear() === Number(y);
         };
 
-        // 2. Fix: Navigasi Tombol Tanggal (Prev/Next Month)
+        // Navigasi Tombol Tanggal (Prev/Next Month)
         document.getElementById('prevMonth').addEventListener('click', () => {
             if (currentMonth === 0) {
                 currentMonth = 11;
@@ -712,16 +712,12 @@
                     </tr>
                 `).join('');
 
-            // 1. Fix: Render Diagram Proporsi Bulanan
             renderMonthlyChart(monthlyData);
-
-            // 4. Fix: Render Rekap Tahunan
             renderYearlySummary();
-
             lucide.createIcons();
         }
 
-        // 1. Render Diagram Doughnut Pengeluaran Bulanan
+        // Render Diagram Doughnut Pengeluaran Bulanan
         function renderMonthlyChart(monthlyData) {
             const expenseMap = {};
             monthlyData.filter(t => t.tipe === 'EXPENSE').forEach(t => {
@@ -764,7 +760,7 @@
             }
         }
 
-        // 4. Render Rekap Tahunan Complete Data
+        // Render Rekap Tahunan Complete Data
         function renderYearlySummary() {
             document.querySelectorAll('.yearlyTitleYear').forEach(e => e.textContent = currentYear);
 
@@ -870,7 +866,7 @@
             }
         }
 
-        // 3. Fix: Ekspor PDF Laporan Rapi
+        // Ekspor PDF Laporan Rapi
         document.getElementById('btnPdf').addEventListener('click', () => {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
@@ -944,7 +940,6 @@
             
             itemRows.innerHTML = '';
             addRow();
-            handleTypeChange('EXPENSE');
             modal.classList.remove('hidden');
         }
 
@@ -952,8 +947,9 @@
             modal.classList.add('hidden');
         }
 
-        function handleTypeChange(type, defaultKategori = '', defaultKeterangan = '') {
-            const rowElements = itemRows.querySelectorAll('.grid');
+        // PERBAIKAN: handleTypeChange menerima parameter singleRow
+        function handleTypeChange(type, defaultKategori = '', defaultKeterangan = '', singleRow = null) {
+            const rowElements = singleRow ? [singleRow] : itemRows.querySelectorAll('.grid');
             const sourceSelect = document.getElementById('formSource');
 
             if (type === 'WITHDRAW') {
@@ -966,6 +962,9 @@
             rowElements.forEach(r => {
                 const catSelect = r.querySelector('.cat-input');
                 const descInput = r.querySelector('.desc-input');
+                
+                // Simpan nilai kategori yang sedang dipilih saat ini jika tidak ada defaultKategori
+                const currentSelectedValue = catSelect.value;
                 
                 catSelect.innerHTML = '';
 
@@ -995,13 +994,17 @@
                         opt.textContent = cat;
                         catSelect.appendChild(opt);
                     });
-                    if (defaultKategori && EXPENSE_CATEGORIES.includes(defaultKategori)) {
-                        catSelect.value = defaultKategori;
+
+                    // Tentukan kategori mana yang akan diset
+                    const targetVal = defaultKategori || currentSelectedValue;
+                    if (targetVal && EXPENSE_CATEGORIES.includes(targetVal)) {
+                        catSelect.value = targetVal;
                     }
                 }
             });
         }
 
+        // PERBAIKAN: addRow hanya mengeksekusi handleTypeChange pada baris baru (div)
         function addRow(kategoriVal = '', keteranganVal = '', jumlahVal = '') {
             const div = document.createElement('div');
             div.className = 'grid grid-cols-1 sm:grid-cols-3 gap-2 bg-slate-50 dark:bg-slate-800/40 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700/50 relative group';
@@ -1018,7 +1021,7 @@
             itemRows.appendChild(div);
 
             const currentType = document.querySelector('input[name="type"]:checked').value;
-            handleTypeChange(currentType, kategoriVal, keteranganVal);
+            handleTypeChange(currentType, kategoriVal, keteranganVal, div);
             lucide.createIcons();
         }
 
