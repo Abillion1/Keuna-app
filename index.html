@@ -861,8 +861,26 @@
             renderDashboard();
         });
 
-        // FITUR EKSPOR PDF RAPI DENGAN JSPDF & AUTO-TABLE
-        document.getElementById('btnExportPDF').addEventListener('click', () => {
+        // Helper untuk memuat logo menjadi Base64
+        function loadLogoBase64(url) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.crossOrigin = 'Anonymous';
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+                    resolve(canvas.toDataURL('image/png'));
+                };
+                img.onerror = () => resolve(null);
+                img.src = url;
+            });
+        }
+
+        // FITUR EKSPOR PDF RAPI DENGAN JSPDF & AUTO-TABLE + SISIPAN LOGO
+        document.getElementById('btnExportPDF').addEventListener('click', async () => {
             if (!window.jspdf) {
                 alert("Library jsPDF belum selesai dimuat.");
                 return;
@@ -874,6 +892,9 @@
             const monthName = MONTH_NAMES[currentMonth];
             const titleText = `Laporan Keuangan Bulanan - ${monthName} ${currentYear}`;
             const userName = currentUser ? (currentUser.displayName || currentUser.email) : 'User';
+
+            // Load Logo
+            const logoBase64 = await loadLogoBase64('logo.png');
 
             // Filter data bulan terpilih
             const monthlyData = transactions.filter(t => isSameMonthYear(t.tanggal, currentMonth, currentYear));
@@ -890,14 +911,21 @@
             doc.setFillColor(79, 70, 229); // Brand Indigo Color
             doc.rect(0, 0, 210, 28, 'F');
 
+            // Sisipkan Logo jika berhasil dimuat
+            let titleXPosition = 14;
+            if (logoBase64) {
+                doc.addImage(logoBase64, 'PNG', 14, 5, 18, 18);
+                titleXPosition = 36;
+            }
+
             doc.setTextColor(255, 255, 255);
             doc.setFont('helvetica', 'bold');
-            doc.setFontSize(16);
-            doc.text("KEUANGAN BULANAN", 14, 13);
+            doc.setFontSize(15);
+            doc.text("KEUANGAN BULANAN", titleXPosition, 13);
 
             doc.setFont('helvetica', 'normal');
-            doc.setFontSize(10);
-            doc.text(titleText, 14, 20);
+            doc.setFontSize(9.5);
+            doc.text(titleText, titleXPosition, 20);
 
             doc.setFontSize(8);
             doc.text(`Pemilik: ${userName} | Dicetak: ${new Date().toLocaleDateString('id-ID')}`, 196, 20, { align: 'right' });
