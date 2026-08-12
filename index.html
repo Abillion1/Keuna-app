@@ -858,8 +858,8 @@
                 else if (t.tipe === 'EXPENSE') totalExp += amt;
             });
 
-            // 1. Header PDF Modern
-            doc.setFillColor(99, 102, 241); // Indigo Accent
+            // 1. Header PDF
+            doc.setFillColor(79, 70, 229); // Brand Indigo Color
             doc.rect(0, 0, 210, 28, 'F');
 
             doc.setTextColor(255, 255, 255);
@@ -877,7 +877,7 @@
             // 2. Card Ringkasan Statistik
             doc.setFillColor(248, 250, 252);
             doc.setDrawColor(226, 232, 240);
-            doc.roundedRect(14, 34, 182, 22, 3, 3, 'FD');
+            doc.roundedRect(14, 34, 182, 22, 2, 2, 'FD');
 
             doc.setTextColor(100, 116, 139);
             doc.setFontSize(8);
@@ -887,14 +887,14 @@
             doc.text("SELISIH BERSIH (NET SAVINGS)", 140, 41);
 
             doc.setFontSize(11);
-            doc.setTextColor(16, 185, 129); 
+            doc.setTextColor(16, 185, 129); // Emerald
             doc.text(formatIDR(totalInc), 20, 49);
 
-            doc.setTextColor(244, 63, 94); 
+            doc.setTextColor(225, 29, 72); // Rose
             doc.text(formatIDR(totalExp), 80, 49);
 
             const net = totalInc - totalExp;
-            doc.setTextColor(net >= 0 ? 16 : 244, net >= 0 ? 185 : 63, net >= 0 ? 129 : 94);
+            doc.setTextColor(net >= 0 ? 16 : 225, net >= 0 ? 185 : 29, net >= 0 ? 129 : 72);
             doc.text(formatIDR(net), 140, 49);
 
             // 3. Tabel Transaksi
@@ -915,10 +915,10 @@
                 startY: 62,
                 head: [['#', 'Tanggal', 'Jenis', 'Metode', 'Kategori', 'Keterangan', 'Jumlah']],
                 body: tableRows.length > 0 ? tableRows : [['-', '-', '-', '-', 'Tidak ada data transaksi', '-', 'Rp 0']],
-                theme: 'grid',
+                theme: 'striped',
                 headStyles: {
-                    fillColor: [99, 102, 241],
-                    textColor: [255, 255, 255],
+                    fillColor: [79, 70, 229],
+                    textColor: 255,
                     fontSize: 9,
                     fontStyle: 'bold',
                     halign: 'left'
@@ -943,7 +943,9 @@
                             if (rowData[2] === 'Pemasukan') {
                                 data.cell.styles.textColor = [16, 185, 129];
                             } else if (rowData[2] === 'Pengeluaran') {
-                                data.cell.styles.textColor = [244, 63, 94];
+                                data.cell.styles.textColor = [225, 29, 72];
+                            } else {
+                                data.cell.styles.textColor = [79, 70, 229];
                             }
                         }
                     }
@@ -955,13 +957,14 @@
                     doc.setFontSize(8);
                     doc.setTextColor(148, 163, 184);
                     doc.text(`Halaman ${data.pageNumber} dari ${pageCount}`, 196, 287, { align: 'right' });
-                    doc.text("Laporan ini di-generate secara otomatis oleh Sistem KeuanganBulanan", 14, 287);
+                    doc.text("Laporan ini di buat secara otomatis oleh Sistem Keuangan Bulanan - Jangan lupa senyum yahh", 14, 287);
                 }
             });
 
             // Simpan File PDF
             doc.save(`Laporan_Keuangan_${monthName}_${currentYear}.pdf`);
         });
+
 
         function renderMonthlyChart(monthlyData) {
             const expenseMap = {};
