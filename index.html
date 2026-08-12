@@ -833,7 +833,7 @@
             renderDashboard();
         });
 
-        // FITUR EKSPOR PDF RAPI DENGAN JSPDF & AUTO-TABLE
+ // FITUR EKSPOR PDF RAPI DENGAN JSPDF & AUTO-TABLE
         document.getElementById('btnExportPDF').addEventListener('click', () => {
             if (!window.jspdf) {
                 alert("Library jsPDF belum selesai dimuat.");
@@ -957,7 +957,7 @@
                     doc.setFontSize(8);
                     doc.setTextColor(148, 163, 184);
                     doc.text(`Halaman ${data.pageNumber} dari ${pageCount}`, 196, 287, { align: 'right' });
-                    doc.text("Laporan ini di buat secara otomatis oleh Sistem Keuangan Bulanan - Jangan lupa senyum yahh", 14, 287);
+                    doc.text("Laporan ini secara otomatis oleh Sistem Keuangan Bulanan - Jangan Lupa Senyum yaww", 14, 287);
                 }
             });
 
