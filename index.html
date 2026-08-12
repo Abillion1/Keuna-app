@@ -101,7 +101,7 @@
     <!-- Screen Login -->
     <div id="loginScreen" class="fixed inset-0 bg-slate-900/40 dark:bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
         <div class="bg-white/90 dark:bg-bento-darkCard/90 border border-slate-200/80 dark:border-slate-800/80 p-8 max-w-md w-full text-center rounded-3xl shadow-2xl backdrop-blur-xl">
-            <div class="w-16 h-16 bg-gradient-to-tr from-indigo-500 to-indigo-800 rounded-2xl text-white flex items-center justify-center mx-auto mb-6 shadow-lg shadow-indigo-500/30 p-2">
+            <div class="w-16 h-16 bg-gradient-to-tr from-indigo-500 to-indigo-800 rounded-2xl text-white flex items-center justify-center mx-auto mb-5 shadow-lg shadow-indigo-700/60 p-3">
                 <img src="logo.png" alt="Logo Keuna" class="w-full h-full object-contain" />
             </div>
             <h2 class="text-3xl font-bold mb-2 text-slate-900 dark:text-white tracking-tight">K E U N A</h2>
@@ -908,13 +908,27 @@
             });
 
             // 1. Header PDF
-            doc.setFillColor(79, 70, 229); // Brand Indigo Color
-            doc.rect(0, 0, 210, 28, 'F');
+            const canvas = document.createElement('canvas');
+            canvas.width = 1000;
+            canvas.height = 140;
+            const ctx = canvas.getContext('2d');
+
+            // Membuat Gradient Ungu (Kiri ke Kanan)
+            const gradient = ctx.createLinearGradient(0, 0, 1000, 0);
+            gradient.addColorStop(0, '#6366f1'); // Indigo
+            gradient.addColorStop(1, '#3b0764'); // Ungu Gelap
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Masukkan gambar canvas gradient ke PDF sebagai background header
+            const headerGradientImg = canvas.toDataURL('image/png');
+            doc.addImage(headerGradientImg, 'PNG', 0, 0, 210, 28);
 
             // Sisipkan Logo jika berhasil dimuat
             let titleXPosition = 14;
             if (logoBase64) {
-                doc.addImage(logoBase64, 'PNG', 14, 5, 18, 18);
+                doc.addImage(logoBase64, 'PNG', 14, 5, 17, 17);
                 titleXPosition = 36;
             }
 
