@@ -245,7 +245,7 @@
                 </div>
 
                 <!-- Action Bar Filters & Export -->
-                <div class="bento-card bg-white dark:bg-bento-darkCard rounded-3xl p-4 border border-slate-200/80 dark:border-slate-800/80 shadow-bento dark:shadow-bento-dark flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4">
+                <div class="bento-card bg-white dark:bg-bento-darkCard rounded-3xl p-4 border border-slate-200/80 dark:border-slate-800/80 shadow-bento dark:shadow-bento-dark flex flex-col lg:flex-row justify-between items-stretch lg:items-center gap-4">
                     <div class="flex flex-wrap items-center gap-2">
                         <div class="flex items-center space-x-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 rounded-xl px-3 py-1.5 text-xs">
                             <i data-lucide="filter" class="w-4 h-4 text-slate-400 stroke-[2]"></i>
@@ -268,6 +268,17 @@
                                 <option value="BANK">Bank / Digital</option>
                                 <option value="CASH">Cash / Tunai</option>
                             </select>
+                        </div>
+
+                        <!-- PENAMBAHAN FITUR TERBARU: FILTER TANGGAL -->
+                        <div class="flex items-center space-x-1.5 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 rounded-xl px-3 py-1.5 text-xs">
+                            <i data-lucide="calendar" class="w-4 h-4 text-slate-400 stroke-[2]"></i>
+                            <input type="date" id="startDateFilter" class="bg-transparent text-slate-700 dark:text-slate-200 font-semibold focus:outline-none cursor-pointer">
+                            <span class="text-slate-400">-</span>
+                            <input type="date" id="endDateFilter" class="bg-transparent text-slate-700 dark:text-slate-200 font-semibold focus:outline-none cursor-pointer">
+                            <button id="btnResetDate" title="Reset Tanggal" class="text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 p-0.5 rounded-md ml-1">
+                                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 stroke-[2]"></i>
+                            </button>
                         </div>
                     </div>
                     
@@ -582,6 +593,12 @@
         const yearSelect = document.getElementById('yearSelect');
         const categoryFilter = document.getElementById('categoryFilter');
         const sourceFilter = document.getElementById('sourceFilter');
+        
+        // ELEMENT FILTER TANGGAL TERBARU
+        const startDateFilter = document.getElementById('startDateFilter');
+        const endDateFilter = document.getElementById('endDateFilter');
+        const btnResetDate = document.getElementById('btnResetDate');
+
         const modal = document.getElementById('modal');
         const itemRows = document.getElementById('itemRows');
         const btnAddRow = document.getElementById('btnAddRow');
@@ -696,6 +713,10 @@
             const catVal = categoryFilter.value || "ALL";
             const srcVal = sourceFilter.value || "ALL";
 
+            // LOGIKA DUKUNGAN FILTER TANGGAL TERBARU
+            const sDate = startDateFilter.value;
+            const eDate = endDateFilter.value;
+
             const monthlyData = transactions.filter(t => isSameMonthYear(t.tanggal, currentMonth, currentYear));
 
             let incTotal = 0, expTotal = 0, bankBal = 0, cashBal = 0;
@@ -728,10 +749,15 @@
             progressBar.className = `h-full rounded-full transition-all duration-500 ${budgetPercent > 90 ? 'bg-rose-500' : budgetPercent > 75 ? 'bg-amber-500' : 'bg-indigo-600'}`;
             document.getElementById('budgetStatusText').textContent = `Terpakai ${budgetPercent}% dari batas budget (${formatIDR(monthlyBudget)})`;
 
+            // FILTER TABEL MULTI-VARIABEL (KATEGORI, METODE, & TANGGAL)
             const filteredMonthly = monthlyData.filter(t => {
                 const matchCat = catVal === 'ALL' || t.kategori === catVal;
                 const matchSrc = srcVal === 'ALL' || t.metode === srcVal;
-                return matchCat && matchSrc;
+                
+                const matchStartDate = !sDate || t.tanggal >= sDate;
+                const matchEndDate = !eDate || t.tanggal <= eDate;
+
+                return matchCat && matchSrc && matchStartDate && matchEndDate;
             });
 
             // Urutkan transaksi terbaru di atas
@@ -804,7 +830,7 @@
             document.querySelectorAll('.btn-edit').forEach(b => b.addEventListener('click', (e) => editTx(e.currentTarget.getAttribute('data-edit'))));
             document.querySelectorAll('.btn-del').forEach(b => b.addEventListener('click', (e) => deleteTx(e.currentTarget.getAttribute('data-del'))));
 
-            renderMonthlyChart(monthlyData);
+            renderMonthlyChart(filteredMonthly);
             renderYearlySummary();
             lucide.createIcons();
         }
@@ -835,7 +861,7 @@
             renderDashboard();
         });
 
- // FITUR EKSPOR PDF RAPI DENGAN JSPDF & AUTO-TABLE
+        // FITUR EKSPOR PDF RAPI DENGAN JSPDF & AUTO-TABLE
         document.getElementById('btnExportPDF').addEventListener('click', () => {
             if (!window.jspdf) {
                 alert("Library jsPDF belum selesai dimuat.");
@@ -966,7 +992,6 @@
             // Simpan File PDF
             doc.save(`Laporan_Keuangan_${monthName}_${currentYear}.pdf`);
         });
-
 
         function renderMonthlyChart(monthlyData) {
             const expenseMap = {};
@@ -1233,6 +1258,16 @@
         yearSelect.addEventListener('change', (e) => { currentYear = Number(e.target.value); resetPages(); renderDashboard(); });
         categoryFilter.addEventListener('change', () => { resetPages(); renderDashboard(); });
         sourceFilter.addEventListener('change', () => { resetPages(); renderDashboard(); });
+
+        // LISTENERS TERBARU UNTUK FILTER TANGGAL
+        startDateFilter.addEventListener('change', () => { resetPages(); renderDashboard(); });
+        endDateFilter.addEventListener('change', () => { resetPages(); renderDashboard(); });
+        btnResetDate.addEventListener('click', () => {
+            startDateFilter.value = '';
+            endDateFilter.value = '';
+            resetPages();
+            renderDashboard();
+        });
 
         // Tab Navigation
         const tabMonthlyBtn = document.getElementById('tabMonthlyBtn');
