@@ -761,7 +761,7 @@
             });
 
             // Urutkan transaksi terbaru di atas
-            filteredMonthly.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
+            filteredMonthly.sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal));
 
             const incomeList = filteredMonthly.filter(t => t.tipe === 'INCOME');
             const expenseList = filteredMonthly.filter(t => t.tipe === 'EXPENSE' || t.tipe === 'WITHDRAW');
@@ -928,7 +928,7 @@
             // Sisipkan Logo jika berhasil dimuat
             let titleXPosition = 14;
             if (logoBase64) {
-                doc.addImage(logoBase64, 'PNG', 14, 5, 17, 17);
+                doc.addImage(logoBase64, 'PNG', 14, 5, 14, 14);
                 titleXPosition = 36;
             }
 
@@ -987,7 +987,7 @@
                 body: tableRows.length > 0 ? tableRows : [['-', '-', '-', '-', 'Tidak ada data transaksi', '-', 'Rp 0']],
                 theme: 'striped',
                 headStyles: {
-                    fillColor: [79, 70, 229],
+                    fillColor: [86, 72, 196],
                     textColor: 255,
                     fontSize: 9,
                     fontStyle: 'bold',
@@ -1027,7 +1027,7 @@
                     doc.setFontSize(8);
                     doc.setTextColor(148, 163, 184);
                     doc.text(`Halaman ${data.pageNumber} dari ${pageCount}`, 196, 287, { align: 'right' });
-                    doc.text("Laporan ini secara otomatis oleh Sistem Keuangan Bulanan - Jangan Lupa Senyum yaww", 14, 287);
+                    doc.text("Laporan ini secara otomatis oleh Sistem Keuangan Bulanan - Jangan Lupa Senyum Yaw", 14, 287);
                 }
             });
 
