@@ -122,7 +122,7 @@
     <div id="appContent" class="hidden">
         <!-- Header Top Floating Navigation -->
         <header class="sticky top-4 z-30 max-w-6xl mx-auto px-4 mb-6">
-            <div class="bg-white/80 dark:bg-bento-darkCard/80 backdrop-blur-md rounded-2xl p-3 border border-slate-200/80 dark:border-slate-800/80 shadow-bento dark:shadow-bento-dark flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="bg-white/20 dark:bg-bento-darkCard/20 backdrop-blur-md rounded-2xl p-3 border border-slate-200/80 dark:border-slate-800/80 shadow-bento dark:shadow-bento-dark flex flex-col sm:flex-row justify-between items-center gap-4">
                 <div class="flex items-center space-x-3 pl-2">
                     <div class="p-2.5 bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 rounded-xl border border-indigo-100 dark:border-indigo-900/50">
                         <i data-lucide="wallet" class="w-5 h-5 stroke-[2]"></i>
@@ -186,7 +186,7 @@
                     <div id="netSavingsCard" class="bento-card bg-gradient-to-br from-emerald-600 to-teal-400 rounded-2xl p-5 text-white shadow-lg shadow-emerald-500/20 flex items-center justify-between">
                         <div>
                             <p class="text-[11px] font-semibold text-emerald-100 uppercase tracking-wider">Net Savings (Selisih)</p>
-                            <h4 id="netSavingsText" class="text-xl font-extrabold mt-0.5 tracking-tight">••••••••••••</h4>
+                            <h4 id="netSavingsText" class="text-xl font-extrabold mt-0.5 tracking-tight">••••••••</h4>
                         </div>
                         <div class="p-3 bg-white/20 backdrop-blur-md rounded-2xl text-white"><i id="savingsIcon" data-lucide="piggy-bank" class="w-6 h-6 stroke-[2]"></i></div>
                     </div>
@@ -219,7 +219,7 @@
                     <div class="bento-card bg-white dark:bg-bento-darkCard rounded-3xl p-5 border border-slate-200/80 dark:border-slate-800/80 shadow-bento dark:shadow-bento-dark flex items-center justify-between">
                         <div>
                             <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1">Total Pemasukan</p>
-                            <h3 id="totalIncome" class="text-xl font-extrabold text-emerald-600 dark:text-emerald-400 tracking-tight">••••••••••••</h3>
+                            <h3 id="totalIncome" class="text-xl font-extrabold text-emerald-600 dark:text-emerald-400 tracking-tight">••••••••</h3>
                         </div>
                         <div class="p-3 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 rounded-2xl"><i data-lucide="trending-up" class="w-6 h-6 stroke-[2]"></i></div>
                     </div>
@@ -227,7 +227,7 @@
                     <div class="bento-card bg-white dark:bg-bento-darkCard rounded-3xl p-5 border border-slate-200/80 dark:border-slate-800/80 shadow-bento dark:shadow-bento-dark flex items-center justify-between">
                         <div>
                             <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1">Total Pengeluaran</p>
-                            <h3 id="totalExpense" class="text-xl font-extrabold text-rose-600 dark:text-rose-400 tracking-tight">••••••••••••</h3>
+                            <h3 id="totalExpense" class="text-xl font-extrabold text-rose-600 dark:text-rose-400 tracking-tight">••••••••</h3>
                         </div>
                         <div class="p-3 bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 rounded-2xl"><i data-lucide="trending-down" class="w-6 h-6 stroke-[2]"></i></div>
                     </div>
@@ -235,7 +235,7 @@
                     <div class="bento-card bg-white dark:bg-bento-darkCard rounded-3xl p-5 border border-slate-200/80 dark:border-slate-800/80 shadow-bento dark:shadow-bento-dark flex items-center justify-between">
                         <div>
                             <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1">Saldo Bank / Digital</p>
-                            <h3 id="bankBalance" class="text-xl font-extrabold text-blue-600 dark:text-blue-400 tracking-tight">••••••••••••</h3>
+                            <h3 id="bankBalance" class="text-xl font-extrabold text-blue-600 dark:text-blue-400 tracking-tight">••••••••</h3>
                         </div>
                         <div class="p-3 bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 rounded-2xl"><i data-lucide="building-2" class="w-6 h-6 stroke-[2]"></i></div>
                     </div>
@@ -243,7 +243,7 @@
                     <div class="bento-card bg-white dark:bg-bento-darkCard rounded-3xl p-5 border border-slate-200/80 dark:border-slate-800/80 shadow-bento dark:shadow-bento-dark flex items-center justify-between">
                         <div>
                             <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1">Saldo Cash / Tunai</p>
-                            <h3 id="cashBalance" class="text-xl font-extrabold text-amber-600 dark:text-amber-400 tracking-tight">••••••••••••</h3>
+                            <h3 id="cashBalance" class="text-xl font-extrabold text-amber-600 dark:text-amber-400 tracking-tight">••••••••</h3>
                         </div>
                         <div class="p-3 bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 rounded-2xl"><i data-lucide="banknote" class="w-6 h-6 stroke-[2]"></i></div>
                     </div>
@@ -324,8 +324,8 @@
                         <div class="flex items-center gap-2">
                             <span>Tampilkan</span>
                             <select id="incomePageSize" class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1 text-xs focus:outline-none">
-                                <option value="5">5</option>
-                                <option value="10" selected>10</option>
+                                <option value="5" selected>5</option>
+                                <option value="10">10</option>
                                 <option value="20">20</option>
                                 <option value="30">30</option>
                             </select>
@@ -382,8 +382,8 @@
                             <div class="flex items-center gap-2">
                                 <span>Tampilkan</span>
                                 <select id="expensePageSize" class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1 text-xs focus:outline-none">
-                                    <option value="5">5</option>
-                                    <option value="10" selected>10</option>
+                                    <option value="5" selected>5</option>
+                                    <option value="10">10</option>
                                     <option value="20">20</option>
                                     <option value="30">30</option>
                                 </select>
@@ -587,9 +587,9 @@
 
         // State Paginasi
         let incomeCurrentPage = 1;
-        let incomePageSize = 10;
+        let incomePageSize = 5;
         let expenseCurrentPage = 1;
-        let expensePageSize = 10;
+        let expensePageSize = 5;
 
         let expenseChartInstance = null;
         let yearlyChartInstance = null;
@@ -628,7 +628,7 @@
             "Tagihan / E wallet": "#3b82f6",
             "Kebutuhan": "#372BEB",         
             "Investasi": "#8b5cf6",         
-            "Perkopian Duniawi": "#FF7700", 
+            "Perkopian Duniawi": "#EF6E43", 
             "Tarik Tunai": "#64748b"        
         };
 
@@ -712,7 +712,7 @@
         // Helpers
         const formatIDR = (val) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val || 0);
         // Helper untuk Privacy
-        const formatPrivacy = (val) => isPrivacyMode ? '••••••••••••' : formatIDR(val);
+        const formatPrivacy = (val) => isPrivacyMode ? '••••••••' : formatIDR(val);
         
         const isSameMonthYear = (dateStr, m, y) => {
             if (!dateStr) return false;
