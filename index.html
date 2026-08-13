@@ -134,7 +134,13 @@
                 </div>
 
                 <div class="flex items-center gap-2">
-                    <button id="btnDarkMode" class="bento-btn p-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl transition">
+                    <!-- Tombol Privacy Mode -->
+                    <button id="btnPrivacyMode" title="Privacy Mode" class="bento-btn p-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl transition">
+                        <span id="iconEyeOffWrapper"><i data-lucide="eye-off" class="w-4 h-4 stroke-[2]"></i></span>
+                        <span id="iconEyeWrapper" class="hidden"><i data-lucide="eye" class="w-4 h-4 stroke-[2]"></i></span>
+                    </button>
+
+                    <button id="btnDarkMode" title="Dark Mode" class="bento-btn p-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl transition">
                         <i data-lucide="moon" class="w-4 h-4 dark:hidden stroke-[2]"></i>
                         <i data-lucide="sun" class="w-4 h-4 hidden dark:block stroke-[2]"></i>
                     </button>
@@ -180,7 +186,7 @@
                     <div id="netSavingsCard" class="bento-card bg-gradient-to-br from-emerald-600 to-teal-400 rounded-2xl p-5 text-white shadow-lg shadow-emerald-500/20 flex items-center justify-between">
                         <div>
                             <p class="text-[11px] font-semibold text-emerald-100 uppercase tracking-wider">Net Savings (Selisih)</p>
-                            <h4 id="netSavingsText" class="text-xl font-extrabold mt-0.5 tracking-tight">Rp 0</h4>
+                            <h4 id="netSavingsText" class="text-xl font-extrabold mt-0.5 tracking-tight">••••••••••••</h4>
                         </div>
                         <div class="p-3 bg-white/20 backdrop-blur-md rounded-2xl text-white"><i id="savingsIcon" data-lucide="piggy-bank" class="w-6 h-6 stroke-[2]"></i></div>
                     </div>
@@ -213,7 +219,7 @@
                     <div class="bento-card bg-white dark:bg-bento-darkCard rounded-3xl p-5 border border-slate-200/80 dark:border-slate-800/80 shadow-bento dark:shadow-bento-dark flex items-center justify-between">
                         <div>
                             <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1">Total Pemasukan</p>
-                            <h3 id="totalIncome" class="text-xl font-extrabold text-emerald-600 dark:text-emerald-400 tracking-tight">Rp 0</h3>
+                            <h3 id="totalIncome" class="text-xl font-extrabold text-emerald-600 dark:text-emerald-400 tracking-tight">••••••••••••</h3>
                         </div>
                         <div class="p-3 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 rounded-2xl"><i data-lucide="trending-up" class="w-6 h-6 stroke-[2]"></i></div>
                     </div>
@@ -221,7 +227,7 @@
                     <div class="bento-card bg-white dark:bg-bento-darkCard rounded-3xl p-5 border border-slate-200/80 dark:border-slate-800/80 shadow-bento dark:shadow-bento-dark flex items-center justify-between">
                         <div>
                             <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1">Total Pengeluaran</p>
-                            <h3 id="totalExpense" class="text-xl font-extrabold text-rose-600 dark:text-rose-400 tracking-tight">Rp 0</h3>
+                            <h3 id="totalExpense" class="text-xl font-extrabold text-rose-600 dark:text-rose-400 tracking-tight">••••••••••••</h3>
                         </div>
                         <div class="p-3 bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 rounded-2xl"><i data-lucide="trending-down" class="w-6 h-6 stroke-[2]"></i></div>
                     </div>
@@ -229,7 +235,7 @@
                     <div class="bento-card bg-white dark:bg-bento-darkCard rounded-3xl p-5 border border-slate-200/80 dark:border-slate-800/80 shadow-bento dark:shadow-bento-dark flex items-center justify-between">
                         <div>
                             <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1">Saldo Bank / Digital</p>
-                            <h3 id="bankBalance" class="text-xl font-extrabold text-blue-600 dark:text-blue-400 tracking-tight">Rp 0</h3>
+                            <h3 id="bankBalance" class="text-xl font-extrabold text-blue-600 dark:text-blue-400 tracking-tight">••••••••••••</h3>
                         </div>
                         <div class="p-3 bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 rounded-2xl"><i data-lucide="building-2" class="w-6 h-6 stroke-[2]"></i></div>
                     </div>
@@ -237,7 +243,7 @@
                     <div class="bento-card bg-white dark:bg-bento-darkCard rounded-3xl p-5 border border-slate-200/80 dark:border-slate-800/80 shadow-bento dark:shadow-bento-dark flex items-center justify-between">
                         <div>
                             <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1">Saldo Cash / Tunai</p>
-                            <h3 id="cashBalance" class="text-xl font-extrabold text-amber-600 dark:text-amber-400 tracking-tight">Rp 0</h3>
+                            <h3 id="cashBalance" class="text-xl font-extrabold text-amber-600 dark:text-amber-400 tracking-tight">••••••••••••</h3>
                         </div>
                         <div class="p-3 bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 rounded-2xl"><i data-lucide="banknote" class="w-6 h-6 stroke-[2]"></i></div>
                     </div>
@@ -572,6 +578,9 @@
         let transactions = [];
         let unsubscribeStore = null;
 
+        // STATE PRIVACY MODE (ON SECARA DEFAULT)
+        let isPrivacyMode = true;
+
         let currentYear = 2026;
         let currentMonth = 7; // Agustus (0-indexed)
         let monthlyBudget = 3000000;
@@ -603,6 +612,11 @@
         const btnAddRow = document.getElementById('btnAddRow');
         const editDocIdInput = document.getElementById('editDocId');
         const budgetInput = document.getElementById('budgetInput');
+
+        // ELEMENT PRIVACY
+        const btnPrivacyMode = document.getElementById('btnPrivacyMode');
+        const iconEyeOffWrapper = document.getElementById('iconEyeOffWrapper');
+        const iconEyeWrapper = document.getElementById('iconEyeWrapper');
 
         const MONTH_NAMES = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
         const EXPENSE_CATEGORIES = ["Keluarga", "Jajanan", "Bahan Bakar", "Tagihan / E wallet", "Kebutuhan", "Investasi", "Perkopian Duniawi"];
@@ -664,6 +678,22 @@
             signOut(auth);
         });
 
+        // PRIVACY MODE TOGGLE EVENT
+        btnPrivacyMode.addEventListener('click', () => {
+            isPrivacyMode = !isPrivacyMode;
+            
+            if (isPrivacyMode) {
+                iconEyeOffWrapper.classList.remove('hidden');
+                iconEyeWrapper.classList.add('hidden');
+            } else {
+                iconEyeOffWrapper.classList.add('hidden');
+                iconEyeWrapper.classList.remove('hidden');
+            }
+            
+            // Re-render UI untuk memperbarui angka
+            renderDashboard();
+        });
+
         // FIRESTORE REALTIME SYNC
         function listenToFirestoreData() {
             if (!currentUser) return;
@@ -681,6 +711,9 @@
 
         // Helpers
         const formatIDR = (val) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val || 0);
+        // Helper untuk Privacy
+        const formatPrivacy = (val) => isPrivacyMode ? '••••••••••••' : formatIDR(val);
+        
         const isSameMonthYear = (dateStr, m, y) => {
             if (!dateStr) return false;
             const d = new Date(dateStr);
@@ -845,11 +878,12 @@
                 }
             });
 
-            document.getElementById('totalIncome').textContent = formatIDR(incTotal);
-            document.getElementById('totalExpense').textContent = formatIDR(expTotal);
-            document.getElementById('bankBalance').textContent = formatIDR(bankBal);
-            document.getElementById('cashBalance').textContent = formatIDR(cashBal);
-            document.getElementById('netSavingsText').textContent = formatIDR(incTotal - expTotal);
+            // UPDATE ANGKA DENGAN FORMAT PRIVACY
+            document.getElementById('totalIncome').textContent = formatPrivacy(incTotal);
+            document.getElementById('totalExpense').textContent = formatPrivacy(expTotal);
+            document.getElementById('bankBalance').textContent = formatPrivacy(bankBal);
+            document.getElementById('cashBalance').textContent = formatPrivacy(cashBal);
+            document.getElementById('netSavingsText').textContent = formatPrivacy(incTotal - expTotal);
 
             const budgetPercent = monthlyBudget > 0 ? Math.min(Math.round((expTotal / monthlyBudget) * 100), 100) : 0;
             const progressBar = document.getElementById('budgetProgressBar');
@@ -1182,6 +1216,7 @@
                 }
             });
 
+            // Rekap tahunan dikecualikan dari Privacy mode berdasarkan request awal (opsional bisa diubah di sini jika mau)
             document.getElementById('yearlyTotalExpense').textContent = formatIDR(yearlyExpTotal);
             document.getElementById('yearlyAvgExpense').textContent = formatIDR(yearlyExpTotal / 12);
             document.getElementById('yearlyBudgetRecommendation').textContent = formatIDR((yearlyExpTotal / 12) * 1.1);
