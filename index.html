@@ -473,7 +473,7 @@
         <i data-lucide="plus" class="w-7 h-7 stroke-[2.5]"></i>
     </button>
 
-    <!-- Modal Form Transaksi Massal / Edit -->
+    <!-- Modal Form Transaksi / Edit -->
     <div id="modal" class="fixed inset-0 bg-slate-900/40 dark:bg-black/60 backdrop-blur-md z-50 flex items-center justify-center hidden p-4">
         <div id="modalBox" class="bg-white dark:bg-bento-darkCard border border-slate-200/80 dark:border-slate-800/80 max-w-2xl w-full p-6 rounded-3xl shadow-2xl flex flex-col max-h-[90vh]">
             <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
@@ -753,7 +753,7 @@
         // --- FUNGSI UTAMA UNTUK MODAL & ACTION (TOP LEVEL SCOPE) ---
         function openModal() {
             editDocIdInput.value = '';
-            document.getElementById('modalTitle').innerText = 'Input Transaksi Massal';
+            document.getElementById('modalTitle').innerText = 'Input Transaksi';
             document.querySelector('input[name="type"][value="EXPENSE"]').checked = true;
             document.getElementById('formSource').value = 'BANK';
             document.getElementById('formSource').disabled = false;
@@ -901,7 +901,7 @@
                 return matchCat && matchSrc && matchStartDate && matchEndDate;
             });
 
-            filteredMonthly.sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal));
+            filteredMonthly.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
 
             const incomeList = filteredMonthly.filter(t => t.tipe === 'INCOME');
             const expenseList = filteredMonthly.filter(t => t.tipe === 'EXPENSE' || t.tipe === 'WITHDRAW');
