@@ -171,7 +171,18 @@
                             <button id="prevMonth" class="bento-btn p-2 text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 rounded-xl cursor-pointer"><i data-lucide="chevron-left" class="w-5 h-5 stroke-[2]"></i></button>
                             <div class="flex items-center space-x-1 px-2">
                                 <select id="monthSelect" class="clean-select font-bold text-sm text-slate-800 dark:text-slate-100 bg-transparent focus:outline-none cursor-pointer">
-                                    <option value="0">Januari</option><option value="1">Februari</option><option value="2">Maret</option><option value="3">April</option><option value="4">Mei</option><option value="5">Juni</option><option value="6">Juli</option><option value="7">Agustus</option><option value="8">September</option><option value="9">Oktober</option><option value="10">November</option><option value="11">Desember</option>
+                                    <option value="0">Januari</option>
+                                    <option value="1">Februari</option>
+                                    <option value="2">Maret</option>
+                                    <option value="3">April</option>
+                                    <option value="4">Mei</option>
+                                    <option value="5">Juni</option>
+                                    <option value="6">Juli</option>
+                                    <option value="7">Agustus</option>
+                                    <option value="8">September</option>
+                                    <option value="9">Oktober</option>
+                                    <option value="10">November</option>
+                                    <option value="11">Desember</option>
                                 </select>
                                 <span class="font-bold text-slate-400 dark:text-slate-600"></span>
                                 <select id="yearSelect" class="clean-select font-bold text-sm text-slate-800 dark:text-slate-100 bg-transparent focus:outline-none cursor-pointer"></select>
@@ -403,68 +414,17 @@
 
             <!-- TAB 2: REKAP TAHUNAN -->
             <div id="tabYearlyView" class="space-y-6 hidden">
-                <!-- (Bagian rekap tahunan tetap sesuai struktur asli Anda) -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bento-card bg-white dark:bg-bento-darkCard rounded-3xl p-5 border border-slate-200/80 dark:border-slate-800/80 shadow-bento dark:shadow-bento-dark flex items-center justify-between">
+                        <div>
+                            <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1">Pengeluaran Setahun (<span class="yearlyTitleYear">2026</span>)</p>
+                            <h3 id="yearlyTotalExpense" class="text-xl font-extrabold text-slate-900 dark:text-white tracking-tight">Rp 0</h3>
+                        </div>
+                        <div class="p-3 bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 rounded-2xl"><i data-lucide="trending-down" class="w-6 h-6 stroke-[2]"></i></div>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
-
-    <!-- Script bagian inisialisasi bulan -->
-    <script>
-        // Logika penentuan bulan awal saat login: 
-        // Menggunakan localStorage jika sudah pernah disimpan, jika belum mengambil bulan sebelumnya (atau bulan berjalan jika diinginkan, namun diset agar tetap ke bulan sebelumnya sesuai permintaan).
-        let currentSelectedMonth = localStorage.getItem('keuna_selected_month');
-        let currentSelectedYear = localStorage.getItem('keuna_selected_year');
-
-        if (currentSelectedMonth === null || currentSelectedYear === null) {
-            const now = new Date();
-            // Mengatur ke bulan sebelumnya (contoh: jika sekarang September/8, maka Agustus/7)
-            now.setMonth(now.getMonth() - 1);
-            currentSelectedMonth = now.getMonth();
-            currentSelectedYear = now.getFullYear();
-            
-            localStorage.setItem('keuna_selected_month', currentSelectedMonth);
-            localStorage.setItem('keuna_selected_year', currentSelectedYear);
-        } else {
-            currentSelectedMonth = parseInt(currentSelectedMonth);
-            currentSelectedYear = parseInt(currentSelectedYear);
-        }
-
-        // Terapkan nilai ke elemen select bulan & tahun pada UI
-        document.addEventListener("DOMContentLoaded", () => {
-            const monthSelect = document.getElementById("monthSelect");
-            const yearSelect = document.getElementById("yearSelect");
-            
-            if (monthSelect) monthSelect.value = currentSelectedMonth;
-            if (yearSelect) {
-                // Pastikan tahun tersedia di select options jika belum ada
-                let yearExists = false;
-                for (let opt of yearSelect.options) {
-                    if (parseInt(opt.value) === currentSelectedYear) {
-                        yearExists = true;
-                        break;
-                    }
-                }
-                if (!yearExists) {
-                    let opt = document.createElement('option');
-                    opt.value = currentSelectedYear;
-                    opt.text = currentSelectedYear;
-                    yearSelect.appendChild(opt);
-                }
-                yearSelect.value = currentSelectedYear;
-            }
-
-            // Simpan perubahan saat user mengubah bulan/tahun secara manual
-            if (monthSelect) {
-                monthSelect.addEventListener("change", (e) => {
-                    localStorage.setItem('keuna_selected_month', e.target.value);
-                });
-            }
-            if (yearSelect) {
-                yearSelect.addEventListener("change", (e) => {
-                    localStorage.setItem('keuna_selected_year', e.target.value);
-                });
-            }
-        });
-    </script>
 </body>
 </html>
