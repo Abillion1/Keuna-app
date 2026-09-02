@@ -556,7 +556,7 @@
             where 
         } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // FIREBASE CONFIG (TETAP SAMA)
+        // FIREBASE CONFIG
         const firebaseConfig = {
             apiKey: "AIzaSyCw03833WSjiI-lyH5dw6XQ_HCmqd4PH5E",
             authDomain: "laporan-keuangan-e2a6a.firebaseapp.com",
@@ -581,10 +581,10 @@
         // STATE PRIVACY MODE (ON SECARA DEFAULT)
         let isPrivacyMode = true;
 
-        // BULAN & TAHUN OTOMATIS REALTIME SAAT INI
-        const today = new Date();
-        let currentYear = today.getFullYear();
-        let currentMonth = today.getMonth(); // (0-indexed)
+        // TANGGAL REALTIME OTOMATIS SAAT TAMPILAN DIMUAT
+        const nowInitial = new Date();
+        let currentYear = nowInitial.getFullYear();
+        let currentMonth = nowInitial.getMonth();
         let monthlyBudget = 3000000;
 
         // State Paginasi
@@ -636,8 +636,7 @@
 
         const DEFAULT_COLOR = "#94a3b8";
         
-        // Populate Years (2020-2080) & Set ke tahun berjalan
-        yearSelect.innerHTML = '';
+        // Populate Years (2020-2080)
         for (let y = 2020; y <= 2080; y++) {
             const opt = document.createElement('option');
             opt.value = y; opt.textContent = y;
@@ -714,16 +713,13 @@
 
         // Helpers
         const formatIDR = (val) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val || 0);
+        // Helper untuk Privacy
         const formatPrivacy = (val) => isPrivacyMode ? '••••••••' : formatIDR(val);
         
-        // Penanganan Tanggal Aman dari Perbedaan Timezone
         const isSameMonthYear = (dateStr, m, y) => {
             if (!dateStr) return false;
-            const parts = dateStr.split('-');
-            if (parts.length < 2) return false;
-            const yearNum = Number(parts[0]);
-            const monthNum = Number(parts[1]) - 1; // 0-indexed
-            return monthNum === Number(m) && yearNum === Number(y);
+            const d = new Date(dateStr);
+            return d.getMonth() === Number(m) && d.getFullYear() === Number(y);
         };
 
         // Dark Mode Toggle
@@ -756,7 +752,7 @@
             expenseCurrentPage = 1;
         }
 
-        // --- FUNGSI UTAMA UNTUK MODAL & ACTION ---
+        // --- FUNGSI UTAMA UNTUK MODAL & ACTION (TOP LEVEL SCOPE) ---
         function openModal() {
             editDocIdInput.value = '';
             document.getElementById('modalTitle').innerText = 'Input Transaksi';
@@ -824,7 +820,7 @@
             div.querySelector('.btn-remove-row').addEventListener('click', () => div.remove());
             const currentType = document.querySelector('input[name="type"]:checked').value;
             handleTypeChange(currentType, kategoriVal, keteranganVal, div);
-            if (window.lucide) lucide.createIcons();
+            lucide.createIcons();
         }
 
         function editTx(id) {
@@ -864,26 +860,18 @@
             const sDate = startDateFilter.value;
             const eDate = endDateFilter.value;
 
-            // Filter transaksi khusus bulan yang dipilih
             const monthlyData = transactions.filter(t => isSameMonthYear(t.tanggal, currentMonth, currentYear));
 
-            let incTotal = 0, expTotal = 0;
-            let bankBal = 0, cashBal = 0;
+            let incTotal = 0, expTotal = 0, bankBal = 0, cashBal = 0;
 
-            // 1. Total Pemasukan & Pengeluaran Bulan Ini
             monthlyData.forEach(t => {
                 const amt = Number(t.jumlah) || 0;
-                if (t.tipe === 'INCOME') incTotal += amt;
-                else if (t.tipe === 'EXPENSE') expTotal += amt;
-            });
-
-            // 2. Akumulasi Saldo Bank & Cash dari SELURUH Transaksi (Lintas Bulan)
-            transactions.forEach(t => {
-                const amt = Number(t.jumlah) || 0;
                 if (t.tipe === 'INCOME') {
+                    incTotal += amt;
                     if (t.metode === 'BANK') bankBal += amt;
                     else cashBal += amt;
                 } else if (t.tipe === 'EXPENSE') {
+                    expTotal += amt;
                     if (t.metode === 'BANK') bankBal -= amt;
                     else cashBal -= amt;
                 } else if (t.tipe === 'WITHDRAW') {
@@ -980,17 +968,13 @@
             document.getElementById('btnExpensePrev').disabled = expenseCurrentPage <= 1;
             document.getElementById('btnExpenseNext').disabled = expenseCurrentPage >= totalExpensePages;
 
-            // Event Listener Edit & Delete
+            // Event Listener Edit & Delete Dipasang Setelah Render Tabel
             document.querySelectorAll('.btn-edit').forEach(b => b.addEventListener('click', (e) => editTx(e.currentTarget.getAttribute('data-edit'))));
             document.querySelectorAll('.btn-del').forEach(b => b.addEventListener('click', (e) => deleteTx(e.currentTarget.getAttribute('data-del'))));
 
             renderMonthlyChart(filteredMonthly);
             renderYearlySummary();
-
-            // Refresh Ikon Lucide setelah pembaruan innerHTML tabel
-            if (window.lucide) {
-                lucide.createIcons();
-            }
+            lucide.createIcons();
         }
 
         // EVENT HANDLER PAGINASI PEMASUKAN
@@ -1219,12 +1203,7 @@
 
         function renderYearlySummary() {
             document.querySelectorAll('.yearlyTitleYear').forEach(e => e.textContent = currentYear);
-            
-            const yearlyData = transactions.filter(t => {
-                if (!t.tanggal) return false;
-                const parts = t.tanggal.split('-');
-                return Number(parts[0]) === Number(currentYear);
-            });
+            const yearlyData = transactions.filter(t => t.tanggal && new Date(t.tanggal).getFullYear() === Number(currentYear));
 
             let yearlyExpTotal = 0;
             const categorySums = {};
@@ -1235,12 +1214,7 @@
                     const amt = Number(t.jumlah) || 0;
                     yearlyExpTotal += amt;
                     categorySums[t.kategori] = (categorySums[t.kategori] || 0) + amt;
-                    
-                    const parts = t.tanggal.split('-');
-                    const mIdx = Number(parts[1]) - 1;
-                    if (mIdx >= 0 && mIdx < 12) {
-                        monthlySums[mIdx] += amt;
-                    }
+                    monthlySums[new Date(t.tanggal).getMonth()] += amt;
                 }
             });
 
@@ -1408,6 +1382,35 @@
             tabYearlyView.classList.remove('hidden');
             tabMonthlyView.classList.add('hidden');
             renderDashboard();
+        });
+
+        // ===================================================
+        // FITUR DETEKSI PERGANTIAN BULAN REALTIME
+        // ===================================================
+        function checkRealtimeMonth() {
+            const now = new Date();
+            const realMonth = now.getMonth();
+            const realYear = now.getFullYear();
+
+            // Jika sistem mengalami pergantian bulan/tahun
+            if (currentMonth !== realMonth || currentYear !== realYear) {
+                currentMonth = realMonth;
+                currentYear = realYear;
+                monthSelect.value = currentMonth;
+                yearSelect.value = currentYear;
+                resetPages();
+                renderDashboard();
+            }
+        }
+
+        // Cek secara otomatis setiap 30 detik
+        setInterval(checkRealtimeMonth, 30000);
+
+        // Cek secara otomatis saat tab browser diaktifkan kembali
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                checkRealtimeMonth();
+            }
         });
     </script>
 </body>
