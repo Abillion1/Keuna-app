@@ -100,6 +100,9 @@
     <!-- Screen Login & Sign Up (Redesigned with Glassmorphism & Neon Gradient UI) -->
     <div id="loginScreen" class="fixed inset-0 bg-[#070913] z-50 flex items-center justify-center p-4 overflow-y-auto">
         
+        <!-- Background Image bg.jpg (Opacity 90%) -->
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-90 pointer-events-none" style="background-image: url('bg.jpg');"></div>
+
         <!-- Ambient Glowing Glass/Neon Spheres & Tubes -->
         <div class="absolute -top-28 -left-28 w-96 h-96 bg-gradient-to-br from-cyan-500/35 via-indigo-600/30 to-transparent rounded-full blur-[110px] pointer-events-none"></div>
         <div class="absolute -bottom-28 -right-28 w-[420px] h-[420px] bg-gradient-to-tl from-fuchsia-600/40 via-pink-600/30 to-transparent rounded-full blur-[120px] pointer-events-none"></div>
@@ -108,8 +111,8 @@
         <!-- Glassmorphism Container Card -->
         <div class="relative w-full max-w-md p-8 sm:p-10 bg-slate-950/45 backdrop-blur-3xl border border-white/15 rounded-[32px] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.85)] overflow-hidden text-white my-auto">
 
-            <!-- Branding Header -->
-            <div class="mb-6 pt-2">
+            <!-- Branding Header (Centered) -->
+            <div class="mb-6 pt-2 flex flex-col items-center text-center">
                 <div class="w-12 h-12 bg-gradient-to-tr from-fuchsia-500 via-indigo-500 to-cyan-400 rounded-2xl p-2.5 mb-4 shadow-lg shadow-fuchsia-500/20 flex items-center justify-center">
                     <img src="logo.png" alt="Logo Keuna" class="w-full h-full object-contain filter drop-shadow">
                 </div>
@@ -145,7 +148,7 @@
                     </p>
                 </div>
 
-                <!-- Tombol Login Google (Dipindahkan ke Bawah "Belum punya akun? Daftar sekarang") -->
+                <!-- Tombol Login Google -->
                 <div class="pt-2">
                     <div class="relative flex py-2 items-center mb-3">
                         <div class="flex-grow border-t border-white/10"></div>
