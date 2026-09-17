@@ -100,12 +100,12 @@
     <!-- Screen Login & Sign Up (Locked Center & Non-scrollable) -->
     <div id="loginScreen" class="fixed inset-0 bg-[#070913] z-50 flex items-center justify-center p-4 overflow-hidden select-none">
         
-        <!-- Background Image bg.jpg (Full Fit 100% Width & Height) -->
-        <div class="fixed inset-0 bg-[length:100%_100%] bg-center bg-no-repeat opacity-90 pointer-events-none -z-10" style="background-image: url('bg.jpg');"></div>
+        <!-- Background Image bg.jpg (Parallax Effect) -->
+        <div id="loginBg" class="fixed -inset-8 bg-[length:100%_100%] bg-center bg-no-repeat opacity-90 pointer-events-none -z-10 transition-transform duration-200 ease-out scale-105" style="background-image: url('bg.jpg');"></div>
 
         <!-- Ambient Glowing Glass/Neon Spheres & Tubes -->
-        <div class="absolute -top-28 -left-28 w-96 h-96 bg-gradient-to-br from-cyan-500/35 via-indigo-600/30 to-transparent rounded-full blur-[110px] pointer-events-none"></div>
-        <div class="absolute -bottom-28 -right-28 w-[420px] h-[420px] bg-gradient-to-tl from-fuchsia-600/40 via-pink-600/30 to-transparent rounded-full blur-[120px] pointer-events-none"></div>
+        <div id="glowSphere1" class="absolute -top-28 -left-28 w-96 h-96 bg-gradient-to-br from-cyan-500/35 via-indigo-600/30 to-transparent rounded-full blur-[110px] pointer-events-none transition-transform duration-300 ease-out"></div>
+        <div id="glowSphere2" class="absolute -bottom-28 -right-28 w-[420px] h-[420px] bg-gradient-to-tl from-fuchsia-600/40 via-pink-600/30 to-transparent rounded-full blur-[120px] pointer-events-none transition-transform duration-300 ease-out"></div>
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-600/15 rounded-full blur-[140px] pointer-events-none"></div>
 
         <!-- Glassmorphism Container Card -->
@@ -681,6 +681,10 @@
         let monthlyTrendChartInstance = null;
 
         const loginScreen = document.getElementById('loginScreen');
+        const loginBg = document.getElementById('loginBg');
+        const glowSphere1 = document.getElementById('glowSphere1');
+        const glowSphere2 = document.getElementById('glowSphere2');
+
         const appContent = document.getElementById('appContent');
         const monthSelect = document.getElementById('monthSelect');
         const yearSelect = document.getElementById('yearSelect');
@@ -710,6 +714,38 @@
         const btnSwitchToRegister = document.getElementById('btnSwitchToRegister');
         const btnSwitchToLogin = document.getElementById('btnSwitchToLogin');
         const btnGoogleLogin = document.getElementById('btnGoogleLogin');
+
+        // ===================================================
+        // EFEK PARALLAX BACKGROUND INTERAKTIF BERLAWANAN ARAH
+        // ===================================================
+        if (loginScreen && loginBg) {
+            loginScreen.addEventListener('mousemove', (e) => {
+                const { innerWidth, innerHeight } = window;
+                // Hitung posisi mouse relatif terhadap tengah layar (-1 sampai 1)
+                const moveX = (e.clientX - innerWidth / 2) / (innerWidth / 2);
+                const moveY = (e.clientY - innerHeight / 2) / (innerHeight / 2);
+
+                // Pergerakan berlawanan arah (-30px untuk background)
+                const bgX = -moveX * 30;
+                const bgY = -moveY * 30;
+                loginBg.style.transform = `scale(1.08) translate3d(${bgX}px, ${bgY}px, 0)`;
+
+                // Pergerakan ambient glow spheres
+                if (glowSphere1) {
+                    glowSphere1.style.transform = `translate3d(${moveX * 25}px, ${moveY * 25}px, 0)`;
+                }
+                if (glowSphere2) {
+                    glowSphere2.style.transform = `translate3d(${-moveX * 20}px, ${-moveY * 20}px, 0)`;
+                }
+            });
+
+            // Reset posisi saat kursor keluar dari layar
+            loginScreen.addEventListener('mouseleave', () => {
+                loginBg.style.transform = 'scale(1.05) translate3d(0, 0, 0)';
+                if (glowSphere1) glowSphere1.style.transform = 'translate3d(0, 0, 0)';
+                if (glowSphere2) glowSphere2.style.transform = 'translate3d(0, 0, 0)';
+            });
+        }
 
         const MONTH_NAMES = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
         const EXPENSE_CATEGORIES = ["Keluarga", "Jajanan", "Bahan Bakar", "Tagihan / E wallet", "Kebutuhan", "Investasi", "Perkopian Duniawi"];
