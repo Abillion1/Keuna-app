@@ -94,47 +94,38 @@
             transform: scale(0.97);
         }
         .liquid-glass {
-    /* Gradien halus yang meniru biasan air */
-    background: linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.12) 0%,
-        rgba(255, 255, 255, 0.02) 50%,
-        rgba(255, 255, 255, 0.08) 100%
-    );
-    backdrop-filter: blur(15px) saturate(180%) ;
-    -webkit-backdrop-filter: blur(15px) saturate(180%) ;
-    /* Pinggiran tipis & tajam penangkap cahaya */        
-    border: 1px solid rgba(255, 255, 255, 0.35);
-    box-shadow: 
-        /* Bayangan bawah luar */
-        0 30px 60px rgba(0, 0, 0, 0.6),
-        /* Kilau tajam di garis paling atas (tajam seperti air) */
-        inset 0 1px 2px 0 rgba(255, 255, 255, 0.95),
-        /* Pendaran cahaya melengkung dari atas */
-        inset 0 12px 20px -8px rgba(255, 255, 255, 0.5),
-        /* Biasan gelap di bawah (efek ketebalan cairan) */
-        inset 0 -18px 30px -10px rgba(0, 0, 0, 0.5),
-        /* Glow lembut di sekeliling pinggir dalam */
-        inset 0 0 15px 2px rgba(255, 255, 255, 0.2);
-}
+            background: linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0.12) 0%,
+                rgba(255, 255, 255, 0.02) 50%,
+                rgba(255, 255, 255, 0.08) 100%
+            );
+            backdrop-filter: blur(15px) saturate(180%) ;
+            -webkit-backdrop-filter: blur(15px) saturate(180%) ;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            box-shadow: 
+                0 30px 60px rgba(0, 0, 0, 0.6),
+                inset 0 1px 2px 0 rgba(255, 255, 255, 0.95),
+                inset 0 12px 20px -8px rgba(255, 255, 255, 0.5),
+                inset 0 -18px 30px -10px rgba(0, 0, 0, 0.5),
+                inset 0 0 15px 2px rgba(255, 255, 255, 0.2);
+        }
 
-/* Pantulan kilat di permukaan kaca (Glossy Glare) */
-.liquid-glass::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 100%;
-    background: radial-gradient(
-        ellipse at center,
-        rgba(255, 255, 255, 0.18) 0%,
-        rgba(255, 255, 255, 0) 60%
-    );
-    transform: rotate(-15deg);
-    pointer-events: none;
-}
-}
+        .liquid-glass::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 100%;
+            background: radial-gradient(
+                ellipse at center,
+                rgba(255, 255, 255, 0.18) 0%,
+                rgba(255, 255, 255, 0) 60%
+            );
+            transform: rotate(-15deg);
+            pointer-events: none;
+        }
     </style>
 </head>
 <body class="bg-bento-bg dark:bg-bento-darkBg text-slate-800 dark:text-slate-100 min-h-screen pb-24 antialiased selection:bg-bento-accent selection:text-white">
@@ -159,7 +150,6 @@
                     <img src="logo.png" alt="Logo Keuna" class="w-full h-full object-contain filter drop-shadow">
                 </div>
                 <h2 class="text-3xl font-extrabold tracking-tight text-white">KEUNA</h2>
-                <!-- Dual Accent Gradient Bar (Reference Style) -->
                 <p class="text-[11px] font-medium text-slate-400 mt-2">Kelola pencatatan keuangan pribadi Anda secara eksklusif dan modern.</p>
             </div>
 
@@ -181,7 +171,7 @@
                     Masuk ke Akun
                 </button>
 
-                <!-- Swither: Belum punya akun? Daftar sekarang -->
+                <!-- Switcher: Belum punya akun? Daftar sekarang -->
                 <div class="text-center pt-1">
                     <p class="text-[11px] text-slate-400">
                         Belum punya akun? 
@@ -224,7 +214,7 @@
                     <input type="password" id="regPassword" required placeholder="Minimal 6 karakter" class="w-full bg-white/5 border border-white/15 rounded-xl px-3.5 py-2.5 text-xs font-medium text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition">
                 </div>
                 
-                <button type="submit" class="bento-btn w-full bg-gradient-to-tr from-fuchsia-300 to-indigo-600   hover:brightness-110 text-white rounded-full py-3 text-xs font-bold shadow-lg shadow-emerald-500/25 transition">
+                <button type="submit" class="bento-btn w-full bg-gradient-to-tr from-fuchsia-300 to-indigo-600 hover:brightness-110 text-white rounded-full py-3 text-xs font-bold shadow-lg shadow-emerald-500/25 transition">
                     Buat Akun Baru
                 </button>
                 
@@ -762,16 +752,13 @@
         if (loginScreen && loginBg) {
             loginScreen.addEventListener('mousemove', (e) => {
                 const { innerWidth, innerHeight } = window;
-                // Hitung posisi mouse relatif terhadap tengah layar (-1 sampai 1)
                 const moveX = (e.clientX - innerWidth / 2) / (innerWidth / 2);
                 const moveY = (e.clientY - innerHeight / 2) / (innerHeight / 2);
 
-                // Pergerakan berlawanan arah (-30px untuk background)
                 const bgX = -moveX * 30;
                 const bgY = -moveY * 30;
                 loginBg.style.transform = `scale(1.08) translate3d(${bgX}px, ${bgY}px, 0)`;
 
-                // Pergerakan ambient glow spheres
                 if (glowSphere1) {
                     glowSphere1.style.transform = `translate3d(${moveX * 25}px, ${moveY * 25}px, 0)`;
                 }
@@ -780,7 +767,6 @@
                 }
             });
 
-            // Reset posisi saat kursor keluar dari layar
             loginScreen.addEventListener('mouseleave', () => {
                 loginBg.style.transform = 'scale(1.05) translate3d(0, 0, 0)';
                 if (glowSphere1) glowSphere1.style.transform = 'translate3d(0, 0, 0)';
@@ -804,11 +790,12 @@
 
         const DEFAULT_COLOR = "#94a3b8";
 
-        // Helper untuk memformat Username menjadi bentuk Email jika user mengetik username polos
+        // Helper untuk memformat Username menjadi bentuk Email valid tanpa spasi
         const formatUsernameToEmail = (val) => {
-            const clean = val.trim();
+            if (!val) return '';
+            const clean = val.trim().replace(/\s+/g, '');
             if (!clean.includes('@')) {
-                return `${clean.toLowerCase().replace(/\s+/g, '')}@keuna.app`;
+                return `${clean.toLowerCase()}@keuna.app`;
             }
             return clean;
         };
@@ -899,6 +886,8 @@
                 let msg = "Gagal masuk. Periksa kembali username/email dan password Anda.";
                 if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
                     msg = "Username / Email atau Password salah.";
+                } else if (error.code === 'auth/invalid-email') {
+                    msg = "Format Username / Email tidak valid.";
                 }
                 showAlert(msg, true);
             }
@@ -912,6 +901,11 @@
             const usernameInput = document.getElementById('regUsername').value;
             const passwordInput = document.getElementById('regPassword').value;
             const email = formatUsernameToEmail(usernameInput);
+
+            if (!email) {
+                showAlert("Username / Email tidak boleh kosong.", true);
+                return;
+            }
 
             if (passwordInput.length < 6) {
                 showAlert("Password minimal harus 6 karakter.", true);
@@ -931,6 +925,12 @@
                     msg = "Username / Email sudah terdaftar. Gunakan yang lain.";
                 } else if (error.code === 'auth/weak-password') {
                     msg = "Password terlalu lemah. Gunakan minimal 6 karakter.";
+                } else if (error.code === 'auth/invalid-email') {
+                    msg = "Format Username / Email tidak valid.";
+                } else if (error.code === 'auth/operation-not-allowed') {
+                    msg = "Metode Login Email/Password belum diaktifkan di Firebase Console.";
+                } else if (error.message) {
+                    msg = `Gagal membuat akun: ${error.message}`;
                 }
                 showAlert(msg, true);
             }
@@ -953,7 +953,6 @@
                 iconEyeWrapper.classList.remove('hidden');
             }
             
-            // Re-render UI untuk memperbarui angka
             renderDashboard();
         });
 
@@ -974,7 +973,6 @@
 
         // Helpers
         const formatIDR = (val) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val || 0);
-        // Helper untuk Privacy
         const formatPrivacy = (val) => isPrivacyMode ? '••••••••' : formatIDR(val);
         
         const isSameMonthYear = (dateStr, m, y) => {
@@ -1013,7 +1011,7 @@
             expenseCurrentPage = 1;
         }
 
-        // --- FUNGSI UTAMA UNTUK MODAL & ACTION (TOP LEVEL SCOPE) ---
+        // FUNGSI UTAMA UNTUK MODAL & ACTION
         function openModal() {
             editDocIdInput.value = '';
             document.getElementById('modalTitle').innerText = 'Input Transaksi';
@@ -1141,7 +1139,6 @@
                 }
             });
 
-            // UPDATE ANGKA DENGAN FORMAT PRIVACY
             document.getElementById('totalIncome').textContent = formatPrivacy(incTotal);
             document.getElementById('totalExpense').textContent = formatPrivacy(expTotal);
             document.getElementById('bankBalance').textContent = formatPrivacy(bankBal);
@@ -1169,7 +1166,7 @@
             const incomeList = filteredMonthly.filter(t => t.tipe === 'INCOME');
             const expenseList = filteredMonthly.filter(t => t.tipe === 'EXPENSE' || t.tipe === 'WITHDRAW');
 
-            // --- PAGINASI PEMASUKAN ---
+            // PAGINASI PEMASUKAN
             const totalIncomePages = Math.ceil(incomeList.length / incomePageSize) || 1;
             if (incomeCurrentPage > totalIncomePages) incomeCurrentPage = totalIncomePages;
             const startIncomeIdx = (incomeCurrentPage - 1) * incomePageSize;
@@ -1197,7 +1194,7 @@
             document.getElementById('btnIncomePrev').disabled = incomeCurrentPage <= 1;
             document.getElementById('btnIncomeNext').disabled = incomeCurrentPage >= totalIncomePages;
 
-            // --- PAGINASI PENGELUARAN ---
+            // PAGINASI PENGELUARAN
             const totalExpensePages = Math.ceil(expenseList.length / expensePageSize) || 1;
             if (expenseCurrentPage > totalExpensePages) expenseCurrentPage = totalExpensePages;
             const startExpenseIdx = (expenseCurrentPage - 1) * expensePageSize;
@@ -1229,7 +1226,6 @@
             document.getElementById('btnExpensePrev').disabled = expenseCurrentPage <= 1;
             document.getElementById('btnExpenseNext').disabled = expenseCurrentPage >= totalExpensePages;
 
-            // Event Listener Edit & Delete Dipasang Setelah Render Tabel
             document.querySelectorAll('.btn-edit').forEach(b => b.addEventListener('click', (e) => editTx(e.currentTarget.getAttribute('data-edit'))));
             document.querySelectorAll('.btn-del').forEach(b => b.addEventListener('click', (e) => deleteTx(e.currentTarget.getAttribute('data-del'))));
 
@@ -1264,7 +1260,6 @@
             renderDashboard();
         });
 
-        // Helper untuk memuat logo menjadi Base64
         function loadLogoBase64(url) {
             return new Promise((resolve) => {
                 const img = new Image();
@@ -1282,7 +1277,7 @@
             });
         }
 
-        // FITUR EKSPOR PDF RAPI DENGAN JSPDF & AUTO-TABLE + SISIPAN LOGO
+        // EKSPOR PDF
         document.getElementById('btnExportPDF').addEventListener('click', async () => {
             if (!window.jspdf) {
                 alert("Library jsPDF belum selesai dimuat.");
@@ -1644,15 +1639,6 @@
             tabMonthlyView.classList.add('hidden');
             renderDashboard();
         });
-
-        // ===================================================
-        // FITUR DETEKSI PERGANTIAN BULAN REALTIME
-        // ===================================================
-        function checkRealtimeMonth() {
-            const now = new Date();
-            const realMonth = now.getMonth();
-            const realYear = now.getFullYear();
-        }
     </script>
 </body>
 </html>
