@@ -608,9 +608,9 @@
         <i data-lucide="plus" class="w-7 h-7 stroke-[2.5]"></i>
     </button>
 
-    <!-- MODAL PENGATURAN PROFIL & PASSWORD -->
+    <!-- MODAL PENGATURAN PROFIL & NAMA AKUN -->
     <div id="profileModal" class="fixed inset-0 bg-slate-900/40 dark:bg-black/60 backdrop-blur-md z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-white dark:bg-bento-darkCard border border-slate-200/80 dark:border-slate-800/80 max-w-md w-full p-6 rounded-3xl shadow-2xl flex flex-col space-y-4">
+        <div class="bg-white dark:bg-bento-darkCard border border-slate-200/80 dark:border-slate-800/80 max-w-md w-full p-6 rounded-3xl shadow-2xl flex flex-col space-y-4 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center pb-3 border-b border-slate-100 dark:border-slate-800">
                 <h3 class="font-bold text-base flex items-center gap-2 text-slate-900 dark:text-white tracking-tight">
                     <i data-lucide="user-cog" class="w-5 h-5 text-indigo-500 stroke-[2]"></i> Pengaturan Akun
@@ -622,14 +622,26 @@
 
             <div id="profileAlert" class="hidden p-3 rounded-xl text-xs font-semibold flex items-center justify-center text-center transition"></div>
 
-            <!-- GANTI FOTO PROFIL -->
+            <!-- GANTI NAMA AKUN -->
+            <form id="formUpdateName" class="space-y-3 bg-slate-50 dark:bg-slate-800/40 p-4 rounded-2xl border border-slate-200/60 dark:border-slate-700/60">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Ganti Nama Akun</h4>
+                <div>
+                    <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-300 mb-1">Nama Akun Baru</label>
+                    <input type="text" id="newNameInput" required placeholder="Masukkan nama baru" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-2 text-xs font-medium focus:outline-none">
+                </div>
+                <button type="submit" class="bento-btn w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl py-2 text-xs font-bold shadow-md shadow-indigo-500/20 transition">
+                    Simpan Nama Akun
+                </button>
+            </form>
+
+            <!-- GANTI FOTO PROFIL (PILIH FILE / CHOOSE FILE) -->
             <form id="formUpdatePhoto" class="space-y-3 bg-slate-50 dark:bg-slate-800/40 p-4 rounded-2xl border border-slate-200/60 dark:border-slate-700/60">
                 <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Ganti Foto Profil</h4>
                 <div class="flex items-center gap-3">
                     <img id="profilePreview" src="https://via.placeholder.com/48" class="w-12 h-12 rounded-full object-cover ring-2 ring-indigo-500/30">
                     <div class="flex-1 space-y-1">
-                        <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-300">URL Foto Profil Baru</label>
-                        <input type="url" id="photoUrlInput" required placeholder="https://example.com/foto.jpg" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-2 text-xs font-medium focus:outline-none">
+                        <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-300">Pilih File Foto Baru</label>
+                        <input type="file" id="photoFileInput" accept="image/*" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-1.5 text-xs font-medium focus:outline-none file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-600 dark:file:bg-indigo-950 dark:file:text-indigo-300 hover:file:bg-indigo-100 cursor-pointer">
                     </div>
                 </div>
                 <button type="submit" class="bento-btn w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl py-2 text-xs font-bold shadow-md shadow-indigo-500/20 transition">
@@ -824,8 +836,10 @@
         const btnCloseProfileModal = document.getElementById('btnCloseProfileModal');
         const profileAlert = document.getElementById('profileAlert');
         const profilePreview = document.getElementById('profilePreview');
-        const photoUrlInput = document.getElementById('photoUrlInput');
+        const photoFileInput = document.getElementById('photoFileInput');
         const formUpdatePhoto = document.getElementById('formUpdatePhoto');
+        const formUpdateName = document.getElementById('formUpdateName');
+        const newNameInput = document.getElementById('newNameInput');
         const formUpdatePassword = document.getElementById('formUpdatePassword');
 
         // ===================================================
@@ -963,6 +977,9 @@
                 currentUser = null;
                 if (unsubscribeStore) unsubscribeStore();
                 transactions = [];
+                // Bersihkan kolom input login saat sign out agar tidak terlihat
+                document.getElementById('loginUsername').value = '';
+                document.getElementById('loginPassword').value = '';
                 appContent.classList.add('hidden');
                 loginScreen.classList.remove('hidden');
             }
@@ -1072,6 +1089,8 @@
 
         // LOGOUT
         document.getElementById('btnLogout').addEventListener('click', () => {
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
             signOut(auth);
         });
 
@@ -1081,7 +1100,8 @@
             if (currentUser) {
                 const defaultPhoto = currentUser.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.displayName || currentUser.email)}&background=6366f1&color=fff`;
                 profilePreview.src = defaultPhoto;
-                photoUrlInput.value = currentUser.photoURL || '';
+                newNameInput.value = currentUser.displayName || '';
+                photoFileInput.value = '';
             }
             profileModal.classList.remove('hidden');
         });
@@ -1090,26 +1110,52 @@
             profileModal.classList.add('hidden');
         });
 
-        // HANDLE SUBMIT UPDATE FOTO PROFIL
-        formUpdatePhoto.addEventListener('submit', async (e) => {
+        // HANDLE SUBMIT UPDATE NAMA AKUN
+        formUpdateName.addEventListener('submit', async (e) => {
             e.preventDefault();
             hideProfileAlert();
-            const newPhotoUrl = photoUrlInput.value.trim();
+            const newName = newNameInput.value.trim();
 
-            if (!newPhotoUrl) {
-                showProfileAlert("URL foto tidak boleh kosong.", true);
+            if (!newName) {
+                showProfileAlert("Nama akun tidak boleh kosong.", true);
                 return;
             }
 
             try {
-                await updateProfile(auth.currentUser, { photoURL: newPhotoUrl });
-                document.getElementById('userPhoto').src = newPhotoUrl;
-                profilePreview.src = newPhotoUrl;
-                showProfileAlert("Foto profil berhasil diperbarui!", false);
+                await updateProfile(auth.currentUser, { displayName: newName });
+                document.getElementById('userEmailDisplay').textContent = newName;
+                showProfileAlert("Nama akun berhasil diperbarui!", false);
             } catch (error) {
-                console.error("Gagal update foto profil:", error);
-                showProfileAlert("Gagal memperbarui foto profil: " + error.message, true);
+                console.error("Gagal update nama akun:", error);
+                showProfileAlert("Gagal memperbarui nama akun: " + error.message, true);
             }
+        });
+
+        // HANDLE SUBMIT UPDATE FOTO PROFIL (FILE CHOOSER)
+        formUpdatePhoto.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideProfileAlert();
+            const file = photoFileInput.files[0];
+
+            if (!file) {
+                showProfileAlert("Silakan pilih file foto terlebih dahulu.", true);
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = async function(uploadEvent) {
+                const base64Image = uploadEvent.target.result;
+                try {
+                    await updateProfile(auth.currentUser, { photoURL: base64Image });
+                    document.getElementById('userPhoto').src = base64Image;
+                    profilePreview.src = base64Image;
+                    showProfileAlert("Foto profil berhasil diperbarui!", false);
+                } catch (error) {
+                    console.error("Gagal update foto profil:", error);
+                    showProfileAlert("Gagal memperbarui foto profil: " + error.message, true);
+                }
+            };
+            reader.readAsDataURL(file);
         });
 
         // HANDLE SUBMIT GANTI PASSWORD
@@ -1675,166 +1721,127 @@
             document.getElementById('yearlyBudgetRecommendation').textContent = formatIDR((yearlyExpTotal / 12) * 1.1);
 
             const catTb = document.getElementById('yearlyCategoryTable');
-            const catEntries = Object.entries(categorySums).sort((a, b) => b[1] - a[1]);
+            const catEntries = Object.entries(categorySums);
+            catEntries.sort((a, b) => b[1] - a[1]);
+
             catTb.innerHTML = catEntries.length === 0 
-                ? `<tr><td colspan="3" class="text-center py-6 text-slate-400 dark:text-slate-500 font-medium">Belum ada data pengeluaran tahun ${currentYear}</td></tr>`
-                : catEntries.map(([cat, amt]) => `
-                    <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition">
-                        <td class="py-3 px-3 font-semibold">${cat}</td>
-                        <td class="py-3 px-3 text-right font-bold text-slate-900 dark:text-white">${formatIDR(amt)}</td>
-                        <td class="py-3 px-3 text-right text-slate-500 dark:text-slate-400">${yearlyExpTotal > 0 ? ((amt / yearlyExpTotal) * 100).toFixed(1) : 0}%</td>
-                    </tr>
-                `).join('');
-
-            if (monthlyTrendChartInstance) monthlyTrendChartInstance.destroy();
-            const ctxLine = document.getElementById('monthlyTrendChart').getContext('2d');
-            monthlyTrendChartInstance = new Chart(ctxLine, {
-                type: 'line',
-                data: {
-                    labels: MONTH_NAMES.map(m => m.substring(0, 3)),
-                    datasets: [{ 
-                        label: `Pengeluaran ${currentYear}`, 
-                        data: monthlySums, 
-                        borderColor: '#6366f1', 
-                        backgroundColor: 'rgba(99, 102, 241, 0.1)', 
-                        fill: true, 
-                        borderWidth: 2,
-                        tension: 0.3 
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-            });
-
-            const yearlyColors = catEntries.map(([cat]) => CATEGORY_COLORS[cat] || DEFAULT_COLOR);
+                ? `<tr><td colspan="3" class="text-center py-6 text-slate-400 font-medium">Tidak ada data tahun ${currentYear}</td></tr>`
+                : catEntries.map(([cat, total]) => {
+                    const pct = yearlyExpTotal > 0 ? ((total / yearlyExpTotal) * 100).toFixed(1) : 0;
+                    return `
+                        <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition">
+                            <td class="py-3 px-3 font-semibold">${cat}</td>
+                            <td class="py-3 px-3 text-right font-bold text-rose-600 dark:text-rose-400">${formatIDR(total)}</td>
+                            <td class="py-3 px-3 text-right font-semibold text-slate-500">${pct}%</td>
+                        </tr>
+                    `;
+                }).join('');
 
             if (yearlyChartInstance) yearlyChartInstance.destroy();
-            const ctxPie = document.getElementById('yearlyChart').getContext('2d');
-            yearlyChartInstance = new Chart(ctxPie, {
+            const yCtx = document.getElementById('yearlyChart').getContext('2d');
+            yearlyChartInstance = new Chart(yCtx, {
                 type: 'pie',
                 data: {
-                    labels: catEntries.length ? catEntries.map(e => e[0]) : ['Tidak Ada Data'],
-                    datasets: [{ 
-                        data: catEntries.length ? catEntries.map(e => e[1]) : [1], 
-                        backgroundColor: catEntries.length ? yearlyColors : ['#e2e8f0'],
-                        borderWidth: 2 
+                    labels: catEntries.length ? catEntries.map(e => e[0]) : ['Belum ada data'],
+                    datasets: [{
+                        data: catEntries.length ? catEntries.map(e => e[1]) : [1],
+                        backgroundColor: catEntries.length ? catEntries.map(e => CATEGORY_COLORS[e[0]] || DEFAULT_COLOR) : ['#e2e8f0']
                     }]
                 },
-                options: { 
-                    responsive: true, 
-                    maintainAspectRatio: false, 
-                    plugins: { 
-                        legend: { 
-                            position: 'bottom', 
-                            labels: { boxWidth: 10, font: { size: 9 } } 
-                        } 
-                    } 
-                }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 15, font: { size: 10 } } } } }
+            });
+
+            if (monthlyTrendChartInstance) monthlyTrendChartInstance.destroy();
+            const mCtx = document.getElementById('monthlyTrendChart').getContext('2d');
+            monthlyTrendChartInstance = new Chart(mCtx, {
+                type: 'line',
+                data: {
+                    labels: MONTH_NAMES,
+                    datasets: [{
+                        label: `Pengeluaran ${currentYear}`,
+                        data: monthlySums,
+                        borderColor: '#6366f1',
+                        backgroundColor: '99, 102, 241, 0.1',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
             });
         }
 
-        // SIMPAN / UPDATE KE FIRESTORE
-        document.getElementById('txForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            if (!currentUser) return;
-
-            const editId = editDocIdInput.value;
-            const tipe = document.querySelector('input[name="type"]:checked').value;
-            const metode = document.getElementById('formSource').value;
-            const tanggal = document.getElementById('formDate').value;
-
-            try {
-                if (editId) {
-                    const row = itemRows.querySelector('.grid');
-                    if (row) {
-                        const kategori = row.querySelector('.cat-input').value;
-                        const keterangan = row.querySelector('.desc-input').value.trim();
-                        const jumlah = Number(row.querySelector('.amt-input').value) || 0;
-
-                        if (jumlah > 0) {
-                            await updateDoc(doc(db, "transactions", editId), {
-                                tipe,
-                                metode,
-                                tanggal,
-                                kategori: tipe === 'WITHDRAW' ? 'Tarik Tunai' : (tipe === 'INCOME' ? 'Pendapatan' : kategori),
-                                keterangan: keterangan || (tipe === 'WITHDRAW' ? 'Ambil ATM' : ''),
-                                jumlah
-                            });
-                        }
-                    }
-                } else {
-                    const rows = itemRows.querySelectorAll('.grid');
-                    for (const r of rows) {
-                        const kategori = r.querySelector('.cat-input').value;
-                        const keterangan = r.querySelector('.desc-input').value.trim();
-                        const jumlah = Number(r.querySelector('.amt-input').value) || 0;
-
-                        if (jumlah > 0) {
-                            await addDoc(collection(db, "transactions"), {
-                                userId: currentUser.uid,
-                                tipe,
-                                metode,
-                                tanggal,
-                                kategori: tipe === 'WITHDRAW' ? 'Tarik Tunai' : (tipe === 'INCOME' ? 'Pendapatan' : kategori),
-                                keterangan: keterangan || (tipe === 'WITHDRAW' ? 'Ambil ATM' : ''),
-                                jumlah,
-                                createdAt: new Date()
-                            });
-                        }
-                    }
-                }
-                closeModal();
-            } catch (error) {
-                console.error("Gagal menyimpan ke Firestore:", error);
-                alert("Gagal menyimpan data: " + error.message);
-            }
-        });
-
-        // Listeners Modal & Input
-        document.querySelectorAll('input[name="type"]').forEach(radio => {
-            radio.addEventListener('change', (e) => handleTypeChange(e.target.value));
-        });
-
+        // EVENT LISTENER MODAL TRANSAKSI
         document.getElementById('btnOpenModal').addEventListener('click', openModal);
         document.getElementById('btnFab').addEventListener('click', openModal);
         document.getElementById('btnCloseModal').addEventListener('click', closeModal);
         document.getElementById('btnCloseModalHeader').addEventListener('click', closeModal);
         document.getElementById('btnAddRow').addEventListener('click', () => addRow());
 
-        // Filter Handlers
-        monthSelect.addEventListener('change', (e) => { currentMonth = Number(e.target.value); resetPages(); renderDashboard(); });
-        yearSelect.addEventListener('change', (e) => { currentYear = Number(e.target.value); resetPages(); renderDashboard(); });
-        categoryFilter.addEventListener('change', () => { resetPages(); renderDashboard(); });
-        sourceFilter.addEventListener('change', () => { resetPages(); renderDashboard(); });
+        document.querySelectorAll('input[name="type"]').forEach(radio => {
+            radio.addEventListener('change', (e) => handleTypeChange(e.target.value));
+        });
 
-        startDateFilter.addEventListener('change', () => { resetPages(); renderDashboard(); });
-        endDateFilter.addEventListener('change', () => { resetPages(); renderDashboard(); });
+        // HANDLE SUBMIT TAMBAH / EDIT TRANSAKSI
+        document.getElementById('txForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const editId = editDocIdInput.value;
+            const type = document.querySelector('input[name="type"]:checked').value;
+            const metode = document.getElementById('formSource').value;
+            const tanggal = document.getElementById('formDate').value;
+
+            if (!tanggal) {
+                alert("Tanggal harus diisi.");
+                return;
+            }
+
+            try {
+                if (editId) {
+                    const row = itemRows.querySelector('.grid');
+                    const kategori = row.querySelector('.cat-input').value;
+                    const keterangan = row.querySelector('.desc-input').value;
+                    const jumlah = Number(row.querySelector('.amt-input').value) || 0;
+
+                    await updateDoc(doc(db, "transactions", editId), {
+                        tipe: type, metode, tanggal, kategori, keterangan, jumlah
+                    });
+                } else {
+                    const rows = itemRows.querySelectorAll('.grid');
+                    for (let r of rows) {
+                        const kategori = r.querySelector('.cat-input').value;
+                        const keterangan = r.querySelector('.desc-input').value;
+                        const jumlah = Number(r.querySelector('.amt-input').value) || 0;
+
+                        if (jumlah > 0) {
+                            await addDoc(collection(db, "transactions"), {
+                                userId: currentUser.uid,
+                                tipe: type, metode, tanggal, kategori, keterangan, jumlah,
+                                createdAt: new Date().toISOString()
+                            });
+                        }
+                    }
+                }
+                closeModal();
+            } catch (error) {
+                console.error("Gagal menyimpan transaksi:", error);
+                alert("Gagal menyimpan transaksi: " + error.message);
+            }
+        });
+
+        // FILTER TANGGAL RESET
+        startDateFilter.addEventListener('change', renderDashboard);
+        endDateFilter.addEventListener('change', renderDashboard);
         btnResetDate.addEventListener('click', () => {
             startDateFilter.value = '';
             endDateFilter.value = '';
-            resetPages();
             renderDashboard();
         });
 
-        // Tab Navigation
-        const tabMonthlyBtn = document.getElementById('tabMonthlyBtn');
-        const tabYearlyBtn = document.getElementById('tabYearlyBtn');
-        const tabMonthlyView = document.getElementById('tabMonthlyView');
-        const tabYearlyView = document.getElementById('tabYearlyView');
+        categoryFilter.addEventListener('change', renderDashboard);
+        sourceFilter.addEventListener('change', renderDashboard);
+        monthSelect.addEventListener('change', (e) => { currentMonth = Number(e.target.value); resetPages(); renderDashboard(); });
+        yearSelect.addEventListener('change', (e) => { currentYear = Number(e.target.value); resetPages(); renderDashboard(); });
 
-        tabMonthlyBtn.addEventListener('click', () => {
-            tabMonthlyBtn.className = "bento-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-white dark:bg-indigo-600 text-slate-900 dark:text-white shadow-sm";
-            tabYearlyBtn.className = "bento-btn px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white";
-            tabMonthlyView.classList.remove('hidden');
-            tabYearlyView.classList.add('hidden');
-        });
-
-        tabYearlyBtn.addEventListener('click', () => {
-            tabYearlyBtn.className = "bento-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-white dark:bg-indigo-600 text-slate-900 dark:text-white shadow-sm";
-            tabMonthlyBtn.className = "bento-btn px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white";
-            tabYearlyView.classList.remove('hidden');
-            tabMonthlyView.classList.add('hidden');
-            renderDashboard();
-        });
+        lucide.createIcons();
     </script>
 </body>
 </html>
