@@ -100,7 +100,7 @@
                 rgba(255, 255, 255, 0.02) 70%,
                 rgba(255, 255, 255, 0.08) 100%
             );
-            backdrop-filter: blur(3px) saturate(200%) ;
+            backdrop-filter: blur(5px) saturate(200%) ;
             -webkit-backdrop-filter: blur(15px) saturate(200%) ;
             border: 1px solid rgba(255, 255, 255, 0.35);
             box-shadow: 
@@ -130,17 +130,21 @@
 </head>
 <body class="bg-bento-bg dark:bg-bento-darkBg text-slate-800 dark:text-slate-100 min-h-screen pb-24 antialiased selection:bg-bento-accent selection:text-white">
 
-    <!-- Screen Login & Sign Up -->
+    <!-- Screen Login & Sign Up (Locked Center & Non-scrollable) -->
     <div id="loginScreen" class="fixed inset-0 bg-[#070913] z-50 flex items-center justify-center p-4 overflow-hidden select-none">
         
+        <!-- Background Image bg.jpg (Parallax Effect) -->
         <div id="loginBg" class="fixed -inset-8 bg-[length:100%_100%] bg-center bg-no-repeat opacity-90 pointer-events-none -z-10 transition-transform duration-200 ease-out scale-105" style="background-image: url('bg.jpg');"></div>
 
+        <!-- Ambient Glowing Glass/Neon Spheres & Tubes -->
         <div id="glowSphere1" class="absolute -top-28 -left-28 w-96 h-96 bg-gradient-to-br from-cyan-500/35 via-indigo-600/30 to-transparent rounded-full blur-[110px] pointer-events-none transition-transform duration-300 ease-out"></div>
         <div id="glowSphere2" class="absolute -bottom-28 -right-28 w-[420px] h-[420px] bg-gradient-to-tl from-fuchsia-600/40 via-pink-600/30 to-transparent rounded-full blur-[120px] pointer-events-none transition-transform duration-300 ease-out"></div>
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-600/15 rounded-full blur-[140px] pointer-events-none"></div>
         
+        <!-- Glassmorphism Container Card (Apple Convex Glass) -->
         <div class="relative w-full max-w-md p-6 sm:p-8 liquid-glass rounded-[40px] overflow-hidden text-white my-auto">
 
+            <!-- Branding Header (Centered) -->
             <div class="mb-4 pt-1 flex flex-col items-center text-center">
                 <div class="w-14 h-14 bg-gradient-to-bl from-fuchsia-300 to-indigo-600 rounded-xl p-2 mb-3 shadow-lg shadow-fuchsia-500/20 flex items-center justify-center">
                     <img src="logo.png" alt="Logo Keuna" class="w-full h-full object-contain filter drop-shadow">
@@ -149,6 +153,7 @@
                 <p class="text-[11px] font-medium text-slate-400 mt-2">Kelola pencatatan keuangan pribadi Anda secara eksklusif dan modern.</p>
             </div>
 
+            <!-- Alert Notifikasi -->
             <div id="authAlert" class="hidden mb-3 p-2.5 rounded-xl text-xs font-semibold flex items-center justify-center text-center transition"></div>
 
             <!-- FORM LOGIN -->
@@ -158,10 +163,7 @@
                     <input type="text" id="loginUsername" required placeholder="Masukkan username atau email" class="w-full bg-white/5 border border-white/15 rounded-xl px-3.5 py-2.5 text-xs font-medium text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition">
                 </div>
                 <div>
-                    <div class="flex justify-between items-center mb-1">
-                        <label class="block text-[11px] font-semibold text-slate-300">Password</label>
-                        <button type="button" id="btnSwitchToForgot" class="text-[11px] text-cyan-400 hover:text-cyan-300 hover:underline font-semibold">Lupa Password?</button>
-                    </div>
+                    <label class="block text-[11px] font-semibold text-slate-300 mb-1">Password</label>
                     <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full bg-white/5 border border-white/15 rounded-xl px-3.5 py-2.5 text-xs font-medium text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition">
                 </div>
                 
@@ -169,6 +171,7 @@
                     Masuk ke Akun
                 </button>
 
+                <!-- Switcher: Belum punya akun? Daftar sekarang -->
                 <div class="text-center pt-1">
                     <p class="text-[11px] text-slate-400">
                         Belum punya akun? 
@@ -176,6 +179,7 @@
                     </p>
                 </div>
 
+                <!-- Tombol Login Google -->
                 <div class="pt-1">
                     <div class="relative flex py-1 items-center mb-2">
                         <div class="flex-grow border-t border-white/10"></div>
@@ -195,7 +199,7 @@
                 </div>
             </form>
 
-            <!-- FORM SIGN UP -->
+            <!-- FORM SIGN UP / DAFTAR -->
             <form id="formRegister" class="space-y-3 hidden">
                 <div>
                     <label class="block text-[11px] font-semibold text-slate-300 mb-1">Nama Lengkap</label>
@@ -219,25 +223,6 @@
                         Sudah punya akun? 
                         <button type="button" id="btnSwitchToLogin" class="font-bold text-cyan-400 hover:text-cyan-300 hover:underline">Masuk di sini</button>
                     </p>
-                </div>
-            </form>
-
-            <!-- FORM LUPA PASSWORD -->
-            <form id="formForgotPassword" class="space-y-3 hidden">
-                <div class="text-center mb-1">
-                    <p class="text-xs text-slate-300">Masukkan Username / Email Anda untuk menerima instruksi reset password.</p>
-                </div>
-                <div>
-                    <label class="block text-[11px] font-semibold text-slate-300 mb-1">Username / Email</label>
-                    <input type="text" id="forgotUsername" required placeholder="Masukkan username atau email" class="w-full bg-white/5 border border-white/15 rounded-xl px-3.5 py-2.5 text-xs font-medium text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition">
-                </div>
-                
-                <button type="submit" class="bento-btn w-full bg-gradient-to-tr from-fuchsia-300 to-indigo-600 hover:brightness-110 text-white rounded-full py-3 text-xs font-bold shadow-lg shadow-fuchsia-500/25 transition">
-                    Kirim Link Reset Password
-                </button>
-
-                <div class="text-center pt-1">
-                    <button type="button" id="btnForgotToLogin" class="font-bold text-cyan-400 hover:text-cyan-300 hover:underline text-[11px]">Kembali ke Halaman Login</button>
                 </div>
             </form>
 
@@ -277,9 +262,7 @@
                     </div>
 
                     <div class="flex items-center gap-2 bg-slate-100 dark:bg-slate-800/60 rounded-xl p-1 pl-2 border border-slate-200/50 dark:border-slate-700/50">
-                        <button id="btnOpenProfileModal" title="Pengaturan Akun" class="bento-btn focus:outline-none">
-                            <img id="userPhoto" src="https://via.placeholder.com/24" class="w-6 h-6 rounded-full ring-1 ring-indigo-500/50 object-cover" alt="Profile">
-                        </button>
+                        <img id="userPhoto" src="https://via.placeholder.com/24" class="w-6 h-6 rounded-full ring-1 ring-slate-300 dark:ring-slate-600" alt="Profile">
                         <button id="btnLogout" title="Keluar" class="p-1 text-slate-500 hover:text-rose-500 dark:text-slate-400 dark:hover:text-rose-400 transition">
                             <i data-lucide="log-out" class="w-4 h-4 stroke-[2]"></i>
                         </button>
@@ -292,6 +275,7 @@
         <main class="max-w-6xl mx-auto px-4">
             <div id="tabMonthlyView" class="space-y-6">
                 
+                <!-- Bento Header Row: Month Controller & Net Savings -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="md:col-span-2 bento-card bg-white dark:bg-bento-darkCard rounded-3xl p-4 border border-slate-200/80 dark:border-slate-800/80 shadow-bento dark:shadow-bento-dark flex flex-col sm:flex-row justify-between items-center gap-4">
                         <div class="flex items-center space-x-2 bg-slate-100 dark:bg-slate-800/60 rounded-2xl p-1.5 border border-slate-200/50 dark:border-slate-700/50 w-full sm:w-auto justify-between">
@@ -319,6 +303,7 @@
                     </div>
                 </div>
 
+                <!-- Bento Row 2: Budget Target & Progress -->
                 <div class="bento-card bg-white dark:bg-bento-darkCard rounded-3xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-bento dark:shadow-bento-dark">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
                         <div class="flex items-center gap-3">
@@ -340,6 +325,7 @@
                     </div>
                 </div>
 
+                <!-- Bento Grid 4 Stat Cards -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div class="bento-card bg-white dark:bg-bento-darkCard rounded-3xl p-5 border border-slate-200/80 dark:border-slate-800/80 shadow-bento dark:shadow-bento-dark flex items-center justify-between">
                         <div>
@@ -374,6 +360,7 @@
                     </div>
                 </div>
 
+                <!-- Action Bar Filters & Export -->
                 <div class="bento-card bg-white dark:bg-bento-darkCard rounded-3xl p-4 border border-slate-200/80 dark:border-slate-800/80 shadow-bento dark:shadow-bento-dark flex flex-col lg:flex-row justify-between items-stretch lg:items-center gap-4">
                     <div class="flex flex-wrap items-center gap-2">
                         <div class="flex items-center space-x-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 rounded-xl px-3 py-1.5 text-xs">
@@ -399,6 +386,7 @@
                             </select>
                         </div>
 
+                        <!-- FILTER TANGGAL -->
                         <div class="flex items-center space-x-1.5 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 rounded-xl px-3 py-1.5 text-xs">
                             <i data-lucide="calendar" class="w-4 h-4 text-slate-400 stroke-[2]"></i>
                             <input type="date" id="startDateFilter" class="bg-transparent text-slate-700 dark:text-slate-200 font-semibold focus:outline-none cursor-pointer">
@@ -422,6 +410,7 @@
                     </div>
                 </div>
 
+                <!-- Bento Table: Income List -->
                 <div class="bento-card bg-white dark:bg-bento-darkCard rounded-3xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-bento dark:shadow-bento-dark">
                     <h3 class="text-sm font-bold flex items-center gap-2 mb-4 text-slate-900 dark:text-white tracking-wide">
                         <i data-lucide="arrow-down-left" class="w-4 h-4 text-emerald-500 stroke-[2.5]"></i> Rincian Pemasukan
@@ -441,6 +430,7 @@
                             <tbody id="incomeTable" class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs font-medium text-slate-700 dark:text-slate-300"></tbody>
                         </table>
                     </div>
+                    <!-- Controls Paginasi Pemasukan -->
                     <div class="flex flex-col sm:flex-row justify-between items-center gap-3 mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400">
                         <div class="flex items-center gap-2">
                             <span>Tampilkan</span>
@@ -462,6 +452,7 @@
                     </div>
                 </div>
 
+                <!-- Bento Grid: Charts & Expense Table -->
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div class="bento-card bg-white dark:bg-bento-darkCard rounded-3xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-bento dark:shadow-bento-dark lg:col-span-1 flex flex-col justify-between">
                         <div>
@@ -497,6 +488,7 @@
                                 <tbody id="transactionTable" class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs font-medium text-slate-700 dark:text-slate-300"></tbody>
                             </table>
                         </div>
+                        <!-- Controls Paginasi Pengeluaran -->
                         <div class="flex flex-col sm:flex-row justify-between items-center gap-3 mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400">
                             <div class="flex items-center gap-2">
                                 <span>Tampilkan</span>
@@ -592,46 +584,6 @@
         <i data-lucide="plus" class="w-7 h-7 stroke-[2.5]"></i>
     </button>
 
-    <!-- MODAL PENGATURAN PROFIL & NAMA AKUN -->
-    <div id="profileModal" class="fixed inset-0 bg-slate-900/40 dark:bg-black/60 backdrop-blur-md z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-white dark:bg-bento-darkCard border border-slate-200/80 dark:border-slate-800/80 max-w-md w-full p-6 rounded-3xl shadow-2xl flex flex-col space-y-4 max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center pb-3 border-b border-slate-100 dark:border-slate-800">
-                <h3 class="font-bold text-base flex items-center gap-2 text-slate-900 dark:text-white tracking-tight">
-                    <i data-lucide="user-cog" class="w-5 h-5 text-indigo-500 stroke-[2]"></i> Pengaturan Akun
-                </h3>
-                <button id="btnCloseProfileModal" class="bento-btn p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-xl">
-                    <i data-lucide="x" class="w-5 h-5 stroke-[2]"></i>
-                </button>
-            </div>
-
-            <div id="profileAlert" class="hidden p-3 rounded-xl text-xs font-semibold flex items-center justify-center text-center transition"></div>
-
-            <!-- GANTI NAMA AKUN -->
-            <form id="formUpdateName" class="space-y-3 bg-slate-50 dark:bg-slate-800/40 p-4 rounded-2xl border border-slate-200/60 dark:border-slate-700/60">
-                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Ganti Nama Akun</h4>
-                <div>
-                    <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-300 mb-1">Nama Akun Baru</label>
-                    <input type="text" id="newNameInput" required placeholder="Masukkan nama baru" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-2 text-xs font-medium focus:outline-none">
-                </div>
-                <button type="submit" class="bento-btn w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl py-2 text-xs font-bold shadow-md shadow-indigo-500/20 transition">
-                    Simpan Nama Akun
-                </button>
-            </form>
-
-            <!-- GANTI PASSWORD -->
-            <form id="formUpdatePassword" class="space-y-3 bg-slate-50 dark:bg-slate-800/40 p-4 rounded-2xl border border-slate-200/60 dark:border-slate-700/60">
-                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Ganti Password</h4>
-                <div>
-                    <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-300 mb-1">Password Baru</label>
-                    <input type="password" id="newPasswordInput" required placeholder="Minimal 6 karakter" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-2 text-xs font-medium focus:outline-none">
-                </div>
-                <button type="submit" class="bento-btn w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl py-2 text-xs font-bold shadow-md shadow-indigo-500/20 transition">
-                    Perbarui Password
-                </button>
-            </form>
-        </div>
-    </div>
-
     <!-- Modal Form Transaksi / Edit -->
     <div id="modal" class="fixed inset-0 bg-slate-900/40 dark:bg-black/60 backdrop-blur-md z-50 flex items-center justify-center hidden p-4">
         <div id="modalBox" class="bg-white dark:bg-bento-darkCard border border-slate-200/80 dark:border-slate-800/80 max-w-2xl w-full p-6 rounded-3xl shadow-2xl flex flex-col max-h-[90vh]">
@@ -704,9 +656,7 @@
             signOut, 
             onAuthStateChanged,
             GoogleAuthProvider,
-            signInWithPopup,
-            sendPasswordResetEmail,
-            updatePassword
+            signInWithPopup
         } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { 
             getFirestore, 
@@ -788,27 +738,17 @@
         const iconEyeOffWrapper = document.getElementById('iconEyeOffWrapper');
         const iconEyeWrapper = document.getElementById('iconEyeWrapper');
 
-        // ELEMENT AUTH & FORM LOGIN/REGISTER/FORGOT
+        // ELEMENT AUTH & FORM LOGIN/REGISTER
         const formLogin = document.getElementById('formLogin');
         const formRegister = document.getElementById('formRegister');
-        const formForgotPassword = document.getElementById('formForgotPassword');
         const authAlert = document.getElementById('authAlert');
         const btnSwitchToRegister = document.getElementById('btnSwitchToRegister');
         const btnSwitchToLogin = document.getElementById('btnSwitchToLogin');
-        const btnSwitchToForgot = document.getElementById('btnSwitchToForgot');
-        const btnForgotToLogin = document.getElementById('btnForgotToLogin');
         const btnGoogleLogin = document.getElementById('btnGoogleLogin');
 
-        // ELEMENT PROFILE MODAL
-        const profileModal = document.getElementById('profileModal');
-        const btnOpenProfileModal = document.getElementById('btnOpenProfileModal');
-        const btnCloseProfileModal = document.getElementById('btnCloseProfileModal');
-        const profileAlert = document.getElementById('profileAlert');
-        const formUpdateName = document.getElementById('formUpdateName');
-        const newNameInput = document.getElementById('newNameInput');
-        const formUpdatePassword = document.getElementById('formUpdatePassword');
-
-        // EFEK PARALLAX BACKGROUND INTERAKTIF
+        // ===================================================
+        // EFEK PARALLAX BACKGROUND INTERAKTIF BERLAWANAN ARAH
+        // ===================================================
         if (loginScreen && loginBg) {
             loginScreen.addEventListener('mousemove', (e) => {
                 const { innerWidth, innerHeight } = window;
@@ -850,6 +790,7 @@
 
         const DEFAULT_COLOR = "#94a3b8";
 
+        // Helper untuk memformat Username menjadi bentuk Email valid tanpa spasi
         const formatUsernameToEmail = (val) => {
             if (!val) return '';
             const clean = val.trim().replace(/\s+/g, '');
@@ -869,48 +810,24 @@
             authAlert.classList.remove('hidden');
         };
 
-        const hideAlert = () => authAlert.classList.add('hidden');
-
-        const showProfileAlert = (msg, isError = true) => {
-            profileAlert.className = `p-3 rounded-xl text-xs font-semibold flex items-center justify-center text-center transition ${
-                isError 
-                    ? 'bg-rose-50 text-rose-600 dark:bg-rose-950/50 dark:text-rose-400 border border-rose-200/60 dark:border-rose-900/50' 
-                    : 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-900/50'
-            }`;
-            profileAlert.textContent = msg;
-            profileAlert.classList.remove('hidden');
+        const hideAlert = () => {
+            authAlert.classList.add('hidden');
         };
 
-        const hideProfileAlert = () => profileAlert.classList.add('hidden');
-
+        // Switcher Form Login & Register
         btnSwitchToRegister.addEventListener('click', () => {
             hideAlert();
             formLogin.classList.add('hidden');
-            formForgotPassword.classList.add('hidden');
             formRegister.classList.remove('hidden');
         });
 
         btnSwitchToLogin.addEventListener('click', () => {
             hideAlert();
             formRegister.classList.add('hidden');
-            formForgotPassword.classList.add('hidden');
             formLogin.classList.remove('hidden');
         });
 
-        btnSwitchToForgot.addEventListener('click', () => {
-            hideAlert();
-            formLogin.classList.add('hidden');
-            formRegister.classList.add('hidden');
-            formForgotPassword.classList.remove('hidden');
-        });
-
-        btnForgotToLogin.addEventListener('click', () => {
-            hideAlert();
-            formForgotPassword.classList.add('hidden');
-            formRegister.classList.add('hidden');
-            formLogin.classList.remove('hidden');
-        });
-
+        // Populate Years (2020-2080)
         for (let y = 2020; y <= 2080; y++) {
             const opt = document.createElement('option');
             opt.value = y; opt.textContent = y;
@@ -934,14 +851,12 @@
                 currentUser = null;
                 if (unsubscribeStore) unsubscribeStore();
                 transactions = [];
-                document.getElementById('loginUsername').value = '';
-                document.getElementById('loginPassword').value = '';
                 appContent.classList.add('hidden');
                 loginScreen.classList.remove('hidden');
             }
         });
 
-        // HANDLE GOOGLE LOGIN
+        // HANDLE GOOGLE LOGIN (POPUP)
         btnGoogleLogin.addEventListener('click', async () => {
             hideAlert();
             try {
@@ -956,7 +871,7 @@
             }
         });
 
-        // HANDLE SUBMIT LOGIN
+        // HANDLE SUBMIT LOGIN (USERNAME / EMAIL & PASSWORD)
         formLogin.addEventListener('submit', async (e) => {
             e.preventDefault();
             hideAlert();
@@ -978,7 +893,7 @@
             }
         });
 
-        // HANDLE SUBMIT SIGN UP
+        // HANDLE SUBMIT SIGN UP / BUAT AKUN BARU
         formRegister.addEventListener('submit', async (e) => {
             e.preventDefault();
             hideAlert();
@@ -1012,28 +927,10 @@
                     msg = "Password terlalu lemah. Gunakan minimal 6 karakter.";
                 } else if (error.code === 'auth/invalid-email') {
                     msg = "Format Username / Email tidak valid.";
-                }
-                showAlert(msg, true);
-            }
-        });
-
-        // HANDLE SUBMIT LUPA PASSWORD
-        formForgotPassword.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            hideAlert();
-            const forgotInput = document.getElementById('forgotUsername').value;
-            const email = formatUsernameToEmail(forgotInput);
-
-            try {
-                await sendPasswordResetEmail(auth, email);
-                showAlert("Email reset password telah dikirim! Periksa kotak masuk/spam email Anda.", false);
-            } catch (error) {
-                console.error("Reset password gagal:", error);
-                let msg = "Gagal mengirim link reset password.";
-                if (error.code === 'auth/user-not-found') {
-                    msg = "Username / Email tidak ditemukan.";
-                } else if (error.code === 'auth/invalid-email') {
-                    msg = "Format Username / Email tidak valid.";
+                } else if (error.code === 'auth/operation-not-allowed') {
+                    msg = "Metode Login Email/Password belum diaktifkan di Firebase Console.";
+                } else if (error.message) {
+                    msg = `Gagal membuat akun: ${error.message}`;
                 }
                 showAlert(msg, true);
             }
@@ -1041,69 +938,7 @@
 
         // LOGOUT
         document.getElementById('btnLogout').addEventListener('click', () => {
-            document.getElementById('loginUsername').value = '';
-            document.getElementById('loginPassword').value = '';
             signOut(auth);
-        });
-
-        // MODAL SETTINGS PROFILE & PASSWORD
-        btnOpenProfileModal.addEventListener('click', () => {
-            hideProfileAlert();
-            if (currentUser) {
-                newNameInput.value = currentUser.displayName || '';
-            }
-            profileModal.classList.remove('hidden');
-        });
-
-        btnCloseProfileModal.addEventListener('click', () => {
-            profileModal.classList.add('hidden');
-        });
-
-        // HANDLE SUBMIT UPDATE NAMA AKUN
-        formUpdateName.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            hideProfileAlert();
-            const newName = newNameInput.value.trim();
-
-            if (!newName) {
-                showProfileAlert("Nama akun tidak boleh kosong.", true);
-                return;
-            }
-
-            try {
-                await updateProfile(auth.currentUser, { displayName: newName });
-                document.getElementById('userEmailDisplay').textContent = newName;
-                document.getElementById('userPhoto').src = auth.currentUser.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(newName)}&background=6366f1&color=fff`;
-                showProfileAlert("Nama akun berhasil diperbarui!", false);
-            } catch (error) {
-                console.error("Gagal update nama akun:", error);
-                showProfileAlert("Gagal memperbarui nama akun: " + error.message, true);
-            }
-        });
-
-        // HANDLE SUBMIT GANTI PASSWORD
-        formUpdatePassword.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            hideProfileAlert();
-            const newPassword = document.getElementById('newPasswordInput').value;
-
-            if (newPassword.length < 6) {
-                showProfileAlert("Password minimal harus 6 karakter.", true);
-                return;
-            }
-
-            try {
-                await updatePassword(auth.currentUser, newPassword);
-                document.getElementById('newPasswordInput').value = '';
-                showProfileAlert("Password berhasil diperbarui!", false);
-            } catch (error) {
-                console.error("Gagal update password:", error);
-                let msg = "Gagal memperbarui password.";
-                if (error.code === 'auth/requires-recent-login') {
-                    msg = "Demi keamanan, silakan logout dan login kembali sebelum mengubah password.";
-                }
-                showProfileAlert(msg, true);
-            }
         });
 
         // PRIVACY MODE TOGGLE EVENT
@@ -1166,30 +1001,6 @@
             renderDashboard();
         });
 
-        monthSelect.addEventListener('change', (e) => {
-            currentMonth = Number(e.target.value);
-            resetPages();
-            renderDashboard();
-        });
-
-        yearSelect.addEventListener('change', (e) => {
-            currentYear = Number(e.target.value);
-            resetPages();
-            renderDashboard();
-        });
-
-        categoryFilter.addEventListener('change', () => { resetPages(); renderDashboard(); });
-        sourceFilter.addEventListener('change', () => { resetPages(); renderDashboard(); });
-        startDateFilter.addEventListener('change', () => { resetPages(); renderDashboard(); });
-        endDateFilter.addEventListener('change', () => { resetPages(); renderDashboard(); });
-
-        btnResetDate.addEventListener('click', () => {
-            startDateFilter.value = '';
-            endDateFilter.value = '';
-            resetPages();
-            renderDashboard();
-        });
-
         document.getElementById('btnSaveBudget').addEventListener('click', () => {
             monthlyBudget = Number(budgetInput.value) || 0;
             renderDashboard();
@@ -1200,28 +1011,7 @@
             expenseCurrentPage = 1;
         }
 
-        // Tab Switching Logic
-        const tabMonthlyBtn = document.getElementById('tabMonthlyBtn');
-        const tabYearlyBtn = document.getElementById('tabYearlyBtn');
-        const tabMonthlyView = document.getElementById('tabMonthlyView');
-        const tabYearlyView = document.getElementById('tabYearlyView');
-
-        tabMonthlyBtn.addEventListener('click', () => {
-            tabMonthlyBtn.className = "bento-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-white dark:bg-indigo-600 text-slate-900 dark:text-white shadow-sm";
-            tabYearlyBtn.className = "bento-btn px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white";
-            tabMonthlyView.classList.remove('hidden');
-            tabYearlyView.classList.add('hidden');
-        });
-
-        tabYearlyBtn.addEventListener('click', () => {
-            tabYearlyBtn.className = "bento-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-white dark:bg-indigo-600 text-slate-900 dark:text-white shadow-sm";
-            tabMonthlyBtn.className = "bento-btn px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white";
-            tabYearlyView.classList.remove('hidden');
-            tabMonthlyView.classList.add('hidden');
-            renderYearlySummary();
-        });
-
-        // MODAL & ACTION HANDLERS
+        // FUNGSI UTAMA UNTUK MODAL & ACTION
         function openModal() {
             editDocIdInput.value = '';
             document.getElementById('modalTitle').innerText = 'Input Transaksi';
@@ -1236,17 +1026,6 @@
         }
 
         function closeModal() { modal.classList.add('hidden'); }
-
-        document.getElementById('btnOpenModal').addEventListener('click', openModal);
-        document.getElementById('btnFab').addEventListener('click', openModal);
-        document.getElementById('btnCloseModal').addEventListener('click', closeModal);
-        document.getElementById('btnCloseModalHeader').addEventListener('click', closeModal);
-
-        document.querySelectorAll('input[name="type"]').forEach(radio => {
-            radio.addEventListener('change', (e) => {
-                handleTypeChange(e.target.value);
-            });
-        });
 
         function handleTypeChange(type, defaultKategori = '', defaultKeterangan = '', singleRow = null) {
             const rowElements = singleRow ? [singleRow] : itemRows.querySelectorAll('.grid');
@@ -1302,54 +1081,6 @@
             handleTypeChange(currentType, kategoriVal, keteranganVal, div);
             lucide.createIcons();
         }
-
-        btnAddRow.addEventListener('click', () => addRow());
-
-        // SAVE TRANSACTION FORM
-        document.getElementById('txForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            if (!currentUser) return;
-
-            const editId = editDocIdInput.value;
-            const tipe = document.querySelector('input[name="type"]:checked').value;
-            const metode = document.getElementById('formSource').value;
-            const tanggal = document.getElementById('formDate').value;
-
-            const rowDivs = itemRows.querySelectorAll('.grid');
-            if (rowDivs.length === 0) return;
-
-            try {
-                if (editId) {
-                    const row = rowDivs[0];
-                    const kategori = row.querySelector('.cat-input').value;
-                    const keterangan = row.querySelector('.desc-input').value;
-                    const jumlah = Number(row.querySelector('.amt-input').value) || 0;
-
-                    await updateDoc(doc(db, "transactions", editId), {
-                        tipe, metode, tanggal, kategori, keterangan, jumlah,
-                        updatedAt: new Date().toISOString()
-                    });
-                } else {
-                    for (const row of rowDivs) {
-                        const kategori = row.querySelector('.cat-input').value;
-                        const keterangan = row.querySelector('.desc-input').value;
-                        const jumlah = Number(row.querySelector('.amt-input').value) || 0;
-
-                        if (jumlah > 0) {
-                            await addDoc(collection(db, "transactions"), {
-                                userId: currentUser.uid,
-                                tipe, metode, tanggal, kategori, keterangan, jumlah,
-                                createdAt: new Date().toISOString()
-                            });
-                        }
-                    }
-                }
-                closeModal();
-            } catch (error) {
-                console.error("Gagal menyimpan transaksi:", error);
-                alert("Gagal menyimpan data transaksi.");
-            }
-        });
 
         function editTx(id) {
             const tx = transactions.find(t => t.id === id);
@@ -1529,136 +1260,6 @@
             renderDashboard();
         });
 
-        // CHART RENDERING FUNCTIONS
-        function renderMonthlyChart(data) {
-            const expData = data.filter(t => t.tipe === 'EXPENSE');
-            const catTotals = {};
-            expData.forEach(t => {
-                catTotals[t.kategori] = (catTotals[t.kategori] || 0) + Number(t.jumlah);
-            });
-
-            const labels = Object.keys(catTotals);
-            const values = Object.values(catTotals);
-            const bgColors = labels.map(l => CATEGORY_COLORS[l] || DEFAULT_COLOR);
-
-            const ctx = document.getElementById('expenseChart').getContext('2d');
-            if (expenseChartInstance) expenseChartInstance.destroy();
-
-            expenseChartInstance = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: labels.length ? labels : ['Belum ada data'],
-                    datasets: [{
-                        data: values.length ? values : [1],
-                        backgroundColor: values.length ? bgColors : ['#e2e8f0'],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } }
-                    },
-                    cutout: '70%'
-                }
-            });
-        }
-
-        function renderYearlySummary() {
-            document.querySelectorAll('.yearlyTitleYear').forEach(el => el.textContent = currentYear);
-            const yearlyTxs = transactions.filter(t => {
-                if (!t.tanggal) return false;
-                return new Date(t.tanggal).getFullYear() === Number(currentYear);
-            });
-
-            let yearlyExp = 0;
-            const monthlyTotals = Array(12).fill(0);
-            const catTotals = {};
-
-            yearlyTxs.forEach(t => {
-                const amt = Number(t.jumlah) || 0;
-                if (t.tipe === 'EXPENSE') {
-                    yearlyExp += amt;
-                    const m = new Date(t.tanggal).getMonth();
-                    monthlyTotals[m] += amt;
-                    catTotals[t.kategori] = (catTotals[t.kategori] || 0) + amt;
-                }
-            });
-
-            const avgExp = Math.round(yearlyExp / 12);
-            const budgetRec = Math.round(avgExp * 1.1);
-
-            document.getElementById('yearlyTotalExpense').textContent = formatPrivacy(yearlyExp);
-            document.getElementById('yearlyAvgExpense').textContent = formatPrivacy(avgExp);
-            document.getElementById('yearlyBudgetRecommendation').textContent = formatPrivacy(budgetRec);
-
-            const catTable = document.getElementById('yearlyCategoryTable');
-            const catEntries = Object.entries(catTotals).sort((a, b) => b[1] - a[1]);
-            catTable.innerHTML = catEntries.length === 0 
-                ? `<tr><td colspan="3" class="text-center py-4 text-slate-400">Belum ada data pengeluaran tahun ini</td></tr>`
-                : catEntries.map(([cat, total]) => {
-                    const pct = yearlyExp > 0 ? ((total / yearlyExp) * 100).toFixed(1) : '0';
-                    return `
-                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40">
-                            <td class="py-2.5 px-3 flex items-center gap-2">
-                                <span class="w-2.5 h-2.5 rounded-full inline-block" style="background-color: ${CATEGORY_COLORS[cat] || DEFAULT_COLOR}"></span>
-                                <span>${cat}</span>
-                            </td>
-                            <td class="py-2.5 px-3 text-right font-bold">${formatIDR(total)}</td>
-                            <td class="py-2.5 px-3 text-right font-semibold text-slate-500">${pct}%</td>
-                        </tr>
-                    `;
-                }).join('');
-
-            const yCtx = document.getElementById('yearlyChart').getContext('2d');
-            if (yearlyChartInstance) yearlyChartInstance.destroy();
-            yearlyChartInstance = new Chart(yCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: catEntries.length ? catEntries.map(e => e[0]) : ['Belum ada data'],
-                    datasets: [{
-                        data: catEntries.length ? catEntries.map(e => e[1]) : [1],
-                        backgroundColor: catEntries.length ? catEntries.map(e => CATEGORY_COLORS[e[0]] || DEFAULT_COLOR) : ['#e2e8f0'],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } },
-                    cutout: '70%'
-                }
-            });
-
-            const tCtx = document.getElementById('monthlyTrendChart').getContext('2d');
-            if (monthlyTrendChartInstance) monthlyTrendChartInstance.destroy();
-            monthlyTrendChartInstance = new Chart(tCtx, {
-                type: 'line',
-                data: {
-                    labels: MONTH_NAMES.map(m => m.substring(0, 3)),
-                    datasets: [{
-                        label: 'Pengeluaran',
-                        data: monthlyTotals,
-                        borderColor: '#6366f1',
-                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
-                        fill: true,
-                        tension: 0.3
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.05)' } },
-                        x: { grid: { display: false } }
-                    }
-                }
-            });
-        }
-
-        // LOAD LOGO BASE64 & EKSPOR PDF
         function loadLogoBase64(url) {
             return new Promise((resolve) => {
                 const img = new Image();
@@ -1676,46 +1277,367 @@
             });
         }
 
+        // EKSPOR PDF
         document.getElementById('btnExportPDF').addEventListener('click', async () => {
-            const { jsPDF } = window.jspdf;
-            const docPdf = new jsPDF();
-
-            const monthName = MONTH_NAMES[currentMonth];
-            const logoData = await loadLogoBase64('logo.png');
-
-            if (logoData) {
-                docPdf.addImage(logoData, 'PNG', 14, 10, 12, 12);
+            if (!window.jspdf) {
+                alert("Library jsPDF belum selesai dimuat.");
+                return;
             }
 
-            docPdf.setFontSize(16);
-            docPdf.setFont('helvetica', 'bold');
-            docPdf.text('KEUNA - Laporan Keuangan', logoData ? 30 : 14, 18);
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 
-            docPdf.setFontSize(10);
-            docPdf.setFont('helvetica', 'normal');
-            docPdf.text(`Periode: ${monthName} ${currentYear}`, logoData ? 30 : 14, 24);
+            const monthName = MONTH_NAMES[currentMonth];
+            const titleText = `Laporan Keuangan Bulanan - ${monthName} ${currentYear}`;
+            const userName = currentUser ? (currentUser.displayName || currentUser.email) : 'User';
+
+            const logoBase64 = await loadLogoBase64('logo.png');
 
             const monthlyData = transactions.filter(t => isSameMonthYear(t.tanggal, currentMonth, currentYear));
             monthlyData.sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal));
 
-            const tableRows = monthlyData.map(t => [
-                t.tanggal,
-                t.tipe === 'INCOME' ? 'Masuk' : t.tipe === 'WITHDRAW' ? 'Tarik Tunai' : 'Keluar',
-                t.metode,
-                t.kategori || '-',
-                t.keterangan || '-',
-                formatIDR(t.jumlah)
-            ]);
-
-            docPdf.autoTable({
-                startY: 32,
-                head: [['Tanggal', 'Tipe', 'Metode', 'Kategori', 'Keterangan', 'Jumlah']],
-                body: tableRows,
-                styles: { fontSize: 8 },
-                headStyles: { fillColor: [99, 102, 241] }
+            let totalInc = 0, totalExp = 0;
+            monthlyData.forEach(t => {
+                const amt = Number(t.jumlah) || 0;
+                if (t.tipe === 'INCOME') totalInc += amt;
+                else if (t.tipe === 'EXPENSE') totalExp += amt;
             });
 
-            docPdf.save(`Laporan_Keuangan_${monthName}_${currentYear}.pdf`);
+            const canvas = document.createElement('canvas');
+            canvas.width = 1000;
+            canvas.height = 140;
+            const ctx = canvas.getContext('2d');
+
+            const gradient = ctx.createLinearGradient(0, 0, 1000, 0);
+            gradient.addColorStop(0, '#6366f1'); 
+            gradient.addColorStop(1, '#3b0764'); 
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const headerGradientImg = canvas.toDataURL('image/png');
+            doc.addImage(headerGradientImg, 'PNG', 0, 0, 210, 28);
+
+            let titleXPosition = 14;
+            if (logoBase64) {
+                doc.addImage(logoBase64, 'PNG', 18, 8, 14, 14);
+                titleXPosition = 36;
+            }
+
+            doc.setTextColor(255, 255, 255);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(15);
+            doc.text("KEUANGAN BULANAN", titleXPosition, 13);
+
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(9.5);
+            doc.text(titleText, titleXPosition, 20);
+
+            doc.setFontSize(8);
+            doc.text(`Pemilik: ${userName} | Dicetak: ${new Date().toLocaleDateString('id-ID')}`, 196, 20, { align: 'right' });
+
+            doc.setFillColor(248, 250, 252);
+            doc.setDrawColor(226, 232, 240);
+            doc.roundedRect(14, 34, 182, 22, 2, 2, 'FD');
+
+            doc.setTextColor(100, 116, 139);
+            doc.setFontSize(8);
+            doc.setFont('helvetica', 'bold');
+            doc.text("TOTAL PEMASUKAN", 20, 41);
+            doc.text("TOTAL PENGELUARAN", 80, 41);
+            doc.text("SELISIH BERSIH (NET SAVINGS)", 140, 41);
+
+            doc.setFontSize(11);
+            doc.setTextColor(16, 185, 129); 
+            doc.text(formatIDR(totalInc), 20, 49);
+
+            doc.setTextColor(225, 29, 72); 
+            doc.text(formatIDR(totalExp), 80, 49);
+
+            const net = totalInc - totalExp;
+            doc.setTextColor(net >= 0 ? 16 : 225, net >= 0 ? 185 : 29, net >= 0 ? 129 : 72);
+            doc.text(formatIDR(net), 140, 49);
+
+            const tableRows = monthlyData.map((t, idx) => {
+                const jenisLabel = t.tipe === 'INCOME' ? 'Pemasukan' : (t.tipe === 'WITHDRAW' ? 'Tarik Tunai' : 'Pengeluaran');
+                return [
+                    idx + 1,
+                    t.tanggal || '-',
+                    jenisLabel,
+                    t.metode || '-',
+                    t.kategori || '-',
+                    t.keterangan || '-',
+                    formatIDR(t.jumlah)
+                ];
+            });
+
+            doc.autoTable({
+                startY: 62,
+                head: [['#', 'Tanggal', 'Jenis', 'Metode', 'Kategori', 'Keterangan', 'Jumlah']],
+                body: tableRows.length > 0 ? tableRows : [['-', '-', '-', '-', 'Tidak ada data transaksi', '-', 'Rp 0']],
+                theme: 'striped',
+                headStyles: {
+                    fillColor: [86, 72, 196],
+                    textColor: 255,
+                    fontSize: 9,
+                    fontStyle: 'bold',
+                    halign: 'left'
+                },
+                bodyStyles: {
+                    fontSize: 8,
+                    textColor: [51, 65, 85]
+                },
+                columnStyles: {
+                    0: { cellWidth: 10, halign: 'center' },
+                    1: { cellWidth: 24 },
+                    2: { cellWidth: 25 },
+                    3: { cellWidth: 22 },
+                    4: { cellWidth: 32 },
+                    5: { cellWidth: 'auto' },
+                    6: { cellWidth: 32, halign: 'right', fontStyle: 'bold' }
+                },
+                didParseCell: function(data) {
+                    if (data.section === 'body' && data.column.index === 6) {
+                        const rowData = tableRows[data.row.index];
+                        if (rowData) {
+                            if (rowData[2] === 'Pemasukan') {
+                                data.cell.styles.textColor = [16, 185, 129];
+                            } else if (rowData[2] === 'Pengeluaran') {
+                                data.cell.styles.textColor = [225, 29, 72];
+                            } else {
+                                data.cell.styles.textColor = [79, 70, 229];
+                            }
+                        }
+                    }
+                },
+                margin: { left: 14, right: 14 },
+                didDrawPage: function (data) {
+                    const pageCount = doc.internal.getNumberOfPages();
+                    doc.setFontSize(8);
+                    doc.setTextColor(148, 163, 184);
+                    doc.text(`Halaman ${data.pageNumber} dari ${pageCount}`, 196, 287, { align: 'right' });
+                    doc.text("Laporan ini secara otomatis di buat oleh Keuna - Jangan lupa bersyukur yah", 14, 287);
+                }
+            });
+
+            doc.save(`Laporan_Keuangan_${monthName}_${currentYear}.pdf`);
+        });
+
+        function renderMonthlyChart(monthlyData) {
+            const expenseMap = {};
+            monthlyData.filter(t => t.tipe === 'EXPENSE').forEach(t => {
+                expenseMap[t.kategori] = (expenseMap[t.kategori] || 0) + Number(t.jumlah);
+            });
+            const labels = Object.keys(expenseMap);
+            const data = Object.values(expenseMap);
+
+            const bgColors = labels.map(cat => CATEGORY_COLORS[cat] || DEFAULT_COLOR);
+
+            if (expenseChartInstance) expenseChartInstance.destroy();
+            const ctx = document.getElementById('expenseChart').getContext('2d');
+            expenseChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels.length ? labels : ['Belum ada pengeluaran'],
+                    datasets: [{ 
+                        data: labels.length ? data : [1], 
+                        backgroundColor: labels.length ? bgColors : ['#e2e8f0'] 
+                    }]
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    plugins: { 
+                        legend: { 
+                            position: 'bottom', 
+                            labels: { boxWidth: 20, font: { size: 10 } } 
+                        } 
+                    } 
+                }
+            });
+        }
+
+        function renderYearlySummary() {
+            document.querySelectorAll('.yearlyTitleYear').forEach(e => e.textContent = currentYear);
+            const yearlyData = transactions.filter(t => t.tanggal && new Date(t.tanggal).getFullYear() === Number(currentYear));
+
+            let yearlyExpTotal = 0;
+            const categorySums = {};
+            const monthlySums = Array(12).fill(0);
+
+            yearlyData.forEach(t => {
+                if (t.tipe === 'EXPENSE') {
+                    const amt = Number(t.jumlah) || 0;
+                    yearlyExpTotal += amt;
+                    categorySums[t.kategori] = (categorySums[t.kategori] || 0) + amt;
+                    monthlySums[new Date(t.tanggal).getMonth()] += amt;
+                }
+            });
+
+            document.getElementById('yearlyTotalExpense').textContent = formatIDR(yearlyExpTotal);
+            document.getElementById('yearlyAvgExpense').textContent = formatIDR(yearlyExpTotal / 12);
+            document.getElementById('yearlyBudgetRecommendation').textContent = formatIDR((yearlyExpTotal / 12) * 1.1);
+
+            const catTb = document.getElementById('yearlyCategoryTable');
+            const catEntries = Object.entries(categorySums).sort((a, b) => b[1] - a[1]);
+            catTb.innerHTML = catEntries.length === 0 
+                ? `<tr><td colspan="3" class="text-center py-6 text-slate-400 dark:text-slate-500 font-medium">Belum ada data pengeluaran tahun ${currentYear}</td></tr>`
+                : catEntries.map(([cat, amt]) => `
+                    <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition">
+                        <td class="py-3 px-3 font-semibold">${cat}</td>
+                        <td class="py-3 px-3 text-right font-bold text-slate-900 dark:text-white">${formatIDR(amt)}</td>
+                        <td class="py-3 px-3 text-right text-slate-500 dark:text-slate-400">${yearlyExpTotal > 0 ? ((amt / yearlyExpTotal) * 100).toFixed(1) : 0}%</td>
+                    </tr>
+                `).join('');
+
+            if (monthlyTrendChartInstance) monthlyTrendChartInstance.destroy();
+            const ctxLine = document.getElementById('monthlyTrendChart').getContext('2d');
+            monthlyTrendChartInstance = new Chart(ctxLine, {
+                type: 'line',
+                data: {
+                    labels: MONTH_NAMES.map(m => m.substring(0, 3)),
+                    datasets: [{ 
+                        label: `Pengeluaran ${currentYear}`, 
+                        data: monthlySums, 
+                        borderColor: '#6366f1', 
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)', 
+                        fill: true, 
+                        borderWidth: 2,
+                        tension: 0.3 
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+
+            const yearlyColors = catEntries.map(([cat]) => CATEGORY_COLORS[cat] || DEFAULT_COLOR);
+
+            if (yearlyChartInstance) yearlyChartInstance.destroy();
+            const ctxPie = document.getElementById('yearlyChart').getContext('2d');
+            yearlyChartInstance = new Chart(ctxPie, {
+                type: 'pie',
+                data: {
+                    labels: catEntries.length ? catEntries.map(e => e[0]) : ['Tidak Ada Data'],
+                    datasets: [{ 
+                        data: catEntries.length ? catEntries.map(e => e[1]) : [1], 
+                        backgroundColor: catEntries.length ? yearlyColors : ['#e2e8f0'],
+                        borderWidth: 2 
+                    }]
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    plugins: { 
+                        legend: { 
+                            position: 'bottom', 
+                            labels: { boxWidth: 10, font: { size: 9 } } 
+                        } 
+                    } 
+                }
+            });
+        }
+
+        // SIMPAN / UPDATE KE FIRESTORE
+        document.getElementById('txForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentUser) return;
+
+            const editId = editDocIdInput.value;
+            const tipe = document.querySelector('input[name="type"]:checked').value;
+            const metode = document.getElementById('formSource').value;
+            const tanggal = document.getElementById('formDate').value;
+
+            try {
+                if (editId) {
+                    const row = itemRows.querySelector('.grid');
+                    if (row) {
+                        const kategori = row.querySelector('.cat-input').value;
+                        const keterangan = row.querySelector('.desc-input').value.trim();
+                        const jumlah = Number(row.querySelector('.amt-input').value) || 0;
+
+                        if (jumlah > 0) {
+                            await updateDoc(doc(db, "transactions", editId), {
+                                tipe,
+                                metode,
+                                tanggal,
+                                kategori: tipe === 'WITHDRAW' ? 'Tarik Tunai' : (tipe === 'INCOME' ? 'Pendapatan' : kategori),
+                                keterangan: keterangan || (tipe === 'WITHDRAW' ? 'Ambil ATM' : ''),
+                                jumlah
+                            });
+                        }
+                    }
+                } else {
+                    const rows = itemRows.querySelectorAll('.grid');
+                    for (const r of rows) {
+                        const kategori = r.querySelector('.cat-input').value;
+                        const keterangan = r.querySelector('.desc-input').value.trim();
+                        const jumlah = Number(r.querySelector('.amt-input').value) || 0;
+
+                        if (jumlah > 0) {
+                            await addDoc(collection(db, "transactions"), {
+                                userId: currentUser.uid,
+                                tipe,
+                                metode,
+                                tanggal,
+                                kategori: tipe === 'WITHDRAW' ? 'Tarik Tunai' : (tipe === 'INCOME' ? 'Pendapatan' : kategori),
+                                keterangan: keterangan || (tipe === 'WITHDRAW' ? 'Ambil ATM' : ''),
+                                jumlah,
+                                createdAt: new Date()
+                            });
+                        }
+                    }
+                }
+                closeModal();
+            } catch (error) {
+                console.error("Gagal menyimpan ke Firestore:", error);
+                alert("Gagal menyimpan data: " + error.message);
+            }
+        });
+
+        // Listeners Modal & Input
+        document.querySelectorAll('input[name="type"]').forEach(radio => {
+            radio.addEventListener('change', (e) => handleTypeChange(e.target.value));
+        });
+
+        document.getElementById('btnOpenModal').addEventListener('click', openModal);
+        document.getElementById('btnFab').addEventListener('click', openModal);
+        document.getElementById('btnCloseModal').addEventListener('click', closeModal);
+        document.getElementById('btnCloseModalHeader').addEventListener('click', closeModal);
+        document.getElementById('btnAddRow').addEventListener('click', () => addRow());
+
+        // Filter Handlers
+        monthSelect.addEventListener('change', (e) => { currentMonth = Number(e.target.value); resetPages(); renderDashboard(); });
+        yearSelect.addEventListener('change', (e) => { currentYear = Number(e.target.value); resetPages(); renderDashboard(); });
+        categoryFilter.addEventListener('change', () => { resetPages(); renderDashboard(); });
+        sourceFilter.addEventListener('change', () => { resetPages(); renderDashboard(); });
+
+        startDateFilter.addEventListener('change', () => { resetPages(); renderDashboard(); });
+        endDateFilter.addEventListener('change', () => { resetPages(); renderDashboard(); });
+        btnResetDate.addEventListener('click', () => {
+            startDateFilter.value = '';
+            endDateFilter.value = '';
+            resetPages();
+            renderDashboard();
+        });
+
+        // Tab Navigation
+        const tabMonthlyBtn = document.getElementById('tabMonthlyBtn');
+        const tabYearlyBtn = document.getElementById('tabYearlyBtn');
+        const tabMonthlyView = document.getElementById('tabMonthlyView');
+        const tabYearlyView = document.getElementById('tabYearlyView');
+
+        tabMonthlyBtn.addEventListener('click', () => {
+            tabMonthlyBtn.className = "bento-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-white dark:bg-indigo-600 text-slate-900 dark:text-white shadow-sm";
+            tabYearlyBtn.className = "bento-btn px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white";
+            tabMonthlyView.classList.remove('hidden');
+            tabYearlyView.classList.add('hidden');
+        });
+
+        tabYearlyBtn.addEventListener('click', () => {
+            tabYearlyBtn.className = "bento-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-white dark:bg-indigo-600 text-slate-900 dark:text-white shadow-sm";
+            tabMonthlyBtn.className = "bento-btn px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white";
+            tabYearlyView.classList.remove('hidden');
+            tabMonthlyView.classList.add('hidden');
+            renderDashboard();
         });
     </script>
 </body>
