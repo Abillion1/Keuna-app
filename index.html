@@ -163,7 +163,10 @@
                     <input type="text" id="loginUsername" required placeholder="Masukkan username atau email" class="w-full bg-white/5 border border-white/15 rounded-xl px-3.5 py-2.5 text-xs font-medium text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition">
                 </div>
                 <div>
-                    <label class="block text-[11px] font-semibold text-slate-300 mb-1">Password</label>
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="block text-[11px] font-semibold text-slate-300">Password</label>
+                        <button type="button" id="btnSwitchToForgot" class="text-[11px] text-cyan-400 hover:text-cyan-300 hover:underline font-semibold">Lupa Password?</button>
+                    </div>
                     <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full bg-white/5 border border-white/15 rounded-xl px-3.5 py-2.5 text-xs font-medium text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition">
                 </div>
                 
@@ -226,6 +229,25 @@
                 </div>
             </form>
 
+            <!-- FORM LUPA PASSWORD -->
+            <form id="formForgotPassword" class="space-y-3 hidden">
+                <div class="text-center mb-1">
+                    <p class="text-xs text-slate-300">Masukkan Username / Email Anda untuk menerima instruksi reset password.</p>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-semibold text-slate-300 mb-1">Username / Email</label>
+                    <input type="text" id="forgotUsername" required placeholder="Masukkan username atau email" class="w-full bg-white/5 border border-white/15 rounded-xl px-3.5 py-2.5 text-xs font-medium text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition">
+                </div>
+                
+                <button type="submit" class="bento-btn w-full bg-gradient-to-tr from-fuchsia-300 to-indigo-600 hover:brightness-110 text-white rounded-full py-3 text-xs font-bold shadow-lg shadow-fuchsia-500/25 transition">
+                    Kirim Link Reset Password
+                </button>
+
+                <div class="text-center pt-1">
+                    <button type="button" id="btnForgotToLogin" class="font-bold text-cyan-400 hover:text-cyan-300 hover:underline text-[11px]">Kembali ke Halaman Login</button>
+                </div>
+            </form>
+
         </div>
     </div>
 
@@ -262,7 +284,9 @@
                     </div>
 
                     <div class="flex items-center gap-2 bg-slate-100 dark:bg-slate-800/60 rounded-xl p-1 pl-2 border border-slate-200/50 dark:border-slate-700/50">
-                        <img id="userPhoto" src="https://via.placeholder.com/24" class="w-6 h-6 rounded-full ring-1 ring-slate-300 dark:ring-slate-600" alt="Profile">
+                        <button id="btnOpenProfileModal" title="Pengaturan Akun & Profil" class="bento-btn focus:outline-none">
+                            <img id="userPhoto" src="https://via.placeholder.com/24" class="w-6 h-6 rounded-full ring-1 ring-indigo-500/50 object-cover" alt="Profile">
+                        </button>
                         <button id="btnLogout" title="Keluar" class="p-1 text-slate-500 hover:text-rose-500 dark:text-slate-400 dark:hover:text-rose-400 transition">
                             <i data-lucide="log-out" class="w-4 h-4 stroke-[2]"></i>
                         </button>
@@ -584,6 +608,49 @@
         <i data-lucide="plus" class="w-7 h-7 stroke-[2.5]"></i>
     </button>
 
+    <!-- MODAL PENGATURAN PROFIL & PASSWORD -->
+    <div id="profileModal" class="fixed inset-0 bg-slate-900/40 dark:bg-black/60 backdrop-blur-md z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white dark:bg-bento-darkCard border border-slate-200/80 dark:border-slate-800/80 max-w-md w-full p-6 rounded-3xl shadow-2xl flex flex-col space-y-4">
+            <div class="flex justify-between items-center pb-3 border-b border-slate-100 dark:border-slate-800">
+                <h3 class="font-bold text-base flex items-center gap-2 text-slate-900 dark:text-white tracking-tight">
+                    <i data-lucide="user-cog" class="w-5 h-5 text-indigo-500 stroke-[2]"></i> Pengaturan Akun
+                </h3>
+                <button id="btnCloseProfileModal" class="bento-btn p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-xl">
+                    <i data-lucide="x" class="w-5 h-5 stroke-[2]"></i>
+                </button>
+            </div>
+
+            <div id="profileAlert" class="hidden p-3 rounded-xl text-xs font-semibold flex items-center justify-center text-center transition"></div>
+
+            <!-- GANTI FOTO PROFIL -->
+            <form id="formUpdatePhoto" class="space-y-3 bg-slate-50 dark:bg-slate-800/40 p-4 rounded-2xl border border-slate-200/60 dark:border-slate-700/60">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Ganti Foto Profil</h4>
+                <div class="flex items-center gap-3">
+                    <img id="profilePreview" src="https://via.placeholder.com/48" class="w-12 h-12 rounded-full object-cover ring-2 ring-indigo-500/30">
+                    <div class="flex-1 space-y-1">
+                        <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-300">URL Foto Profil Baru</label>
+                        <input type="url" id="photoUrlInput" required placeholder="https://example.com/foto.jpg" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-2 text-xs font-medium focus:outline-none">
+                    </div>
+                </div>
+                <button type="submit" class="bento-btn w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl py-2 text-xs font-bold shadow-md shadow-indigo-500/20 transition">
+                    Simpan Foto Profil
+                </button>
+            </form>
+
+            <!-- GANTI PASSWORD -->
+            <form id="formUpdatePassword" class="space-y-3 bg-slate-50 dark:bg-slate-800/40 p-4 rounded-2xl border border-slate-200/60 dark:border-slate-700/60">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Ganti Password</h4>
+                <div>
+                    <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-300 mb-1">Password Baru</label>
+                    <input type="password" id="newPasswordInput" required placeholder="Minimal 6 karakter" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-2 text-xs font-medium focus:outline-none">
+                </div>
+                <button type="submit" class="bento-btn w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl py-2 text-xs font-bold shadow-md shadow-indigo-500/20 transition">
+                    Perbarui Password
+                </button>
+            </form>
+        </div>
+    </div>
+
     <!-- Modal Form Transaksi / Edit -->
     <div id="modal" class="fixed inset-0 bg-slate-900/40 dark:bg-black/60 backdrop-blur-md z-50 flex items-center justify-center hidden p-4">
         <div id="modalBox" class="bg-white dark:bg-bento-darkCard border border-slate-200/80 dark:border-slate-800/80 max-w-2xl w-full p-6 rounded-3xl shadow-2xl flex flex-col max-h-[90vh]">
@@ -656,7 +723,9 @@
             signOut, 
             onAuthStateChanged,
             GoogleAuthProvider,
-            signInWithPopup
+            signInWithPopup,
+            sendPasswordResetEmail,
+            updatePassword
         } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { 
             getFirestore, 
@@ -738,13 +807,26 @@
         const iconEyeOffWrapper = document.getElementById('iconEyeOffWrapper');
         const iconEyeWrapper = document.getElementById('iconEyeWrapper');
 
-        // ELEMENT AUTH & FORM LOGIN/REGISTER
+        // ELEMENT AUTH & FORM LOGIN/REGISTER/FORGOT
         const formLogin = document.getElementById('formLogin');
         const formRegister = document.getElementById('formRegister');
+        const formForgotPassword = document.getElementById('formForgotPassword');
         const authAlert = document.getElementById('authAlert');
         const btnSwitchToRegister = document.getElementById('btnSwitchToRegister');
         const btnSwitchToLogin = document.getElementById('btnSwitchToLogin');
+        const btnSwitchToForgot = document.getElementById('btnSwitchToForgot');
+        const btnForgotToLogin = document.getElementById('btnForgotToLogin');
         const btnGoogleLogin = document.getElementById('btnGoogleLogin');
+
+        // ELEMENT PROFILE MODAL
+        const profileModal = document.getElementById('profileModal');
+        const btnOpenProfileModal = document.getElementById('btnOpenProfileModal');
+        const btnCloseProfileModal = document.getElementById('btnCloseProfileModal');
+        const profileAlert = document.getElementById('profileAlert');
+        const profilePreview = document.getElementById('profilePreview');
+        const photoUrlInput = document.getElementById('photoUrlInput');
+        const formUpdatePhoto = document.getElementById('formUpdatePhoto');
+        const formUpdatePassword = document.getElementById('formUpdatePassword');
 
         // ===================================================
         // EFEK PARALLAX BACKGROUND INTERAKTIF BERLAWANAN ARAH
@@ -814,15 +896,45 @@
             authAlert.classList.add('hidden');
         };
 
-        // Switcher Form Login & Register
+        const showProfileAlert = (msg, isError = true) => {
+            profileAlert.className = `p-3 rounded-xl text-xs font-semibold flex items-center justify-center text-center transition ${
+                isError 
+                    ? 'bg-rose-50 text-rose-600 dark:bg-rose-950/50 dark:text-rose-400 border border-rose-200/60 dark:border-rose-900/50' 
+                    : 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-900/50'
+            }`;
+            profileAlert.textContent = msg;
+            profileAlert.classList.remove('hidden');
+        };
+
+        const hideProfileAlert = () => {
+            profileAlert.classList.add('hidden');
+        };
+
+        // Switcher Form Login, Register, & Forgot Password
         btnSwitchToRegister.addEventListener('click', () => {
             hideAlert();
             formLogin.classList.add('hidden');
+            formForgotPassword.classList.add('hidden');
             formRegister.classList.remove('hidden');
         });
 
         btnSwitchToLogin.addEventListener('click', () => {
             hideAlert();
+            formRegister.classList.add('hidden');
+            formForgotPassword.classList.add('hidden');
+            formLogin.classList.remove('hidden');
+        });
+
+        btnSwitchToForgot.addEventListener('click', () => {
+            hideAlert();
+            formLogin.classList.add('hidden');
+            formRegister.classList.add('hidden');
+            formForgotPassword.classList.remove('hidden');
+        });
+
+        btnForgotToLogin.addEventListener('click', () => {
+            hideAlert();
+            formForgotPassword.classList.add('hidden');
             formRegister.classList.add('hidden');
             formLogin.classList.remove('hidden');
         });
@@ -871,7 +983,7 @@
             }
         });
 
-        // HANDLE SUBMIT LOGIN (USERNAME / EMAIL & PASSWORD)
+        // HANDLE SUBMIT LOGIN
         formLogin.addEventListener('submit', async (e) => {
             e.preventDefault();
             hideAlert();
@@ -936,9 +1048,93 @@
             }
         });
 
+        // HANDLE SUBMIT LUPA PASSWORD
+        formForgotPassword.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideAlert();
+            const forgotInput = document.getElementById('forgotUsername').value;
+            const email = formatUsernameToEmail(forgotInput);
+
+            try {
+                await sendPasswordResetEmail(auth, email);
+                showAlert("Email reset password telah dikirim! Periksa kotak masuk/spam email Anda.", false);
+            } catch (error) {
+                console.error("Reset password gagal:", error);
+                let msg = "Gagal mengirim link reset password.";
+                if (error.code === 'auth/user-not-found') {
+                    msg = "Username / Email tidak ditemukan.";
+                } else if (error.code === 'auth/invalid-email') {
+                    msg = "Format Username / Email tidak valid.";
+                }
+                showAlert(msg, true);
+            }
+        });
+
         // LOGOUT
         document.getElementById('btnLogout').addEventListener('click', () => {
             signOut(auth);
+        });
+
+        // MODAL SETTINGS PROFILE & PASSWORD
+        btnOpenProfileModal.addEventListener('click', () => {
+            hideProfileAlert();
+            if (currentUser) {
+                const defaultPhoto = currentUser.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.displayName || currentUser.email)}&background=6366f1&color=fff`;
+                profilePreview.src = defaultPhoto;
+                photoUrlInput.value = currentUser.photoURL || '';
+            }
+            profileModal.classList.remove('hidden');
+        });
+
+        btnCloseProfileModal.addEventListener('click', () => {
+            profileModal.classList.add('hidden');
+        });
+
+        // HANDLE SUBMIT UPDATE FOTO PROFIL
+        formUpdatePhoto.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideProfileAlert();
+            const newPhotoUrl = photoUrlInput.value.trim();
+
+            if (!newPhotoUrl) {
+                showProfileAlert("URL foto tidak boleh kosong.", true);
+                return;
+            }
+
+            try {
+                await updateProfile(auth.currentUser, { photoURL: newPhotoUrl });
+                document.getElementById('userPhoto').src = newPhotoUrl;
+                profilePreview.src = newPhotoUrl;
+                showProfileAlert("Foto profil berhasil diperbarui!", false);
+            } catch (error) {
+                console.error("Gagal update foto profil:", error);
+                showProfileAlert("Gagal memperbarui foto profil: " + error.message, true);
+            }
+        });
+
+        // HANDLE SUBMIT GANTI PASSWORD
+        formUpdatePassword.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideProfileAlert();
+            const newPassword = document.getElementById('newPasswordInput').value;
+
+            if (newPassword.length < 6) {
+                showProfileAlert("Password minimal harus 6 karakter.", true);
+                return;
+            }
+
+            try {
+                await updatePassword(auth.currentUser, newPassword);
+                document.getElementById('newPasswordInput').value = '';
+                showProfileAlert("Password berhasil diperbarui!", false);
+            } catch (error) {
+                console.error("Gagal update password:", error);
+                let msg = "Gagal memperbarui password.";
+                if (error.code === 'auth/requires-recent-login') {
+                    msg = "Demi keamanan, silakan logout dan login kembali sebelum mengubah password.";
+                }
+                showProfileAlert(msg, true);
+            }
         });
 
         // PRIVACY MODE TOGGLE EVENT
