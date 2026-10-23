@@ -276,7 +276,7 @@
 
                 <div class="flex items-center gap-2">
                     <!-- Tombol Privacy Mode -->
-                    <button id="btnPrivacyMode" title="Privacy Mode" class="bento-btn p-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl transition">
+                    <button id="btnPrivacyMode" title="Privacy Mode" btn p-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl transition">
                         <span id="iconEyeOffWrapper"><i data-lucide="eye-off" class="w-4 h-4 stroke-[2]"></i></span>
                         <span id="iconEyeWrapper" class="hidden"><i data-lucide="eye" class="w-4 h-4 stroke-[2]"></i></span>
                     </button>
@@ -395,9 +395,9 @@
 
                 <!-- Bento Row: Highlight Pengeluaran Realtime -->
                 <div class="bento-card bg-white dark:bg-bento-darkCard rounded-3xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-bento dark:shadow-bento-dark text-slate-800 dark:text-white">
-                    <h3 class="text-sm font-bold flex items-center gap-2 mb-4 text-slate-100 tracking-wide">
-                        <i data-lucide="sparkles" class="w-4 h-4 text-amber-400 stroke-[2.5]"></i> Highlight Pengeluaran Bulan Ini
-                    </h3>
+                    <h3 class="text-sm font-bold flex items-center gap-2 mb-4 text-slate-900 dark:text-white tracking-wide">
+                        <i data-lucide="clipboard-list" class="w-4 h-4 text-amber-500 dark:text-amber-400 stroke-[3]"></i> Peringkat Pengeluaran Bulan Ini Josjis
+                  </h3>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-100 dark:divide-slate-700">
                         <div class="px-2 py-2 sm:py-0">
                         <p class="text-[11px] font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Rata-Rata / Hari</p>
@@ -408,10 +408,11 @@
                         <h4 id="hlAvgWeekly" class="text-lg font-extrabold tracking-tight text-slate-900 dark:text-white">Rp 0</h4>
                      </div>
                      <div class="px-2 py-2 sm:py-0">
-                          <p class="text-[11px] font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Kategori Terboros</p>
+                          <p class="text-[11px] font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Paling Boros</p>
                         <h4 id="hlTopCategory" class="text-lg font-extrabold tracking-tight text-rose-500 dark:text-rose-400">-</h4>
                     </div>
                 </div>
+            </div>
 
                 <!-- Action Bar Filters & Export -->
                 <div class="bento-card bg-white dark:bg-bento-darkCard rounded-3xl p-4 border border-slate-200/80 dark:border-slate-800/80 shadow-bento dark:shadow-bento-dark flex flex-col lg:flex-row justify-between items-stretch lg:items-center gap-4">
