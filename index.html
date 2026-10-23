@@ -22,7 +22,7 @@
                             700: '#047857'
                         },
                         bento: {
-                            bg: '#f8fafc',
+                            bg: '#EBF2FA',
                             card: '#ffffff',
                             darkBg: '#090d16',
                             darkCard: '#131c2e',
@@ -126,6 +126,17 @@
             transform: rotate(-15deg);
             pointer-events: none;
         }
+
+        /* Mengubah ikon kalender bawaan (picker indicator) menjadi putih di mode gelap */
+    .dark input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1) brightness(100%) sepia(0%) saturate(0%) hue-rotate(0deg);
+            cursor: pointer;
+}
+
+        /* Opsional: Ubah warna ikon saat di hover (sedikit lebih redup) */
+    .dark input[type="date"]::-webkit-calendar-picker-indicator:hover {
+            opacity: 0.8;
+}
     </style>
 </head>
 <body class="bg-bento-bg dark:bg-bento-darkBg text-slate-800 dark:text-slate-100 min-h-screen pb-24 antialiased selection:bg-bento-accent selection:text-white">
