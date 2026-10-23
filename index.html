@@ -745,6 +745,8 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { 
             getAuth, 
+            setPersistence,
+            browserSessionPersistence,
             signInWithEmailAndPassword, 
             createUserWithEmailAndPassword, 
             updateProfile, 
@@ -781,6 +783,9 @@
         // Inisialisasi Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        setPersistence(auth, browserSessionPersistence).catch((error) => {
+            console.error("Gagal mengatur persistence:", error);
+        });
         const db = getFirestore(app);
         const googleProvider = new GoogleAuthProvider();
 
@@ -788,6 +793,35 @@
         let currentUser = null;
         let transactions = [];
         let unsubscribeStore = null;
+
+        // INACTIVITY TIMEOUT (1 JAM / 3600000 ms) & SESSION HANDLING
+        const INACTIVITY_LIMIT = 60 * 60 * 1000; // 1 Jam
+        let inactivityTimer = null;
+
+        const resetInactivityTimer = () => {
+            if (!currentUser) return;
+            localStorage.setItem('lastActiveTime', Date.now());
+            if (inactivityTimer) clearTimeout(inactivityTimer);
+            inactivityTimer = setTimeout(() => {
+                if (currentUser) {
+                    signOut(auth).then(() => {
+                        clearAuthInputs();
+                    });
+                }
+            }, INACTIVITY_LIMIT);
+        };
+
+        setInterval(() => {
+            if (!currentUser) return;
+            const lastActive = Number(localStorage.getItem('lastActiveTime')) || Date.now();
+            if (Date.now() - lastActive > INACTIVITY_LIMIT) {
+                signOut(auth);
+            }
+        }, 30000);
+
+        ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(eventName => {
+            window.addEventListener(eventName, resetInactivityTimer);
+        });
 
         // STATE PRIVACY MODE (ON SECARA DEFAULT)
         let isPrivacyMode = true;
